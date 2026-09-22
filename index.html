@@ -122,7 +122,7 @@ p.screen-sub{margin:0 0 18px;color:var(--ink-2);font-size:13.5px;font-weight:300
 }
 .obra:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 .obra .cod{
-  grid-row:1/3;font-family:"IBM Plex Mono",monospace;font-size:13px;font-weight:600;color:var(--ink-2);
+  grid-row:1/3;grid-column:1;font-family:"IBM Plex Mono",monospace;font-size:13px;font-weight:600;color:var(--ink-2);
   background:var(--surface-2);border:1px solid var(--line);padding:6px 8px;border-radius:7px;align-self:center;
 }
 .obra[aria-pressed="true"] .cod{color:var(--accent);border-color:color-mix(in srgb,var(--accent) 35%,transparent);background:var(--accent-soft)}
@@ -217,7 +217,7 @@ table.lines tfoot td:first-child{font-family:Poppins,sans-serif;letter-spacing:.
 .alb .n{font-family:"IBM Plex Mono",monospace;font-size:12px;font-weight:600;color:var(--accent);flex:0 0 auto}
 .alb .c{font-weight:500;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .alb .sub{grid-column:1;color:var(--ink-3);font-size:11.5px;font-weight:300;letter-spacing:.03em}
-.alb .h{grid-row:1/3;font-family:"IBM Plex Mono",monospace;font-weight:600;font-size:15px;font-variant-numeric:tabular-nums}
+.alb .h{grid-row:1/3;grid-column:2;font-family:"IBM Plex Mono",monospace;font-weight:600;font-size:15px;font-variant-numeric:tabular-nums}
 .pill{font-size:9px;letter-spacing:.12em;text-transform:uppercase;padding:3px 7px;border-radius:999px;font-weight:600;flex:0 0 auto}
 .pill.ok{background:var(--ok-soft);color:var(--ok)}
 .pill.bad{background:var(--bad-soft);color:var(--bad)}
@@ -239,7 +239,7 @@ table.lines tfoot td:first-child{font-family:Poppins,sans-serif;letter-spacing:.
 .hueco:last-child{border-bottom:0}
 .hueco .w{font-weight:500;font-size:14px}
 .hueco .m{grid-column:1;font-size:11.5px;color:var(--ink-3);font-weight:300;letter-spacing:.03em}
-.hueco .e{grid-row:1/3;text-align:right;font-family:"IBM Plex Mono",monospace;font-variant-numeric:tabular-nums}
+.hueco .e{grid-row:1/3;grid-column:2;text-align:right;font-family:"IBM Plex Mono",monospace;font-variant-numeric:tabular-nums}
 .hueco .e b{display:block;font-size:15px;font-weight:600;color:var(--bad)}
 .hueco .e span{font-size:9.5px;color:var(--ink-3);letter-spacing:.08em;text-transform:uppercase}
 

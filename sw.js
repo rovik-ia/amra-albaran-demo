@@ -1,4 +1,4 @@
-const CACHE = "albaran-amra-v2";
+const CACHE = "albaran-amra-v3";
 const BASE = self.registration.scope;
 const LOCALES = ["index.html","manifest.webmanifest","icon-192.png","icon-512.png",
                  "icon-maskable-512.png","apple-touch-icon.png"];
