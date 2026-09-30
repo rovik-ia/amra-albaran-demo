@@ -260,7 +260,7 @@ test.describe("control, visitas y material", () => {
     await expect(page.locator("#visLista .vis-row").first()).toContainText("Riesgo");
     await irA(page, "Control");
     await expect(page.locator("#pedidos .ped-row")).toHaveCount(2);
-    await page.getByRole("button", { name: "Entregado: Casco en la obra 2501" }).click();
+    await page.getByRole("button", { name: "Resuelto: Casco en la obra 2501" }).click();
     await expect(page.locator("#pedidos .ped-row")).toHaveCount(1);
     await page.locator("#altaPedido summary").click();
     await page.locator("#pdObra").selectOption("2415");
@@ -272,7 +272,46 @@ test.describe("control, visitas y material", () => {
     await expect(tarjetaObra(page, "2415").locator(".oc-meta")).toContainText("Botas");
     await expect(tarjetaObra(page, "2501").locator(".oc-meta")).toContainText("Riesgo");
     await irA(page, "Semana");
-    await expect(page.locator("#semPend")).toContainText("Por llevar: Arnés");
+    await expect(page.locator("#semPend")).toContainText("Petición pendiente: Arnés");
+  });
+});
+
+test.describe("peticiones de los encargados", () => {
+  test("una llamada se apunta desde la obra, se resuelve y sale en el parte", async ({ page }) => {
+    await sembrarReales(page);
+    await abrir(page);
+    await irA(page, "Obras");
+    await tarjetaObra(page, "2415").getByRole("button", { name: /Anotar petición/ }).click();
+    await expect(page.getByRole("tab", { name: "Control" })).toHaveAttribute("aria-selected", "true");
+    await expect(page.locator("#altaPedido")).toHaveAttribute("open", "");
+    await expect(page.locator("#pdObra")).toHaveValue("2415");
+    await expect(page.locator("#pdQuien")).toHaveValue("Jordi Sala");
+    await page.locator("#pdQue").selectOption("Más personal");
+    await page.fill("#pdDet", "Dos peones desde el lunes");
+    await page.click("#pdAdd");
+    await expect(page.locator("#pdHint")).toContainText("Dile cuándo lo tendrá");
+    const fila = page.locator("#pedidos .ped-row", { hasText: "Más personal" });
+    await expect(fila).toContainText("Dos peones desde el lunes");
+    await expect(fila).toContainText("pide Jordi Sala");
+    await irA(page, "Obras");
+    await expect(tarjetaObra(page, "2415").locator(".oc-meta")).toContainText("Peticiones pendientes");
+    await irA(page, "Semana");
+    await expect(page.locator("#semPend")).toContainText("Petición pendiente: Más personal");
+    await irA(page, "Control");
+    await page.getByRole("button", { name: "Resuelto: Más personal en la obra 2415" }).click();
+    await expect(page.locator("#pdHint")).toContainText("Avisa a Jordi Sala");
+    await expect(page.locator("#pedidos")).toContainText("Nada pendiente");
+    await page.addInitScript(() => {
+      window.__compartido = [];
+      navigator.canShare = (d) => !!(d && d.files);
+      navigator.share = (d) => { window.__compartido.push(d.text); return Promise.resolve(); };
+    });
+    await page.reload();
+    await irA(page, "Semana");
+    await page.getByRole("button", { name: "Enviar a administración" }).click();
+    await expect(page.locator("#semHint")).toContainText("Parte enviado");
+    const [texto] = await page.evaluate(() => window.__compartido);
+    expect(texto).toContain("Peticiones de los encargados: 1 petición, 1 resuelta (1 el mismo día)");
   });
 });
 
