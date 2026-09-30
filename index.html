@@ -4,9 +4,9 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex, nofollow, noarchive">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-L9CHRAI2MKHXjbP5wuUjfmsoxzoIlFt8gl8HbbsZncg='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; manifest-src 'self'; worker-src 'self'; connect-src 'self'; base-uri 'none'; form-action 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-xZJRIUhhj+/49ghqDOEUnYV0+N+1d1XsNcHRo4J3vJw='; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; manifest-src 'self'; worker-src 'self'; connect-src 'self'; base-uri 'none'; form-action 'none'">
 <title>Albarán de Horas Amra</title>
-<meta name="description" content="Maqueta de producto de ROVIK.IA. No es un sitio oficial de Amra Building.">
+<meta name="description" content="Control de albaranes de horas, obras, personal y visitas. Herramienta de ROVIK.IA.">
 <meta name="theme-color" content="#0B0E10">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icon-192.png" type="image/png">
@@ -323,6 +323,227 @@ body.modal{overflow:hidden}
   .kpi.alert{grid-column:1/-1;order:-1}
 }
 @media (max-width:380px){.alarm .v{font-size:32px}}
+
+/* ---- añadidos: obras, visitas, semana, papel ---- */
+input,select,textarea{font-size:16px}
+.sr{position:absolute!important;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+.chip-demo.real{color:var(--ok);background:var(--ok-soft);border-color:color-mix(in srgb,var(--ok) 26%,transparent)}
+nav.tabs.mas{-webkit-mask-image:linear-gradient(90deg,#000 calc(100% - 44px),transparent);mask-image:linear-gradient(90deg,#000 calc(100% - 44px),transparent)}
+fieldset{margin:0;padding:0;border:0;min-width:0}
+fieldset legend.label{padding:0}
+textarea{width:100%;font:inherit;font-size:16px;min-height:88px;padding:10px 12px;border:1px solid var(--line);border-radius:9px;background:var(--ground);color:var(--ink);resize:vertical;line-height:1.45}
+textarea::placeholder,input::placeholder{color:var(--ink-3)}
+input[type=email],input[type=tel]{width:100%;font:inherit;font-size:16px;min-height:46px;padding:10px 12px;border:1px solid var(--line);border-radius:9px;background:var(--ground);color:var(--ink)}
+textarea:focus,input[type=email]:focus,input[type=tel]:focus,select.field:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(47,212,196,.14)}
+select.field{width:100%;font:inherit;font-size:16px;min-height:46px;padding:9px 10px;border:1px solid var(--line);border-radius:9px;background:var(--ground);color:var(--ink);cursor:pointer}
+select.field:disabled{color:var(--ink-3);cursor:not-allowed}
+.duo{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.duo > *{min-width:0}
+.pad{padding:14px}
+.btn.small{min-height:44px;padding:8px 14px;font-size:13px}
+.btn.danger{color:var(--bad);border-color:color-mix(in srgb,var(--bad) 40%,transparent)}
+.btn.danger:hover{border-color:var(--bad)}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+a.btn{display:inline-flex;align-items:center;justify-content:center;text-decoration:none;text-align:center}
+.btn.linkbtn{width:100%}
+.linklike{appearance:none;background:none;border:0;padding:0;font:inherit;color:var(--accent);text-decoration:underline;text-underline-offset:3px;cursor:pointer;min-height:44px}
+.linklike:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:3px}
+.empty.ok{color:var(--ok)}
+.vacio p{margin:0 0 12px;color:var(--ink-2);font-size:13.5px;line-height:1.6}
+.vacio p b{color:var(--ink);font-weight:600}
+.pill.warn{background:var(--warn-soft);color:var(--warn)}
+
+/* selector segmentado: radios nativos, a 44 px */
+.seg{display:grid;grid-template-columns:repeat(2,1fr);gap:4px;padding:4px;background:var(--surface);border:1px solid var(--line);border-radius:11px}
+.seg.tres{grid-template-columns:repeat(3,1fr)}
+.seg > legend.sr + label, .seg label{position:relative;display:block;min-width:0}
+.seg legend.label{margin-bottom:8px;grid-column:1/-1;float:left;width:100%}
+.signbox .seg,#visEstado,#talonarioModo{background:transparent;border:0;padding:0}
+.seg input{position:absolute;inset:0;width:100%;height:100%;margin:0;opacity:0;cursor:pointer}
+.seg span{display:grid;place-items:center;min-height:44px;padding:6px 8px;border-radius:8px;font-size:14px;font-weight:500;color:var(--ink-2);text-align:center;line-height:1.2;transition:background .15s,color .15s}
+.signbox .seg span,#visEstado span,#talonarioModo span{border:1px solid var(--line-strong)}
+.seg input:checked + span{background:var(--surface-2);color:var(--ink);box-shadow:inset 0 0 0 1px var(--line-strong);font-weight:600}
+.signbox .seg input:checked + span,#talonarioModo input:checked + span{background:var(--accent-soft);color:var(--accent);box-shadow:none;border-color:color-mix(in srgb,var(--accent) 45%,transparent)}
+.seg input:focus-visible + span{outline:2px solid var(--accent);outline-offset:1px}
+#visEstado .e-ok input:checked + span{background:var(--ok-soft);color:var(--ok);border-color:color-mix(in srgb,var(--ok) 45%,transparent)}
+#visEstado .e-atencion input:checked + span{background:var(--warn-soft);color:var(--warn);border-color:color-mix(in srgb,var(--warn) 45%,transparent)}
+#visEstado .e-riesgo input:checked + span{background:var(--bad-soft);color:var(--bad);border-color:color-mix(in srgb,var(--bad) 45%,transparent)}
+
+/* etiquetas que se marcan (temas de la visita) */
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chips legend{width:100%;float:left}
+.chips label{position:relative}
+.chips input{position:absolute;inset:0;width:100%;height:100%;margin:0;opacity:0;cursor:pointer}
+.chips span{display:inline-flex;align-items:center;min-height:44px;padding:8px 14px;border-radius:999px;border:1px solid var(--line-strong);font-size:13.5px;color:var(--ink-2);transition:background .15s,color .15s}
+.chips input:checked + span{background:var(--warn-soft);color:var(--warn);border-color:color-mix(in srgb,var(--warn) 45%,transparent);font-weight:500}
+.chips input:focus-visible + span{outline:2px solid var(--accent);outline-offset:2px}
+
+/* foto del papel */
+.foto-zone{margin-top:14px}
+.foto-zone img{display:block;width:100%;max-height:220px;object-fit:cover;border-radius:8px;border:1px solid var(--line);margin-bottom:10px}
+.paper-foto{border-top:1px solid var(--paper-line);padding:12px 17px 14px;background:var(--paper)}
+.paper-foto img{display:block;width:100%;border-radius:4px;border:1px solid var(--paper-line)}
+.paper-foto p{margin:0;font-size:12px;color:var(--paper-ink-2)}
+.sgtxt{display:grid;place-items:end start;color:var(--paper-ink-2);font-size:13px}
+.sgtxt.pen{color:var(--pen);font-size:16px;font-style:italic}
+.sgtxt.firmado{font-size:19px;opacity:.8}
+.sgtxt.sinfirma{color:#B3261E;font-weight:700;font-size:13px;letter-spacing:.04em;text-transform:uppercase}
+.paper{position:relative}
+.paper.anulado .paper-head,.paper.anulado table,.paper.anulado .paper-meta{opacity:.55}
+.sello-anulado{position:absolute;top:92px;left:50%;transform:translateX(-50%) rotate(-12deg);z-index:2;border:3px solid #B3261E;color:#B3261E;font-weight:700;font-size:22px;letter-spacing:.2em;text-transform:uppercase;padding:4px 16px;border-radius:6px;background:rgba(246,246,242,.85);pointer-events:none}
+.alb.off .n,.alb.off .c,.alb.off .h{opacity:.55;text-decoration:line-through}
+
+/* navegador de semana / mes */
+.weeknav{display:flex;align-items:center;gap:8px;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:5px}
+.navbtn{appearance:none;flex:0 0 auto;width:44px;height:44px;border:1px solid var(--line);border-radius:9px;background:var(--surface-2);color:var(--ink);font:inherit;font-size:22px;line-height:1;cursor:pointer}
+.navbtn:disabled{color:var(--ink-3);opacity:.45;cursor:default}
+.navbtn:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+.wk{flex:1 1 auto;min-width:0;text-align:center;line-height:1.25}
+.wk strong{display:block;font-family:"IBM Plex Mono",monospace;font-weight:600;font-size:15px}
+.wk span{display:block;font-size:12px;color:var(--ink-2);font-weight:300}
+
+/* tabla semanal */
+table.sem{width:100%;border-collapse:collapse;table-layout:fixed;font-size:12.5px}
+table.sem th,table.sem td{padding:7px 2px;border-bottom:1px solid var(--line)}
+table.sem thead th{font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3);font-weight:600;background:var(--surface-2)}
+table.sem thead th span{display:block;font-family:"IBM Plex Mono",monospace;letter-spacing:0;color:var(--ink-2);font-weight:500;text-transform:none}
+table.sem abbr{text-decoration:none;cursor:help}
+table.sem .wn{text-align:left;padding-left:12px;width:auto}
+table.sem .wn b{display:block;font-weight:500;font-size:13px;line-height:1.25;overflow-wrap:anywhere}
+table.sem .wn small{display:block;font-size:10.5px;color:var(--ink-3);font-weight:300}
+table.sem .d{width:30px;text-align:center;font-family:"IBM Plex Mono",monospace;font-variant-numeric:tabular-nums}
+table.sem td.x{color:var(--warn);font-weight:600}
+table.sem td.z{color:var(--line-strong)}
+table.sem .t{width:46px;text-align:right;padding-right:12px;font-family:"IBM Plex Mono",monospace;font-weight:600;font-variant-numeric:tabular-nums}
+table.sem tr.og th{text-align:left;padding:10px 12px 8px;background:var(--ground);font-size:13px;font-weight:600}
+table.sem tr.og .cod{font-family:"IBM Plex Mono",monospace;color:var(--accent);margin-right:4px}
+table.sem tr.og small{display:block;font-size:11px;color:var(--ink-3);font-weight:300;margin-top:2px}
+table.sem tr.st th,table.sem tr.st td{color:var(--ink-2);font-size:11.5px;text-align:right;font-weight:500}
+table.sem tr.st th{padding-right:6px;text-transform:uppercase;letter-spacing:.08em;font-size:10px}
+table.sem tfoot th,table.sem tfoot td{border-bottom:0;border-top:2px solid var(--line-strong);background:var(--surface-2);font-weight:600;text-align:right}
+table.sem tfoot th{text-transform:uppercase;letter-spacing:.1em;font-size:10.5px;padding-right:6px}
+table.sem tfoot .t{color:var(--accent)}
+@media (min-width:440px){table.sem .d{width:38px}table.sem .t{width:54px}}
+
+/* avisos pendientes */
+.aviso{display:block;width:100%;text-align:left;font:inherit;color:inherit;background:none;border:0;border-bottom:1px solid var(--line);border-left:3px solid var(--line-strong);padding:11px 14px}
+.aviso:last-child{border-bottom:0}
+button.aviso{cursor:pointer}
+button.aviso:hover{background:var(--surface-2)}
+button.aviso:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
+.aviso.g3{border-left-color:var(--bad)}
+.aviso.g2{border-left-color:var(--warn)}
+.aviso .at{display:block;font-weight:500;font-size:14px}
+.aviso .am{display:block;font-size:11.5px;color:var(--ink-2);font-weight:300;letter-spacing:.02em;margin-top:1px}
+
+.est-row{display:flex;gap:12px;padding:12px 14px;border-bottom:1px solid var(--line);align-items:flex-start}
+.est-row:last-child{border-bottom:0}
+.est-row .cod,.vis-row .cod,.oc-head .cod{font-family:"IBM Plex Mono",monospace;font-size:12.5px;font-weight:600;color:var(--accent);background:var(--accent-soft);border:1px solid color-mix(in srgb,var(--accent) 30%,transparent);padding:4px 8px;border-radius:6px;flex:0 0 auto}
+.est-row p{margin:0}
+.est-row .et{font-weight:500;font-size:14px;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.est-row .em{font-size:12px;color:var(--ink-2);font-weight:300;margin-top:3px;line-height:1.5}
+.est-row .em b{font-weight:600;color:var(--ink)}
+
+/* visitas */
+.vis-row{padding:12px 14px;border-bottom:1px solid var(--line);display:grid;grid-template-columns:1fr auto;gap:4px 12px;align-items:start}
+.vis-row:last-child{border-bottom:0}
+.vis-row > *{grid-column:1}
+.vis-row .btn{grid-column:2;grid-row:1/span 4;align-self:center}
+.vr-top{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.vr-f{font-family:"IBM Plex Mono",monospace;font-size:12px;color:var(--ink-2)}
+.vis-row p{margin:0}
+.vr-t{font-size:13px;font-weight:500}
+.vr-n{font-size:12.5px;color:var(--ink-2);font-weight:300;line-height:1.5}
+.vr-n b{font-weight:600;color:var(--ink)}
+
+/* obras y personal */
+.ocard{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);overflow:hidden}
+.oc-head{display:flex;gap:12px;align-items:flex-start;padding:14px}
+.oc-t{flex:1 1 auto;min-width:0}
+.oc-t h3{margin:0;font-size:16px;font-weight:600;line-height:1.25;overflow-wrap:anywhere}
+.oc-t p{margin:2px 0 0;font-size:12.5px;color:var(--ink-2);font-weight:300}
+.oc-h{flex:0 0 auto;text-align:right;line-height:1.1}
+.oc-h b{display:block;font-family:"IBM Plex Mono",monospace;font-size:20px;font-weight:600;color:var(--accent)}
+.oc-h span{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3)}
+.oc-meta{margin:0;display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.oc-meta > div{background:var(--surface);padding:8px 14px;min-width:0}
+.oc-meta > div:last-child:nth-child(odd){grid-column:1/-1}
+.oc-meta dt{font-size:10px;letter-spacing:.13em;text-transform:uppercase;color:var(--ink-3);font-weight:600}
+.oc-meta dd{margin:2px 0 0;font-size:13.5px;font-weight:500;display:flex;align-items:center;gap:8px;flex-wrap:wrap;overflow-wrap:anywhere}
+a.tel{color:var(--accent);font-size:12.5px;font-weight:600;text-decoration:none;border:1px solid color-mix(in srgb,var(--accent) 40%,transparent);border-radius:999px;padding:0 12px;min-height:32px;display:inline-flex;align-items:center}
+a.tel:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.oc-crew{list-style:none;margin:0;padding:0}
+.oc-crew > li{border-bottom:1px solid var(--line)}
+.oc-crew > li.empty{padding:14px}
+.wrow summary,.oedit summary,.fold summary{list-style:none;cursor:pointer;min-height:48px;display:flex;align-items:center;gap:10px}
+.wrow summary::-webkit-details-marker,.oedit summary::-webkit-details-marker,.fold summary::-webkit-details-marker{display:none}
+.wrow summary{padding:8px 14px}
+.wrow summary:focus-visible,.oedit summary:focus-visible,.fold summary:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
+.wrow summary::after,.oedit summary::after,.fold summary::after{content:"";width:8px;height:8px;border-right:1.5px solid var(--ink-3);border-bottom:1.5px solid var(--ink-3);transform:rotate(45deg);margin:-4px 4px 0 auto;flex:0 0 auto;transition:transform .15s}
+.wrow[open] summary::after,.oedit[open] summary::after,.fold[open] summary::after{transform:rotate(-135deg);margin-top:4px}
+.wrow .wn{flex:1 1 auto;min-width:0}
+.wrow .wn b{display:block;font-weight:500;font-size:14.5px;line-height:1.25;overflow-wrap:anywhere}
+.wrow .wn small{display:block;font-size:11.5px;color:var(--ink-3);font-weight:300;letter-spacing:.03em}
+.wrow .wh{font-family:"IBM Plex Mono",monospace;font-size:13px;font-weight:600;color:var(--ink-2)}
+.wrow[open]{background:var(--surface-2)}
+.wedit{display:flex;flex-direction:column;gap:12px;padding:4px 14px 16px}
+.oedit{border-top:0}
+.oedit summary{padding:4px 14px;font-size:13px;font-weight:500;color:var(--ink-2);letter-spacing:.02em}
+.oedit[open]{background:var(--surface-2);border-top:1px solid var(--line)}
+.fold summary{font-weight:600;font-size:14.5px;margin:-14px;padding:0 14px}
+.fold[open] summary{margin-bottom:10px}
+.fold[open]{padding-bottom:16px}
+
+.kpis.tres{grid-template-columns:repeat(3,1fr)}
+.kpis.tres .kpi.alert{grid-column:auto;order:0}
+.kpis.tres .kpi{padding:12px 10px}
+.kpis.tres .kpi .k{letter-spacing:.08em}
+.oc-acc{display:flex;gap:10px;padding:12px 14px;border-bottom:1px solid var(--line)}
+.oc-acc .btn{flex:1 1 0;min-width:0}
+.oc-acc .btn.primary{flex:1.4 1 0}
+input[type=url]{width:100%;font:inherit;font-size:16px;min-height:46px;padding:10px 12px;border:1px solid var(--line);border-radius:9px;background:var(--ground);color:var(--ink)}
+input[type=url]:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(47,212,196,.14)}
+
+.chips.faltas input:checked + span{background:var(--bad-soft);color:var(--bad);border-color:color-mix(in srgb,var(--bad) 45%,transparent)}
+.oc-meta dd.falta{color:var(--bad)}
+.pick{position:relative;display:block}
+.pick input{position:absolute;inset:0;width:100%;height:100%;margin:0;opacity:0;cursor:pointer}
+.pick span{display:block;position:relative;min-height:48px;padding:9px 12px 9px 46px;border:1px solid var(--line);border-radius:9px;background:var(--ground)}
+.pick span::before{content:"";position:absolute;left:12px;top:50%;width:22px;height:22px;margin-top:-11px;border:1.5px solid var(--line-strong);border-radius:6px}
+.pick input:checked + span{border-color:color-mix(in srgb,var(--accent) 45%,transparent);background:var(--accent-soft)}
+.pick input:checked + span::before{background:var(--accent);border-color:var(--accent);box-shadow:inset 0 0 0 4px var(--accent-soft)}
+.pick input:focus-visible + span{outline:2px solid var(--accent);outline-offset:1px}
+.pick b{display:block;font-weight:500;font-size:14px}
+.pick small{display:block;font-size:11.5px;color:var(--ink-3);font-weight:300}
+.ped-row{display:flex;align-items:center;gap:12px;padding:11px 14px;border-bottom:1px solid var(--line);border-left:3px solid var(--warn)}
+.ped-row.tarde{border-left-color:var(--bad)}
+.ped-row:last-child{border-bottom:0}
+.ped-row .pt{flex:1 1 auto;min-width:0;font-size:13.5px}
+.ped-row .pt b{font-weight:600}
+.ped-row .pt small{display:block;font-size:11.5px;color:var(--ink-2);font-weight:300}
+.ped-row .btn{flex:0 0 auto}
+
+/* informe semanal: solo al imprimir */
+#printHost{display:none}
+@media print{
+  body.imprime-informe .sheet{display:none!important}
+  body.imprime-informe #printHost{display:block!important}
+  @page informe{size:A4 landscape;margin:9mm}
+  .informe{page:informe;color:#111;font:8.5pt/1.35 Poppins,Arial,sans-serif;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .inf-h{display:flex;align-items:center;gap:10px;border-bottom:2px solid #111;padding-bottom:6px;margin-bottom:6px}
+  .inf-h h1{font-size:13pt;margin:0;font-weight:600}
+  .inf-h p{margin:0;color:#444}
+  .inf-q{margin-left:auto!important;text-align:right;font-size:8pt}
+  .inf-k{margin:0 0 6px;color:#333}
+  .informe h2{font-size:10pt;margin:10px 0 4px;font-weight:600}
+  .inf-t{width:100%;border-collapse:collapse}
+  .inf-t th,.inf-t td{border:1px solid #BBB;padding:3px 4px;text-align:left;vertical-align:top}
+  .inf-t th{background:#EEE;font-weight:600;font-size:7.5pt}
+  .inf-t .n{text-align:center;font-family:"IBM Plex Mono",monospace;white-space:nowrap}
+  .inf-t tr{break-inside:avoid}
+  .inf-t tfoot td{font-weight:700;background:#F4F4F4}
+  .inf-p{margin:0;padding-left:16px}
+}
 </style>
 </head>
 <body>
@@ -330,78 +551,278 @@ body.modal{overflow:hidden}
   <header class="topbar">
     <div class="brandrow">
       <img class="logo" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIIAAABOCAYAAADsKc4yAAAACXBIWXMAAAsTAAALEwEAmpwYAAAE9mlUWHRYTUw6Y29tLmFkb2JlLnhtcAAAAAAAPD94cGFja2V0IGJlZ2luPSLvu78iIGlkPSJXNU0wTXBDZWhpSHpyZVN6TlRjemtjOWQiPz4gPHg6eG1wbWV0YSB4bWxuczp4PSJhZG9iZTpuczptZXRhLyIgeDp4bXB0az0iQWRvYmUgWE1QIENvcmUgOS4xLWMwMDMgNzkuOTY5MGE4N2ZjLCAyMDI1LzAzLzA2LTIwOjUwOjE2ICAgICAgICAiPiA8cmRmOlJERiB4bWxuczpyZGY9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkvMDIvMjItcmRmLXN5bnRheC1ucyMiPiA8cmRmOkRlc2NyaXB0aW9uIHJkZjphYm91dD0iIiB4bWxuczp4bXA9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC8iIHhtbG5zOmRjPSJodHRwOi8vcHVybC5vcmcvZGMvZWxlbWVudHMvMS4xLyIgeG1sbnM6cGhvdG9zaG9wPSJodHRwOi8vbnMuYWRvYmUuY29tL3Bob3Rvc2hvcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RFdnQ9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZUV2ZW50IyIgeG1wOkNyZWF0b3JUb29sPSJBZG9iZSBQaG90b3Nob3AgMjYuMTAgKE1hY2ludG9zaCkiIHhtcDpDcmVhdGVEYXRlPSIyMDI1LTA4LTI1VDEyOjI2OjM5KzAyOjAwIiB4bXA6TW9kaWZ5RGF0ZT0iMjAyNS0wOC0yNVQxMjozMDo1OSswMjowMCIgeG1wOk1ldGFkYXRhRGF0ZT0iMjAyNS0wOC0yNVQxMjozMDo1OSswMjowMCIgZGM6Zm9ybWF0PSJpbWFnZS9wbmciIHBob3Rvc2hvcDpDb2xvck1vZGU9IjMiIHhtcE1NOkluc3RhbmNlSUQ9InhtcC5paWQ6MzY4NzVmZmMtMjliOC00ZGZhLTgwMDQtNjdiZGYwY2E4YmVjIiB4bXBNTTpEb2N1bWVu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" alt="Amra Building" width="50" height="30">
-      <span class="chip-demo">Maqueta · datos de ejemplo</span>
+      <span class="chip-demo" id="chipModo">Maqueta · datos de ejemplo</span>
     </div>
     <nav class="tabs" role="tablist" aria-label="Pantallas">
       <button type="button" role="tab" id="t-nuevo" aria-selected="true" aria-controls="s-nuevo" data-go="nuevo">Nuevo albarán</button>
+      <button type="button" role="tab" id="t-obras" aria-selected="false" aria-controls="s-obras" tabindex="-1" data-go="obras">Obras</button>
+      <button type="button" role="tab" id="t-visitas" aria-selected="false" aria-controls="s-visitas" tabindex="-1" data-go="visitas">Visitas</button>
+      <button type="button" role="tab" id="t-semana" aria-selected="false" aria-controls="s-semana" tabindex="-1" data-go="semana">Semana</button>
       <button type="button" role="tab" id="t-control" aria-selected="false" aria-controls="s-control" tabindex="-1" data-go="control">Control<span class="dot" aria-hidden="true"></span></button>
       <button type="button" role="tab" id="t-lista" aria-selected="false" aria-controls="s-lista" tabindex="-1" data-go="lista">Albaranes</button>
-      <button type="button" role="tab" id="t-cierre" aria-selected="false" aria-controls="s-cierre" tabindex="-1" data-go="cierre">Cierre de mes</button>
+      <button type="button" role="tab" id="t-cierre" aria-selected="false" aria-controls="s-cierre" tabindex="-1" data-go="cierre" data-solo="demo">Cierre de mes</button>
       <button type="button" role="tab" id="t-ajustes" aria-selected="false" aria-controls="s-ajustes" tabindex="-1" data-go="ajustes">Ajustes</button>
     </nav>
   </header>
 
   <!-- ===== NUEVO ===== -->
   <section id="s-nuevo" role="tabpanel" aria-labelledby="t-nuevo">
-    <h2 class="screen-title">Parte del día</h2>
-    <p class="screen-sub">Lo que el encargado rellena a pie de obra. Tres toques y la firma del cliente.</p>
+    <h2 class="screen-title" id="titNuevo">Parte del día</h2>
+    <p class="screen-sub" id="subNuevo">Lo que el encargado rellena a pie de obra. Tres toques y la firma del cliente.</p>
     <div class="stack">
-      <div class="talon">
+      <fieldset class="seg" id="segPaso" data-solo="demo">
+        <legend class="sr">Cómo llega el albarán</legend>
+        <label><input type="radio" name="paso" value="papel"><span>Pasar un papel</span></label>
+        <label><input type="radio" name="paso" value="app"><span>Firmar aquí</span></label>
+      </fieldset>
+
+      <div class="vacio card pad" id="nuevoVacio" hidden>
+        <p><b>Empieza por tus obras.</b> Da de alta cada obra con su cliente y la gente que tienes en ella; después aquí pasas los albaranes.</p>
+        <button class="btn primary wide" type="button" data-ir="obras">Ir a Obras</button>
+      </div>
+
+      <div class="stack" id="panelParte">
+        <div class="talon" id="talonApp">
+          <div>
+            <div class="tnum" id="talNum">—</div>
+            <div class="tmeta" id="talWho">Talonario</div>
+          </div>
+          <select id="talSel" aria-label="Talonario del encargado"></select>
+        </div>
+
+        <div id="talonPapel" hidden>
+          <label class="label" for="numPapel">Nº del albarán</label>
+          <input type="text" id="numPapel" inputmode="numeric" autocomplete="off" maxlength="20" placeholder="El número impreso en el talonario">
+        </div>
+
         <div>
-          <div class="tnum" id="talNum">—</div>
-          <div class="tmeta" id="talWho">Talonario</div>
+          <span class="label">1 · Obra</span>
+          <div class="obras" id="obras"></div>
         </div>
-        <select id="talSel" aria-label="Talonario del encargado"></select>
-      </div>
 
-      <div>
-        <span class="label">1 · Obra</span>
-        <div class="obras" id="obras"></div>
-      </div>
+        <div>
+          <label class="label" for="fecha">2 · Día</label>
+          <input type="date" id="fecha">
+        </div>
 
-      <div>
-        <label class="label" for="fecha">2 · Día</label>
-        <input type="date" id="fecha">
-      </div>
+        <div>
+          <span class="label">3 · Cuadrilla y horas</span>
+          <div class="card">
+            <div class="crew" id="crew"></div>
+            <div class="sumrow">
+              <span class="big" id="sumH">0,0</span><span class="muted">horas</span>
+              <span class="muted" style="margin-left:auto" id="sumW">0 trabajadores</span>
+            </div>
+          </div>
+        </div>
 
+        <div>
+          <span class="label" id="paso4">4 · Conforme del cliente</span>
+          <div class="card signbox">
+            <div id="zonaFirma">
+              <div class="padwrap">
+                <canvas id="pad" role="img" aria-label="Recuadro para la firma del cliente"></canvas>
+                <div class="padline"></div>
+                <div class="padhint" id="padhint">Firma aquí con el dedo</div>
+              </div>
+            </div>
+            <fieldset class="seg" id="zonaPapel" hidden>
+              <legend class="label">¿Trae firma y fecha del cliente?</legend>
+              <label><input type="radio" name="firmaPapel" value="si"><span>Sí, completo</span></label>
+              <label><input type="radio" name="firmaPapel" value="no"><span>Falta</span></label>
+            </fieldset>
+            <div id="firmanteBox" style="margin-top:11px">
+              <label class="label" for="firmante">Nombre de quien firma</label>
+              <input type="text" id="firmante" placeholder="Nombre y cargo" autocomplete="off" maxlength="80">
+            </div>
+            <div id="zonaFoto" class="foto-zone" hidden>
+              <span class="label">Foto del papel</span>
+              <img id="fotoPrev" alt="Foto del albarán en papel" hidden>
+              <input type="file" id="fotoIn" accept="image/*" capture="environment" hidden>
+              <div class="btnrow">
+                <button class="btn" id="fotoBtn" type="button">Hacer foto del papel</button>
+                <button class="btn ghost" id="fotoQuitar" type="button" hidden>Quitar foto</button>
+              </div>
+              <p class="hint" id="fotoHint" aria-live="polite">Tu copia si el papel se pierde o alguien discute una hora.</p>
+            </div>
+            <div class="btnrow" style="margin-top:12px">
+              <button class="btn ghost" id="clearPad" type="button">Borrar firma</button>
+              <button class="btn primary" id="emitir" type="button" disabled>Emitir albarán</button>
+            </div>
+            <p class="hint" id="emitirHint" aria-live="polite"></p>
+          </div>
+        </div>
+      </div>
+      <p class="note" data-solo="demo"><b>Lo que cambia:</b> el albarán sale numerado del talonario del encargado, firmado en obra, y le llega al cliente el mismo día. No hay papel que recoger ni horas que teclear otra vez.</p>
+    </div>
+  </section>
+
+  <!-- ===== OBRAS ===== -->
+  <section id="s-obras" role="tabpanel" aria-labelledby="t-obras" hidden>
+    <h2 class="screen-title">Obras y personal</h2>
+    <p class="screen-sub">Cada obra con su cliente, su jefe de obra y la gente que tienes en ella. Toca a una persona para cambiarla de obra o corregir sus datos.</p>
+    <div class="stack">
+      <div class="kpis tres">
+        <div class="kpi"><div class="v" id="koObras">0</div><div class="k">Obras</div></div>
+        <div class="kpi"><div class="v" id="koGente">0</div><div class="k">Personas</div></div>
+        <div class="kpi alert"><div class="v" id="koHoras">0</div><div class="k">Horas semana</div></div>
+      </div>
+      <div class="stack" id="obrasLista"></div>
+
+      <details class="card pad fold" id="altaPersona">
+        <summary>Añadir persona</summary>
+        <label class="label" for="nwNombre">Nombre y apellidos</label>
+        <input type="text" id="nwNombre" autocomplete="off" maxlength="80">
+        <div class="duo" style="margin-top:12px">
+          <div><label class="label" for="nwCat">Categoría</label><select id="nwCat" class="field"></select></div>
+          <div><label class="label" for="nwObra">Obra</label><select id="nwObra" class="field"></select></div>
+        </div>
+        <div class="duo" style="margin-top:12px">
+          <div><label class="label" for="nwDni">DNI / NIE</label><input type="text" id="nwDni" autocomplete="off" maxlength="20" placeholder="Opcional"></div>
+          <div><label class="label" for="nwTel">Teléfono</label><input type="tel" id="nwTel" autocomplete="off" maxlength="20" placeholder="Opcional"></div>
+        </div>
+        <button class="btn primary wide" id="nwAdd" type="button" style="margin-top:12px">Añadir a la obra</button>
+      </details>
+
+      <details class="card pad fold" id="altaObra">
+        <summary>Añadir obra</summary>
+        <label class="label" for="noCod">Código de obra</label>
+        <input type="text" id="noCod" placeholder="Como viene en el albarán" autocomplete="off" maxlength="20">
+        <label class="label" for="noCli" style="margin-top:12px">Cliente</label>
+        <input type="text" id="noCli" placeholder="Empresa para la que se trabaja" autocomplete="off" maxlength="80">
+        <label class="label" for="noDir" style="margin-top:12px">Dirección de la obra</label>
+        <input type="text" id="noDir" placeholder="Calle, número · población" autocomplete="off" maxlength="120">
+        <label class="label" for="noEnc" style="margin-top:12px">Encargado de Amra en la obra</label>
+        <input type="text" id="noEnc" autocomplete="off" maxlength="80">
+        <div class="duo" style="margin-top:12px">
+          <div><label class="label" for="noJefe">Jefe de obra del cliente</label><input type="text" id="noJefe" autocomplete="off" maxlength="80"></div>
+          <div><label class="label" for="noTel">Su teléfono</label><input type="tel" id="noTel" autocomplete="off" maxlength="20"></div>
+        </div>
+        <label class="label" for="noMapa" style="margin-top:12px">Ubicación en Google Maps</label>
+        <input type="url" id="noMapa" autocomplete="off" maxlength="500" placeholder="Pega aquí el enlace de Maps">
+        <p class="hint">En Google Maps: busca la obra, Compartir y Copiar enlace. Si no lo pones, se usa la dirección.</p>
+        <button class="btn primary wide" id="noAdd" type="button" style="margin-top:12px">Añadir obra</button>
+      </details>
+
+      <details class="card pad fold" id="pegar">
+        <summary>Pegar la lista desde Excel</summary>
+        <p class="hint" style="margin-top:0">Copia las filas del Excel de administración y pégalas aquí. Una persona por fila con nombre, categoría, código de obra y DNI, en cualquier orden.</p>
+        <label class="label" for="pegarTxt">Lista</label>
+        <textarea id="pegarTxt" rows="5" placeholder="Ahmed Khan&#9;Oficial 1ª&#9;2415&#9;X1234567L"></textarea>
+        <button class="btn primary wide" id="pegarBtn" type="button" style="margin-top:10px">Añadir a la plantilla</button>
+      </details>
+      <p class="hint" id="obrasHint" aria-live="polite"></p>
+    </div>
+  </section>
+
+  <!-- ===== VISITAS ===== -->
+  <section id="s-visitas" role="tabpanel" aria-labelledby="t-visitas" hidden>
+    <h2 class="screen-title">Visita de obra</h2>
+    <p class="screen-sub">Antes de irte de la obra, dos minutos: quién estaba, cómo va y qué necesita el cliente.</p>
+    <div class="stack">
+      <div class="duo">
+        <div>
+          <label class="label" for="visObra">Obra</label>
+          <select id="visObra" class="field"></select>
+        </div>
+        <div>
+          <label class="label" for="visFecha">Día</label>
+          <input type="date" id="visFecha">
+        </div>
+      </div>
       <div>
-        <span class="label">3 · Cuadrilla y horas</span>
+        <label class="label" for="visCon">Hablé con</label>
+        <input type="text" id="visCon" placeholder="Jefe de obra o encargado" autocomplete="off" maxlength="80">
+      </div>
+      <div>
+        <span class="label">Personal que está en obra</span>
         <div class="card">
-          <div class="crew" id="crew"></div>
-          <div class="sumrow">
-            <span class="big" id="sumH">0,0</span><span class="muted">horas</span>
-            <span class="muted" style="margin-left:auto" id="sumW">0 trabajadores</span>
-          </div>
+          <div class="crew" id="visCrew"></div>
+          <div class="sumrow"><span class="big" id="visN">0</span><span class="muted" id="visDe">presentes</span></div>
         </div>
       </div>
-
+      <fieldset class="seg tres" id="visEstado">
+        <legend class="label">Cómo va la obra</legend>
+        <label class="e-ok"><input type="radio" name="estado" value="ok"><span>Bien</span></label>
+        <label class="e-atencion"><input type="radio" name="estado" value="atencion"><span>Atención</span></label>
+        <label class="e-riesgo"><input type="radio" name="estado" value="riesgo"><span>Riesgo</span></label>
+      </fieldset>
+      <fieldset class="chips" id="visTemas">
+        <legend class="label">Temas que han salido</legend>
+      </fieldset>
+      <fieldset class="chips faltas" id="visFaltas">
+        <legend class="label">Falta en obra (EPIs y material)</legend>
+      </fieldset>
+      <div id="visFaltaBox" hidden>
+        <label class="label" for="visFaltaDet">Detalle de lo que falta</label>
+        <input type="text" id="visFaltaDet" placeholder="Quién, cuánto, talla…" autocomplete="off" maxlength="120">
+      </div>
       <div>
-        <span class="label">4 · Conforme del cliente</span>
-        <div class="card signbox">
-          <div class="padwrap">
-            <canvas id="pad" role="img" aria-label="Recuadro para la firma del cliente"></canvas>
-            <div class="padline"></div>
-            <div class="padhint" id="padhint">Firma aquí con el dedo</div>
-          </div>
-          <div style="margin-top:11px">
-            <label class="label" for="firmante">Nombre de quien firma</label>
-            <input type="text" id="firmante" placeholder="Nombre y cargo" autocomplete="off" maxlength="80">
-          </div>
-          <div class="btnrow" style="margin-top:12px">
-            <button class="btn ghost" id="clearPad" type="button">Borrar firma</button>
-            <button class="btn primary" id="emitir" type="button" disabled>Emitir albarán</button>
-          </div>
-          <p class="hint" id="emitirHint" aria-live="polite"></p>
-        </div>
+        <label class="label" for="visNota">Qué has visto</label>
+        <textarea id="visNota" rows="3" maxlength="600" placeholder="Lo importante, en una o dos frases"></textarea>
       </div>
-      <p class="note"><b>Lo que cambia:</b> el albarán sale numerado del talonario del encargado, firmado en obra, y le llega al cliente el mismo día. No hay papel que recoger ni horas que teclear otra vez.</p>
+      <div>
+        <label class="label" for="visOport">Oportunidad</label>
+        <input type="text" id="visOport" placeholder="Más personal, otra obra, un contacto…" autocomplete="off" maxlength="200">
+      </div>
+      <div>
+        <label class="label" for="visPaso">Próximo paso</label>
+        <input type="text" id="visPaso" placeholder="Lo que te has comprometido a hacer y cuándo" autocomplete="off" maxlength="200">
+      </div>
+      <button class="btn primary wide" id="visGuardar" type="button">Guardar visita</button>
+      <p class="hint" id="visHint" aria-live="polite"></p>
+      <div>
+        <span class="label">Últimas visitas</span>
+        <div class="card" id="visLista"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== SEMANA ===== -->
+  <section id="s-semana" role="tabpanel" aria-labelledby="t-semana" hidden>
+    <h2 class="screen-title">Parte semanal</h2>
+    <p class="screen-sub">Cada trabajador con sus horas por día, obra, cliente y dirección. Sale solo de los albaranes: el viernes se revisa y se envía.</p>
+    <div class="stack">
+      <div class="weeknav">
+        <button type="button" class="navbtn" id="semPrev" aria-label="Semana anterior">‹</button>
+        <div class="wk"><strong id="semTit">Semana</strong><span id="semRango"></span></div>
+        <button type="button" class="navbtn" id="semNext" aria-label="Semana siguiente">›</button>
+      </div>
+      <div>
+        <label class="label" for="semObra">Obras</label>
+        <select id="semObra" class="field"></select>
+      </div>
+      <div class="kpis tres">
+        <div class="kpi"><div class="v" id="swT">0</div><div class="k">Operarios</div></div>
+        <div class="kpi"><div class="v" id="swA">0</div><div class="k">Albaranes</div></div>
+        <div class="kpi alert"><div class="v" id="swH">0</div><div class="k">Horas</div></div>
+      </div>
+      <div class="card" id="semTabla"></div>
+      <div>
+        <span class="label">Estado de cada obra</span>
+        <div class="card" id="semObras"></div>
+      </div>
+      <div id="semMovsBox" hidden>
+        <span class="label">Cambios de personal</span>
+        <div class="card" id="semMovs"></div>
+      </div>
+      <div>
+        <span class="label">Pendiente antes de enviar</span>
+        <div class="card" id="semPend"></div>
+      </div>
+      <div class="btnrow">
+        <button class="btn primary" id="semEnviar" type="button">Enviar a administración</button>
+        <button class="btn" id="semCsv" type="button">Descargar Excel</button>
+        <button class="btn" id="semPdf" type="button">Guardar PDF</button>
+      </div>
+      <p class="hint" id="semHint" aria-live="polite"></p>
     </div>
   </section>
 
   <!-- ===== CONTROL ===== -->
   <section id="s-control" role="tabpanel" aria-labelledby="t-control" hidden>
     <h2 class="screen-title">Lo que se escapa</h2>
-    <p class="screen-sub">Cruce entre las horas que la empresa paga y las que tiene firmadas para facturar. La diferencia es dinero trabajado que nadie cobra.</p>
+    <p class="screen-sub" id="subControl">Cruce entre las horas que la empresa paga y las que tiene firmadas para facturar. La diferencia es dinero trabajado que nadie cobra.</p>
     <div class="stack">
       <div class="alarm">
         <div class="k" id="fugaK">Pagado y no facturado</div>
@@ -409,7 +830,7 @@ body.modal{overflow:hidden}
         <div class="d" id="fugaD">Sin desviaciones.</div>
         <div class="bars">
           <div>
-            <div class="bar-l"><span>Horas pagadas en nómina</span><b id="bPag">0 h</b></div>
+            <div class="bar-l"><span id="lPag">Horas pagadas en nómina</span><b id="bPag">0 h</b></div>
             <div class="track"><div class="fill" id="fPag" style="width:100%"></div></div>
           </div>
           <div>
@@ -420,8 +841,29 @@ body.modal{overflow:hidden}
       </div>
 
       <div>
-        <span class="label">Jornadas pagadas sin albarán</span>
+        <span class="label" id="huecosTit">Jornadas pagadas sin albarán</span>
         <div class="card" id="huecos"></div>
+      </div>
+
+      <div>
+        <span class="label">Pendientes de revisar</span>
+        <div class="card" id="pendientes"></div>
+      </div>
+
+      <div>
+        <span class="label">Por llevar a obra · EPIs y material</span>
+        <div class="card" id="pedidos"></div>
+        <details class="card pad fold" id="altaPedido" style="margin-top:12px">
+          <summary>Anotar algo que falta</summary>
+          <div class="duo">
+            <div><label class="label" for="pdObra">Obra</label><select id="pdObra" class="field"></select></div>
+            <div><label class="label" for="pdQue">Qué falta</label><select id="pdQue" class="field"></select></div>
+          </div>
+          <label class="label" for="pdDet" style="margin-top:12px">Detalle</label>
+          <input type="text" id="pdDet" placeholder="Quién, cuánto, talla…" autocomplete="off" maxlength="120">
+          <button class="btn primary wide" id="pdAdd" type="button" style="margin-top:12px">Apuntar</button>
+          <p class="hint" id="pdHint" aria-live="polite"></p>
+        </details>
       </div>
 
       <div>
@@ -430,16 +872,16 @@ body.modal{overflow:hidden}
         <p class="footnote left">Un número que falta en un talonario es un albarán que se emitió y no llegó, o que se arrancó. Hoy nadie lo ve hasta el cierre.</p>
       </div>
 
-      <p class="note"><b>Esto es lo que no se copia:</b> la pantalla de firmar la hace cualquiera. Saber que un peón cobró ocho horas el martes que nadie firmó, y ponerlo en euros antes de que acabe el mes, exige entender cómo se factura la mano de obra.</p>
+      <p class="note" data-solo="demo"><b>Esto es lo que no se copia:</b> la pantalla de firmar la hace cualquiera. Saber que un peón cobró ocho horas el martes que nadie firmó, y ponerlo en euros antes de que acabe el mes, exige entender cómo se factura la mano de obra.</p>
     </div>
   </section>
 
   <!-- ===== LISTA ===== -->
   <section id="s-lista" role="tabpanel" aria-labelledby="t-lista" hidden>
-    <h2 class="screen-title">Albaranes emitidos</h2>
-    <p class="screen-sub">Todo lo firmado, por talonario y obra. Toca uno para ver el papel.</p>
+    <h2 class="screen-title">Albaranes</h2>
+    <p class="screen-sub">Todo lo registrado. Toca uno para verlo, compartirlo o anularlo.</p>
     <div class="card" id="listaAlb"></div>
-    <p class="footnote">Esta demo guarda los albaranes solo en este navegador y renueva los datos de ejemplo cada mes.</p>
+    <p class="footnote" id="pieLista">Esta demo guarda los albaranes solo en este navegador y renueva los datos de ejemplo cada mes.</p>
   </section>
 
   <!-- ===== CIERRE ===== -->
@@ -447,6 +889,11 @@ body.modal{overflow:hidden}
     <h2 class="screen-title">Cierre de mes</h2>
     <p class="screen-sub">Las horas firmadas de <span id="cierreMes">este mes</span>, ya agrupadas por cliente y obra. Esto es lo que se factura.</p>
     <div class="stack">
+      <div class="weeknav">
+        <button type="button" class="navbtn" id="mesPrev" aria-label="Mes anterior">‹</button>
+        <div class="wk"><strong id="mesTit">Mes</strong><span>Base a facturar</span></div>
+        <button type="button" class="navbtn" id="mesNext" aria-label="Mes siguiente">›</button>
+      </div>
       <div class="kpis">
         <div class="kpi"><div class="v" id="kH">0</div><div class="k">Horas firmadas</div></div>
         <div class="kpi"><div class="v" id="kA">0</div><div class="k">Albaranes</div></div>
@@ -460,27 +907,63 @@ body.modal{overflow:hidden}
   <!-- ===== AJUSTES ===== -->
   <section id="s-ajustes" role="tabpanel" aria-labelledby="t-ajustes" hidden>
     <h2 class="screen-title">Ajustes</h2>
-    <p class="screen-sub">Lo que se personaliza para cada empresa antes de ponerlo en obra.</p>
+    <p class="screen-sub" id="subAjustes">Lo que se personaliza para cada empresa antes de ponerlo en obra.</p>
     <div class="stack">
+      <div class="card pad modo" id="modoBox"></div>
+
+      <div data-solo="real">
+        <label class="label" for="yoName">Tu nombre</label>
+        <input type="text" id="yoName" placeholder="Sale en el parte semanal" autocomplete="name" maxlength="80">
+      </div>
+
+      <div data-solo="real">
+        <span class="label">Administración</span>
+        <div class="card pad">
+          <label class="label" for="admEmail">Correo</label>
+          <input type="email" id="admEmail" placeholder="administracion@…" autocomplete="off" maxlength="120">
+          <label class="label" for="admTel" style="margin-top:12px">WhatsApp</label>
+          <input type="tel" id="admTel" placeholder="600 000 000" autocomplete="off" maxlength="20">
+        </div>
+        <p class="footnote left">Aquí va el parte del viernes. En el móvil se comparte el Excel directamente; en el ordenador se descarga y se abre el correo.</p>
+      </div>
+
+      <fieldset class="seg" data-solo="real" id="talonarioModo">
+        <legend class="label">Talonarios en papel</legend>
+        <label><input type="radio" name="serie" value="obra"><span>Uno por obra</span></label>
+        <label><input type="radio" name="serie" value="unica"><span>Uno para todas</span></label>
+      </fieldset>
+
       <div>
-        <label class="label" for="emisorName">Empresa que emite el albarán</label>
+        <label class="label" for="emisorName">Empresa</label>
         <input type="text" id="emisorName" placeholder="Nombre de la empresa" autocomplete="off" maxlength="80">
       </div>
-      <div>
-        <span class="label">Cliente de cada obra</span>
-        <div class="card" id="clientes"></div>
-        <p class="footnote left">Los códigos y las obras son los que Amra Building publica en su web. El cliente de cada una se escribe aquí.</p>
-      </div>
-      <div>
+
+      <div data-solo="demo">
         <span class="label">Precio por hora y categoría</span>
         <div class="card" id="tarifas"></div>
         <p class="footnote left">Valores de ejemplo para que la demo calcule. En producción salen del contrato de cada cliente.</p>
       </div>
-      <button class="btn wide ghost" id="reset" type="button">Reiniciar la demo</button>
+
+      <div data-solo="real">
+        <span class="label">Copia de seguridad</span>
+        <div class="card pad">
+          <p class="hint" style="margin-top:0">Los datos viven solo en este móvil. Descarga una copia cada viernes y guárdala fuera, en tu correo o en Drive. Las fotos no entran en la copia.</p>
+          <input type="file" id="restaurarIn" accept="application/json,.json" hidden>
+          <div class="btnrow" style="margin-top:10px">
+            <button class="btn" id="copiaBtn" type="button">Descargar copia</button>
+            <button class="btn ghost" id="restaurarBtn" type="button">Restaurar copia</button>
+          </div>
+          <p class="hint" id="copiaHint" aria-live="polite"></p>
+        </div>
+      </div>
+
+      <a class="btn wide linkbtn" href="tarjeta.html">Tu tarjeta de visita</a>
+      <button class="btn wide ghost" id="reset" type="button" data-solo="demo">Reiniciar la demo</button>
+      <button class="btn wide ghost danger" id="borrarReal" type="button" data-solo="real">Borrar todos mis datos de este móvil</button>
     </div>
   </section>
 
-  <p class="footnote">Maqueta de producto desarrollada por ROVIK.IA · Plantilla y clientes son datos de ejemplo</p>
+  <p class="footnote" id="pie">Maqueta de producto desarrollada por ROVIK.IA · Plantilla y clientes son datos de ejemplo</p>
 </div>
 
 <div class="sheet" id="sheet" hidden>
@@ -494,69 +977,102 @@ body.modal{overflow:hidden}
       <button class="btn" id="shareAlb" type="button">Enviar al cliente</button>
       <button class="btn" id="printAlb" type="button">Guardar PDF</button>
     </div>
-    <p class="footnote left">El código de verificación se calcula sobre el contenido del albarán. Si alguien cambia una hora después de firmado, el código deja de coincidir.</p>
+    <button class="btn wide ghost danger" id="anularAlb" type="button" style="margin-top:10px">Anular albarán</button>
+    <p class="footnote left">El código de verificación se calcula sobre el contenido del albarán. Si alguien cambia una hora después, el código deja de coincidir.</p>
   </div>
 </div>
+
+<div id="printHost" aria-hidden="true"></div>
 
 <script>
 "use strict";
 
-var OBRAS = [
-  {cod:"2415", cli:"", dir:"PASEO VALLDAURA · Barcelona"},
-  {cod:"2501", cli:"", dir:"NOU 127 · Vic"},
-  {cod:"2421", cli:"", dir:"JOSEP VENTURA · Tona"}
+/* ---------- modo: tus datos (por defecto) o la demo con datos de ejemplo (?demo) ---------- */
+var DEMO = /[?&]demo\b/.test(location.search);
+var REAL = !DEMO;
+var KEY = REAL ? "rovik.amra.real" : "rovik.albaranes.amra";
+
+var OBRAS_DEMO = [
+  {cod:"2415", cli:"", dir:"PASEO VALLDAURA · Barcelona", enc:"Encargado 1", jefe:"Jordi Sala", tel:""},
+  {cod:"2501", cli:"", dir:"NOU 127 · Vic", enc:"Encargado 2", jefe:"Nuria Prat", tel:""},
+  {cod:"2421", cli:"", dir:"JOSEP VENTURA · Tona", enc:"Encargado 3", jefe:"Albert Puig", tel:""}
 ];
-var TALONARIOS = [
+var PLANTILLA_DEMO = [
+  {id:"w1", n:"A. Khan Mahmood", c:"Oficial 1ª",        obra:"2415", dni:"", tel:""},
+  {id:"w2", n:"J. Moreno Lillo", c:"Oficial 1ª",        obra:"2415", dni:"", tel:""},
+  {id:"w3", n:"S. Ferrer Cano",  c:"Ayudante",          obra:"2415", dni:"", tel:""},
+  {id:"w4", n:"M. Iqbal Rashid", c:"Oficial 2ª",        obra:"2501", dni:"", tel:""},
+  {id:"w5", n:"R. Ali Hussain",  c:"Peón ordinario",    obra:"2501", dni:"", tel:""},
+  {id:"w6", n:"D. Ortega Ruiz",  c:"Peón especialista", obra:"2421", dni:"", tel:""}
+];
+var TALONARIOS = [   // solo en la demo: albaranes firmados en el móvil
   {id:"T-01", enc:"Encargado 1", obra:"2415", desde:120},
   {id:"T-02", enc:"Encargado 2", obra:"2501", desde:143},
   {id:"T-03", enc:"Encargado 3", obra:"2421", desde:88}
 ];
 var CATS = ["Encargado","Oficial 1ª","Oficial 2ª","Ayudante","Peón especialista","Peón ordinario"];
-var PLANTILLA = [
-  {id:"w1", n:"A. Khan Mahmood", c:"Oficial 1ª",        obra:"2415"},
-  {id:"w2", n:"J. Moreno Lillo", c:"Oficial 1ª",        obra:"2415"},
-  {id:"w3", n:"S. Ferrer Cano",  c:"Ayudante",          obra:"2415"},
-  {id:"w4", n:"M. Iqbal Rashid", c:"Oficial 2ª",        obra:"2501"},
-  {id:"w5", n:"R. Ali Hussain",  c:"Peón ordinario",    obra:"2501"},
-  {id:"w6", n:"D. Ortega Ruiz",  c:"Peón especialista", obra:"2421"}
-];
 var TARIFAS_DEF = {"Encargado":32,"Oficial 1ª":28,"Oficial 2ª":26,"Ayudante":23,"Peón especialista":22,"Peón ordinario":20};
 var FIRMANTES = {"T-01":"Jordi Sala · jefe de obra", "T-02":"Nuria Prat · encargada", "T-03":"Albert Puig · jefe de obra"};
+var TEMAS = ["Falta personal","Puntualidad","Rendimiento","Seguridad y EPIs","Queja del cliente","Albaranes atrasados"];
+var ESTADOS = {ok:"Bien", atencion:"Atención", riesgo:"Riesgo"};
+var FALTAS = ["Casco","Botas","Chaleco","Guantes","Gafas","Arnés","Tapones","Mascarilla","Herramienta","Material de obra"];
+var DIAS_CORTOS = ["Lun","Mar","Mié","Jue","Vie","Sáb","Dom"];
+var DIAS_INI = ["L","M","X","J","V","S","D"];
+var DIAS_LARGOS = ["lunes","martes","miércoles","jueves","viernes","sábado","domingo"];
 var SIN_CLIENTE = "Cliente por asignar";
-var KEY = "rovik.albaranes.amra";
+var JORNADA_H = 8;            // jornada que se supone a quien ves en obra sin albarán
 var LOGO_PAPEL = "data:image/png;base64,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";
 var RE_FECHA = /^\d{4}-\d{2}-\d{2}$/;
 var RE_FIRMA = /^data:image\/png;base64,[A-Za-z0-9+/=]+$/;
 var FIRMA_MIN_PX = 40;        // trazo mínimo para dar la firma por buena (un toque suelto no firma)
 var FIRMA_ANCHO_MAX = 600;    // la firma se guarda a este ancho como mucho: pesa pocos KB
+var FOTO_LADO_MAX = 1400;     // la foto del papel se guarda a este lado como mucho
+
+function copia(x){ return JSON.parse(JSON.stringify(x)); }
+var OBRAS = REAL ? [] : copia(OBRAS_DEMO);
+var PLANTILLA = REAL ? [] : copia(PLANTILLA_DEMO);
 
 var state = {
   emisor:"Amra Building",
   tarifas:Object.assign({},TARIFAS_DEF),
-  clientes:{},          // código de obra -> cliente
-  series:{},            // id talonario -> siguiente número
+  series:{},            // id talonario -> siguiente número (demo)
   albaranes:[],
-  jornadas:[],          // lo que la empresa paga: {w, fecha, h}
-  mes:"",               // "AAAA-MM" del mes con el que trabaja la demo
-  generado:"",          // día en que se generaron los datos de muestra
+  jornadas:[],          // demo: lo que la empresa paga {w, fecha, h}
+  visitas:[],
+  pedidos:[],           // EPIs y material que falta en una obra {id, fecha, obra, que, det, hecho}
+  movs:[],              // cambios de obra del personal {fecha, n, de, a}
+  enviadas:{},          // lunes de la semana -> cuándo se envió el parte
+  mes:"",               // "AAAA-MM" del mes con el que trabaja la app
+  generado:"",          // demo: día en que se generaron los datos de muestra
+  inicio:"",            // real: primer día con la app (antes no se reclaman albaranes)
+  yo:"",
+  admin:{email:"", tel:""},
+  serie:"obra",         // talonarios en papel: uno por obra o uno para todas
   talon:"T-01",
+  tipo: REAL ? "papel" : "app",
   obra:null,
   horas:{},
-  firmado:false
+  firmado:false,
+  firmaPapel:"",
+  fotoNueva:null,
+  semana:"",
+  semObra:"",
+  cierreMes:"",
+  visObra:"",
+  visPres:{}
 };
 
 function save(){
-  try{
-    localStorage.setItem(KEY, JSON.stringify({
-      emisor:state.emisor, tarifas:state.tarifas, clientes:state.clientes, series:state.series,
-      albaranes:state.albaranes, jornadas:state.jornadas, mes:state.mes, generado:state.generado
-    }));
-    return true;
-  }catch(e){ return false; }
+  var d = {v:2, emisor:state.emisor, tarifas:state.tarifas, obras:OBRAS, plantilla:PLANTILLA, series:state.series,
+           albaranes:state.albaranes, visitas:state.visitas, pedidos:state.pedidos, movs:state.movs, enviadas:state.enviadas};
+  if(REAL){ d.yo = state.yo; d.admin = state.admin; d.serie = state.serie; d.inicio = state.inicio; }
+  else{ d.jornadas = state.jornadas; d.mes = state.mes; d.generado = state.generado; }
+  try{ localStorage.setItem(KEY, JSON.stringify(d)); return true; }catch(e){ return false; }
 }
 
 /* ---------- lectura segura de lo guardado ---------- */
 function esNum(n){ return typeof n === "number" && isFinite(n); }
+function txt(s, max){ return typeof s === "string" ? s.slice(0, max || 80) : ""; }
 function lineaValida(l){ return !!l && typeof l.n === "string" && typeof l.c === "string" && esNum(l.h) && l.h >= 0 && l.h <= 24; }
 function albaranValido(a){
   return !!a && typeof a === "object" && typeof a.num === "string" && typeof a.tal === "string" && esNum(a.seq) &&
@@ -565,6 +1081,34 @@ function albaranValido(a){
     typeof a.firmante === "string" && typeof a.emitido === "string";
 }
 function jornadaValida(j){ return !!j && typeof j.w === "string" && typeof j.fecha === "string" && RE_FECHA.test(j.fecha) && esNum(j.h); }
+function obraValida(o){ return !!o && typeof o.cod === "string" && o.cod.trim() !== ""; }
+function limpiaObra(o){
+  return {cod:txt(o.cod,20).trim(), cli:txt(o.cli), dir:txt(o.dir,120), enc:txt(o.enc), jefe:txt(o.jefe), tel:txt(o.tel,20),
+          mapa:esMapa(o.mapa) ? o.mapa.trim() : ""};
+}
+function trabajadorValido(w){ return !!w && typeof w.id === "string" && typeof w.n === "string" && w.n.trim() !== ""; }
+function limpiaTrabajador(w){
+  return {id:txt(w.id,40), n:txt(w.n).trim(), c:CATS.indexOf(w.c) >= 0 ? w.c : "Peón ordinario",
+          obra:txt(w.obra,20), dni:txt(w.dni,20), tel:txt(w.tel,20), talla:txt(w.talla,40)};
+}
+function visitaValida(v){
+  return !!v && typeof v.id === "string" && typeof v.fecha === "string" && RE_FECHA.test(v.fecha) &&
+    typeof v.obra === "string" && Array.isArray(v.presentes) && ESTADOS.hasOwnProperty(v.estado);
+}
+function limpiaVisita(v){
+  return {id:txt(v.id,40), fecha:v.fecha, hora:txt(v.hora,5), obra:txt(v.obra,20), con:txt(v.con),
+    presentes:v.presentes.filter(function(n){ return typeof n === "string"; }).map(function(n){ return n.slice(0,80); }),
+    estado:v.estado, temas:Array.isArray(v.temas) ? v.temas.filter(function(t){ return TEMAS.indexOf(t) >= 0; }) : [],
+    nota:txt(v.nota,600), oport:txt(v.oport,200), paso:txt(v.paso,200), creado:txt(v.creado,40),
+    faltas:Array.isArray(v.faltas) ? v.faltas.filter(function(t){ return FALTAS.indexOf(t) >= 0; }) : []};
+}
+function pedidoValido(x){ return !!x && typeof x.id === "string" && typeof x.obra === "string" && FALTAS.indexOf(x.que) >= 0 && typeof x.fecha === "string" && RE_FECHA.test(x.fecha); }
+function limpiaPedido(x){ return {id:txt(x.id,40), fecha:x.fecha, obra:txt(x.obra,20), que:x.que, det:txt(x.det,120), hecho:typeof x.hecho === "string" && RE_FECHA.test(x.hecho) ? x.hecho : ""}; }
+function movValido(m){ return !!m && typeof m.fecha === "string" && RE_FECHA.test(m.fecha) && typeof m.n === "string" && typeof m.de === "string" && typeof m.a === "string"; }
+function sinRepetir(obras){
+  var vistos = {};
+  return obras.filter(function(o){ if(vistos[o.cod]) return false; vistos[o.cod] = true; return true; });
+}
 
 function load(){
   var d;
@@ -574,19 +1118,41 @@ function load(){
   if(d.tarifas && typeof d.tarifas === "object"){
     CATS.forEach(function(c){ if(esNum(d.tarifas[c]) && d.tarifas[c] >= 0) state.tarifas[c] = d.tarifas[c]; });
   }
-  if(d.clientes && typeof d.clientes === "object"){
-    OBRAS.forEach(function(o){ if(typeof d.clientes[o.cod] === "string") state.clientes[o.cod] = d.clientes[o.cod].slice(0,80); });
+  if(Array.isArray(d.obras)) OBRAS = sinRepetir(d.obras.filter(obraValida).map(limpiaObra));
+  else if(d.clientes && typeof d.clientes === "object"){        // versión anterior de la demo: solo el cliente
+    OBRAS.forEach(function(o){ if(typeof d.clientes[o.cod] === "string") o.cli = d.clientes[o.cod].slice(0,80); });
   }
-  aplicaClientes();
+  if(Array.isArray(d.plantilla)) PLANTILLA = d.plantilla.filter(trabajadorValido).map(limpiaTrabajador);
+  if(!REAL && !OBRAS.length) OBRAS = copia(OBRAS_DEMO);
+  if(!REAL && !PLANTILLA.length) PLANTILLA = copia(PLANTILLA_DEMO);
+  if(d.enviadas && typeof d.enviadas === "object"){
+    Object.keys(d.enviadas).forEach(function(k){
+      if(RE_FECHA.test(k) && typeof d.enviadas[k] === "string") state.enviadas[k] = d.enviadas[k].slice(0,40);
+    });
+  }
+  if(REAL){
+    state.yo = txt(d.yo);
+    if(d.admin && typeof d.admin === "object") state.admin = {email:txt(d.admin.email,120), tel:txt(d.admin.tel,20)};
+    if(d.serie === "unica" || d.serie === "obra") state.serie = d.serie;
+    if(typeof d.inicio === "string" && RE_FECHA.test(d.inicio)) state.inicio = d.inicio;
+  }
 
+  if(Array.isArray(d.pedidos)) state.pedidos = d.pedidos.filter(pedidoValido).map(limpiaPedido);
+  if(Array.isArray(d.movs)) state.movs = d.movs.filter(movValido).map(function(m){ return {fecha:m.fecha, n:m.n.slice(0,80), de:m.de.slice(0,20), a:m.a.slice(0,20)}; }).slice(-500);
   var albs = Array.isArray(d.albaranes) ? d.albaranes.filter(albaranValido) : [];
+  albs.forEach(function(a){
+    a.obra = obraDe(a.obra.cod) || limpiaObra(a.obra);   // enlaza con la obra actual: el cliente se ve al día
+    if(typeof a.firma !== "string" || !RE_FIRMA.test(a.firma)) a.firma = "";
+    a.tipo = a.tipo === "papel" ? "papel" : "app";
+    a.foto = a.foto === true; a.sinFirma = a.sinFirma === true; a.anulado = a.anulado === true;
+    if(typeof a.id !== "string" || !a.id) a.id = "x-"+a.num;
+  });
+  var vis = Array.isArray(d.visitas) ? d.visitas.filter(visitaValida).map(limpiaVisita) : [];
+  if(REAL){ state.albaranes = albs; state.visitas = vis; ordena(); return; }
+
   var jors = Array.isArray(d.jornadas) ? d.jornadas.filter(jornadaValida) : [];
   if(!albs.length || !jors.length || typeof d.mes !== "string" || typeof d.generado !== "string") return;
-  albs.forEach(function(a){
-    a.obra = obraDe(a.obra.cod);           // enlaza con la obra actual: el cliente se ve al día
-    if(typeof a.firma !== "string" || !RE_FIRMA.test(a.firma)) a.firma = "";
-  });
-  state.albaranes = albs; state.jornadas = jors; state.mes = d.mes; state.generado = d.generado;
+  state.albaranes = albs; state.jornadas = jors; state.mes = d.mes; state.generado = d.generado; state.visitas = vis;
   TALONARIOS.forEach(function(t){
     var guardada = d.series && esNum(d.series[t.id]) ? d.series[t.id] : t.desde;
     var usada = albs.reduce(function(m,a){ return a.tal === t.id ? Math.max(m, a.seq+1) : m; }, t.desde);
@@ -594,26 +1160,66 @@ function load(){
   });
 }
 
+/* ---------- utilidades ---------- */
 function nf(n,d){ return n.toLocaleString("es-ES",{minimumFractionDigits:d,maximumFractionDigits:d,useGrouping:"always"}); }
+function nh(n){ return n % 1 ? nf(n,1) : nf(n,0); }           // horas: 8 o 7,5
 function eur(n){ return nf(n,2)+" €"; }
 function eur0(n){ return nf(Math.round(n),0)+" €"; }
 function iso(d){ return new Date(d.getTime() - d.getTimezoneOffset()*60000).toISOString().slice(0,10); }
 function hoyISO(){ return iso(new Date()); }
+function aFecha(s){ var p = String(s).split("-"); return new Date(+p[0], +p[1]-1, +p[2]); }
+function sumaDias(s,n){ var d = aFecha(s); d.setDate(d.getDate()+n); return iso(d); }
+function lunesDe(s){ var d = aFecha(s); d.setDate(d.getDate() - (d.getDay()+6)%7); return iso(d); }
+function diasEntre(a,b){ return Math.round((aFecha(b) - aFecha(a)) / 86400000); }
+function diaSemana(s){ return (aFecha(s).getDay()+6)%7; }        // 0 = lunes
+function semanaISO(s){
+  var p = String(s).split("-"), d = new Date(Date.UTC(+p[0], +p[1]-1, +p[2]));
+  d.setUTCDate(d.getUTCDate() - (d.getUTCDay()+6)%7 + 3);          // jueves de esa semana
+  var ene4 = new Date(Date.UTC(d.getUTCFullYear(),0,4));
+  return {n: 1 + Math.round(((d - ene4)/86400000 - 3 + (ene4.getUTCDay()+6)%7)/7), a: d.getUTCFullYear()};
+}
 function fechaCorta(s){ var p = String(s).split("-"); return p.length===3 ? p[2]+"/"+p[1]+"/"+p[0] : s; }
 function diaMes(s){ var p = String(s).split("-"); return p.length===3 ? p[2]+"/"+p[1] : s; }
+var MESES = ["enero","febrero","marzo","abril","mayo","junio","julio","agosto","septiembre","octubre","noviembre","diciembre"];
 function mesNombre(s){
-  var m = ["enero","febrero","marzo","abril","mayo","junio","julio","agosto","septiembre","octubre","noviembre","diciembre"];
-  var p = String(s).split("-"); return p.length>=2 && m[parseInt(p[1],10)-1] ? m[parseInt(p[1],10)-1]+" "+p[0] : "";
+  var p = String(s).split("-"); return p.length>=2 && MESES[parseInt(p[1],10)-1] ? MESES[parseInt(p[1],10)-1]+" "+p[0] : "";
+}
+function rangoTexto(desde, hasta){
+  var a = aFecha(desde), b = aFecha(hasta);
+  var ma = MESES[a.getMonth()].slice(0,3), mb = MESES[b.getMonth()].slice(0,3);
+  return a.getDate()+(ma === mb ? "" : " "+ma)+" – "+b.getDate()+" "+mb+" "+b.getFullYear();
 }
 function esc(s){ return String(s).replace(/[&<>"']/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c];}); }
 function folio(tal,n){ return tal+"·"+String(n).padStart(4,"0"); }
-function obraDe(cod){ for(var i=0;i<OBRAS.length;i++) if(OBRAS[i].cod===cod) return OBRAS[i]; return OBRAS[0]; }
+function nuevoId(p){ return p + Date.now().toString(36) + Math.random().toString(36).slice(2,6); }
+/* cambio de obra: queda apuntado con fecha para el parte semanal */
+function mueve(w, destino){
+  if(w.obra === destino) return;
+  state.movs.push({fecha:hoyISO(), n:w.n, de:w.obra || "", a:destino || ""});
+  if(state.movs.length > 500) state.movs.splice(0, state.movs.length - 500);
+  w.obra = destino;
+}
+function porLlevar(cod){ return state.pedidos.filter(function(x){ return !x.hecho && (!cod || x.obra === cod); }); }
+function obraDe(cod){ for(var i=0;i<OBRAS.length;i++) if(OBRAS[i].cod===cod) return OBRAS[i]; return null; }
 function talDe(id){ for(var i=0;i<TALONARIOS.length;i++) if(TALONARIOS[i].id===id) return TALONARIOS[i]; return TALONARIOS[0]; }
+function trabajadorPorNombre(n){ var k = clave(n); for(var i=0;i<PLANTILLA.length;i++) if(clave(PLANTILLA[i].n)===k) return PLANTILLA[i]; return null; }
+function clave(s){ return String(s).trim().toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g,"").replace(/\s+/g," "); }
 function cliente(o){ return o.cli || SIN_CLIENTE; }
 function clienteHTML(o){ return o.cli ? esc(o.cli) : '<span class="pend">'+SIN_CLIENTE+'</span>'; }
-function aplicaClientes(){ OBRAS.forEach(function(o){ o.cli = state.clientes[o.cod] || ""; }); }
 function horasDe(a){ return a.lineas.reduce(function(s,l){ return s+l.h; },0); }
-function delMes(a){ return a.fecha.slice(0,7) === state.mes; }
+function vivos(){ return state.albaranes.filter(function(a){ return !a.anulado; }); }
+function delMes(a){ return !a.anulado && a.fecha.slice(0,7) === state.cierreMes; }
+function telLimpio(t){ var d = String(t||"").replace(/[^\d+]/g,""); if(/^[6789]\d{8}$/.test(d)) d = "34"+d; return d.replace(/^\+/,""); }
+/* ubicación de la obra: solo enlaces de Google Maps; sin enlace, se busca la dirección escrita */
+function esMapa(u){
+  return typeof u === "string" && u.length <= 500 &&
+    /^https:\/\/(maps\.app\.goo\.gl|goo\.gl\/maps|(www\.)?google\.[a-z]{2,3}(\.[a-z]{2})?\/maps|maps\.google\.[a-z]{2,3}(\.[a-z]{2})?)([\/?#]|$)/i.test(u.trim());
+}
+function enlaceMapa(o){
+  if(o.mapa && esMapa(o.mapa)) return o.mapa;
+  return o.dir ? "https://www.google.com/maps/search/?api=1&query="+encodeURIComponent(o.dir) : "";
+}
+function normNum(s){ var d = String(s).replace(/\D/g,""); return d ? String(parseInt(d,10)) : String(s).trim().toUpperCase(); }
 
 /* código de verificación: determinista sobre el contenido */
 function verifCode(a){
@@ -623,7 +1229,7 @@ function verifCode(a){
   return (h >>> 0).toString(36).toUpperCase().padStart(7,"0").slice(0,7);
 }
 
-/* ---------- datos de muestra del mes ---------- */
+/* ---------- datos de muestra del mes (solo demo) ---------- */
 function esLaborable(d){ var w = d.getDay(); return w >= 1 && w <= 5; }
 function diasLaborables(desde, hasta){
   var out = [], d = new Date(desde);
@@ -641,10 +1247,11 @@ function periodo(){
 }
 function emiteMuestra(t, dd, horas){
   var cuadrilla = PLANTILLA.filter(function(w){ return w.obra === t.obra; });
-  if(!cuadrilla.length) return;
+  var obra = obraDe(t.obra);
+  if(!cuadrilla.length || !obra) return;
   var seq = state.series[t.id]++;
   state.albaranes.push({
-    num:folio(t.id, seq), tal:t.id, seq:seq, fecha:iso(dd), obra:obraDe(t.obra),
+    id:"d-"+t.id+"-"+seq, num:folio(t.id, seq), tal:t.id, seq:seq, tipo:"app", fecha:iso(dd), obra:obra,
     lineas:cuadrilla.map(function(w){ return {n:w.n, c:w.c, h:horas}; }),
     firmante:FIRMANTES[t.id] || "Conforme del cliente", firma:"",
     emitido:new Date(dd.getTime()+17*3600000).toISOString()
@@ -654,6 +1261,23 @@ function ordena(){
   state.albaranes.sort(function(a,b){
     return a.fecha < b.fecha ? 1 : a.fecha > b.fecha ? -1 : (a.emitido < b.emitido ? 1 : a.emitido > b.emitido ? -1 : 0);
   });
+}
+function visitasMuestra(dias){
+  var hoy = hoyISO(), pasados = dias.map(iso).filter(function(f){ return f < hoy; }), n = pasados.length;
+  function de(cod){ return PLANTILLA.filter(function(w){ return w.obra === cod; }).map(function(w){ return w.n; }); }
+  state.visitas = []; state.pedidos = []; state.movs = [];
+  if(n < 9) return;
+  state.pedidos.push({id:"p-demo-1", fecha:pasados[n-2], obra:"2501", que:"Guantes", det:"Dos pares, talla 10", hecho:""},
+                     {id:"p-demo-2", fecha:pasados[n-1], obra:"2415", que:"Arnés", det:"Para el trabajo en la planta 4", hecho:""});
+  state.visitas.push(
+    {id:"v-demo-1", fecha:pasados[n-1], hora:"07:50", obra:"2415", con:"Jordi Sala · jefe de obra", presentes:de("2415"),
+     estado:"ok", temas:[], nota:"Cuadrilla completa. Estructura de la planta 3 al día.", oport:"", paso:"", creado:""},
+    {id:"v-demo-2", fecha:pasados[n-2], hora:"08:15", obra:"2501", con:"Nuria Prat · encargada", presentes:de("2501").slice(0,1),
+     estado:"atencion", temas:["Falta personal"], nota:"A primera hora faltaba un peón y el albarán le pone la jornada entera.",
+     oport:"Piden dos peones más a partir del lunes.", paso:"Confirmar el refuerzo con Amra antes del viernes.", creado:"", faltas:["Guantes"]},
+    {id:"v-demo-3", fecha:pasados[n-8], hora:"09:30", obra:"2421", con:"Albert Puig · jefe de obra", presentes:de("2421"),
+     estado:"ok", temas:[], nota:"Sin incidencias.", oport:"", paso:"", creado:""}
+  );
 }
 function generaMes(p){
   state.albaranes = []; state.jornadas = []; state.series = {};
@@ -672,6 +1296,7 @@ function generaMes(p){
       emiteMuestra(t, dd, (t.id === "T-03" && idx === mediaJornada) ? 4 : 8);
     });
   });
+  visitasMuestra(dias);
   ordena();
   state.mes = p.mes; state.generado = hoy;
   save();
@@ -693,6 +1318,7 @@ function completaHastaHoy(p){
   save();
 }
 function preparaDatos(){
+  if(REAL){ state.mes = hoyISO().slice(0,7); if(!state.inicio) state.inicio = hoyISO(); return; }
   var p = periodo();
   if(!state.albaranes.length || state.mes !== p.mes){ generaMes(p); return; }
   if(state.generado === hoyISO()) return;
@@ -701,7 +1327,7 @@ function preparaDatos(){
 }
 
 /* ---------- navegación ---------- */
-var PANTALLAS = ["nuevo","control","lista","cierre","ajustes"];
+var PANTALLAS = ["nuevo","obras","visitas","semana","control","lista","cierre","ajustes"].filter(function(p){ return !(REAL && p === "cierre"); });
 function ir(to, conFoco){
   PANTALLAS.forEach(function(p){
     var tab = document.getElementById("t-"+p);
@@ -712,10 +1338,14 @@ function ir(to, conFoco){
   var activa = document.getElementById("t-"+to);
   if(activa.scrollIntoView) activa.scrollIntoView({block:"nearest", inline:"nearest"});
   if(conFoco) activa.focus();
-  if(to === "nuevo") pintaCrew();
+  if(to === "nuevo"){ pintaObras(); pintaCrew(); pintaTipo(); }
+  if(to === "obras") pintaObrasPantalla();
+  if(to === "visitas") pintaVisitas();
+  if(to === "semana") pintaSemana();
   if(to === "lista") pintaLista();
   if(to === "cierre") pintaCierre();
   if(to === "control") pintaControl();
+  if(to === "ajustes") pintaAjustes();
   window.scrollTo(0,0);
 }
 Array.prototype.forEach.call(document.querySelectorAll("nav.tabs button"), function(b){
@@ -730,8 +1360,17 @@ Array.prototype.forEach.call(document.querySelectorAll("nav.tabs button"), funct
     e.preventDefault(); ir(PANTALLAS[j], true);
   });
 });
+document.addEventListener("click", function(e){
+  var b = e.target.closest && e.target.closest("[data-ir]");
+  if(b) ir(b.dataset.ir);
+});
+/* las pestañas no caben en el móvil: un difuminado avisa de que hay más a la derecha */
+var navTabs = document.querySelector("nav.tabs");
+function marcaScrollTabs(){ navTabs.classList.toggle("mas", navTabs.scrollLeft < navTabs.scrollWidth - navTabs.clientWidth - 4); }
+navTabs.addEventListener("scroll", marcaScrollTabs, {passive:true});
+window.addEventListener("resize", marcaScrollTabs);
 
-/* ---------- talonario ---------- */
+/* ---------- talonario (demo: firma en el móvil) ---------- */
 function pintaTalon(){
   var sel = document.getElementById("talSel");
   if(!sel.options.length){
@@ -742,7 +1381,7 @@ function pintaTalon(){
     });
     sel.addEventListener("change", function(){
       state.talon = sel.value;
-      state.obra = obraDe(talDe(state.talon).obra);
+      state.obra = obraDe(talDe(state.talon).obra) || state.obra;
       pintaTalon(); pintaObras(); pintaCrew(); refrescaEmitir();
     });
   }
@@ -752,25 +1391,59 @@ function pintaTalon(){
   document.getElementById("talWho").textContent = "Talonario de "+t.enc+" · siguiente número";
 }
 
-/* ---------- obras ---------- */
+/* ---------- papel o firma en el móvil ---------- */
+function pintaTipo(){
+  var papel = state.tipo === "papel";
+  Array.prototype.forEach.call(document.querySelectorAll('input[name="paso"]'), function(r){ r.checked = r.value === state.tipo; });
+  Array.prototype.forEach.call(document.querySelectorAll('input[name="firmaPapel"]'), function(r){ r.checked = r.value === state.firmaPapel; });
+  var hayObras = OBRAS.length > 0;
+  document.getElementById("nuevoVacio").hidden = hayObras;
+  document.getElementById("panelParte").hidden = !hayObras;
+  document.getElementById("talonApp").hidden = papel;
+  document.getElementById("talonPapel").hidden = !papel;
+  document.getElementById("zonaFirma").hidden = papel;
+  document.getElementById("clearPad").hidden = papel;
+  document.getElementById("zonaPapel").hidden = !papel;
+  document.getElementById("zonaFoto").hidden = !papel;
+  document.getElementById("firmanteBox").hidden = papel && state.firmaPapel !== "si";
+  document.getElementById("emitir").textContent = papel ? "Guardar albarán" : "Emitir albarán";
+  document.getElementById("paso4").textContent = papel ? "4 · Firma y foto" : "4 · Conforme del cliente";
+  document.getElementById("titNuevo").textContent = papel ? "Pasar un albarán" : "Parte del día";
+  document.getElementById("subNuevo").textContent = papel
+    ? "La copia en limpio del papel: número, obra, día y horas de cada operario. Dos minutos antes de salir de la obra."
+    : "Lo que el encargado rellena a pie de obra. Tres toques y la firma del cliente.";
+  if(!papel) medirPad();
+  refrescaEmitir();
+}
+Array.prototype.forEach.call(document.querySelectorAll('input[name="paso"]'), function(r){
+  r.addEventListener("change", function(){ if(r.checked){ state.tipo = r.value; pintaTipo(); } });
+});
+Array.prototype.forEach.call(document.querySelectorAll('input[name="firmaPapel"]'), function(r){
+  r.addEventListener("change", function(){ if(r.checked){ state.firmaPapel = r.value; pintaTipo(); } });
+});
+document.getElementById("numPapel").addEventListener("input", refrescaEmitir);
+
+/* ---------- obras (paso 1) ---------- */
 function pintaObras(){
   var host = document.getElementById("obras"); host.innerHTML = "";
+  if(state.obra && !obraDe(state.obra.cod)) state.obra = null;
+  if(!state.obra && OBRAS.length) state.obra = OBRAS[0];
   OBRAS.forEach(function(o){
     var b = document.createElement("button");
     b.type = "button"; b.className = "obra";
     b.setAttribute("aria-pressed", state.obra && state.obra.cod===o.cod ? "true":"false");
     b.innerHTML = '<span class="cod">'+esc(o.cod)+'</span><span class="cli">'+clienteHTML(o)+
-                  '</span><span class="dir">'+esc(o.dir)+'</span>';
+                  '</span><span class="dir">'+esc(o.dir || "Sin dirección")+'</span>';
     b.addEventListener("click", function(){ state.obra = o; pintaObras(); pintaCrew(); refrescaEmitir(); });
     host.appendChild(b);
   });
 }
 
-/* ---------- cuadrilla ---------- */
+/* ---------- cuadrilla (paso 3) ---------- */
 function fechaParte(){ return document.getElementById("fecha").value; }
 function firmadasEl(fecha){
   var out = {};
-  state.albaranes.forEach(function(a){
+  vivos().forEach(function(a){
     if(a.fecha !== fecha) return;
     a.lineas.forEach(function(l){ out[l.n] = (out[l.n] || 0) + l.h; });
   });
@@ -810,6 +1483,13 @@ function pintaCrew(){
     });
     host.appendChild(row);
   }
+  if(!PLANTILLA.length){
+    host.innerHTML = '<div class="empty">Todavía no hay personal. <button type="button" class="linklike" data-ir="obras">Añádelo en Obras</button></div>';
+  }else if(!propios.length && cod){
+    var aviso = document.createElement("p");
+    aviso.className = "empty"; aviso.textContent = "Esta obra no tiene personal asignado. Márcalo abajo o asígnalo en Obras.";
+    host.appendChild(aviso);
+  }
   propios.forEach(fila);
   if(otros.length){
     var sep = document.createElement("div");
@@ -823,20 +1503,23 @@ function pintaCrew(){
 }
 function totalHoras(){ return PLANTILLA.reduce(function(a,w){ return a + (state.horas[w.id]||0); },0); }
 
-/* ---------- fecha del parte: dentro del mes de trabajo y nunca en el futuro ---------- */
-function limitesFecha(){
-  var el = document.getElementById("fecha");
-  var y = parseInt(state.mes.slice(0,4),10), m = parseInt(state.mes.slice(5,7),10);
-  var primero = state.mes+"-01", ultimo = iso(new Date(y, m, 0)), hoy = hoyISO();
-  var max = hoy < ultimo ? hoy : ultimo;
-  var ultimaJornada = state.jornadas.reduce(function(u,j){ return j.fecha > u ? j.fecha : u; }, primero);
-  el.min = primero; el.max = max;
-  if(!el.value || el.value < primero || el.value > max) el.value = hoy <= max ? hoy : ultimaJornada;
+/* ---------- fechas: nunca en el futuro; en la demo, dentro del mes de los datos ---------- */
+function limitesFecha(el){
+  var hoy = hoyISO(), min, max, def;
+  if(REAL){ min = sumaDias(hoy, -62); max = hoy; def = hoy; }
+  else{
+    var y = parseInt(state.mes.slice(0,4),10), m = parseInt(state.mes.slice(5,7),10);
+    var ultimo = iso(new Date(y, m, 0));
+    min = state.mes+"-01"; max = hoy < ultimo ? hoy : ultimo;
+    def = hoy <= max ? hoy : state.jornadas.reduce(function(u,j){ return j.fecha > u ? j.fecha : u; }, min);
+  }
+  el.min = min; el.max = max;
+  if(!el.value || el.value < min || el.value > max) el.value = def;
 }
-function fechaValida(f){ return RE_FECHA.test(f) && f >= document.getElementById("fecha").min && f <= document.getElementById("fecha").max; }
+function fechaValida(f, el){ return RE_FECHA.test(f) && f >= el.min && f <= el.max; }
 document.getElementById("fecha").addEventListener("change", function(){ pintaCrew(); refrescaEmitir(); });
 
-/* ---------- firma ---------- */
+/* ---------- firma (demo) ---------- */
 var pad = document.getElementById("pad"), ctx = pad.getContext("2d"), dibujando = false, ultimo = null, trazo = 0;
 function medirPad(){
   var r = pad.getBoundingClientRect(), dpr = window.devicePixelRatio || 1;
@@ -882,94 +1565,249 @@ function firmaLigera(){
   return c.toDataURL("image/png");
 }
 
-/* ---------- qué falta para emitir ---------- */
+/* ---------- foto del papel: reducida y guardada en el propio móvil ---------- */
+var FOTOS_DB = "rovik-amra-fotos", fotosCache = {}, fotoPrevURL = "";
+function claveFoto(id){ return (REAL ? "real:" : "demo:") + id; }
+function abreDB(){
+  return new Promise(function(ok, ko){
+    if(!window.indexedDB) return ko(new Error("sin almacén"));
+    var r = indexedDB.open(FOTOS_DB, 1);
+    r.onupgradeneeded = function(){ r.result.createObjectStore("fotos"); };
+    r.onsuccess = function(){ ok(r.result); };
+    r.onerror = function(){ ko(r.error); };
+  });
+}
+function guardaFoto(id, blob){
+  fotosCache[id] = blob;
+  return abreDB().then(function(db){
+    return new Promise(function(ok, ko){
+      var tx = db.transaction("fotos", "readwrite");
+      tx.objectStore("fotos").put(blob, claveFoto(id));
+      tx.oncomplete = function(){ db.close(); ok(); };
+      tx.onerror = tx.onabort = function(){ db.close(); ko(tx.error); };
+    });
+  });
+}
+function leeFoto(id){
+  if(fotosCache[id]) return Promise.resolve(fotosCache[id]);
+  return abreDB().then(function(db){
+    return new Promise(function(ok, ko){
+      var r = db.transaction("fotos").objectStore("fotos").get(claveFoto(id));
+      r.onsuccess = function(){ db.close(); if(r.result) fotosCache[id] = r.result; ok(r.result || null); };
+      r.onerror = function(){ db.close(); ko(r.error); };
+    });
+  });
+}
+function borraFotos(prefijo){
+  return abreDB().then(function(db){
+    return new Promise(function(ok){
+      var tx = db.transaction("fotos", "readwrite"), st = tx.objectStore("fotos");
+      st.openCursor().onsuccess = function(e){
+        var c = e.target.result; if(!c) return;
+        if(String(c.key).indexOf(prefijo) === 0) c.delete();
+        c.continue();
+      };
+      tx.oncomplete = tx.onerror = tx.onabort = function(){ db.close(); ok(); };
+    });
+  }).catch(function(){});
+}
+function comprimeFoto(file){
+  return new Promise(function(ok, ko){
+    var url = URL.createObjectURL(file), img = new Image();
+    img.onload = function(){
+      var k = Math.min(1, FOTO_LADO_MAX / Math.max(img.naturalWidth, img.naturalHeight));
+      var c = document.createElement("canvas");
+      c.width = Math.max(1, Math.round(img.naturalWidth*k)); c.height = Math.max(1, Math.round(img.naturalHeight*k));
+      var x = c.getContext("2d");
+      x.fillStyle = "#fff"; x.fillRect(0,0,c.width,c.height);
+      x.drawImage(img, 0, 0, c.width, c.height);
+      URL.revokeObjectURL(url);
+      c.toBlob(function(b){ if(b) ok(b); else ko(new Error("foto")); }, "image/jpeg", 0.72);
+    };
+    img.onerror = function(){ URL.revokeObjectURL(url); ko(new Error("foto")); };
+    img.src = url;
+  });
+}
+function pintaFotoNueva(){
+  var img = document.getElementById("fotoPrev");
+  if(fotoPrevURL){ URL.revokeObjectURL(fotoPrevURL); fotoPrevURL = ""; }
+  if(state.fotoNueva){ fotoPrevURL = URL.createObjectURL(state.fotoNueva); img.src = fotoPrevURL; }
+  img.hidden = !state.fotoNueva;
+  document.getElementById("fotoQuitar").hidden = !state.fotoNueva;
+  document.getElementById("fotoBtn").textContent = state.fotoNueva ? "Repetir foto" : "Hacer foto del papel";
+  var hint = document.getElementById("fotoHint");
+  hint.className = "hint" + (state.fotoNueva ? " ok" : "");
+  hint.textContent = state.fotoNueva ? "Foto lista: se guarda con el albarán." : "Tu copia si el papel se pierde o alguien discute una hora.";
+}
+document.getElementById("fotoBtn").addEventListener("click", function(){ document.getElementById("fotoIn").click(); });
+document.getElementById("fotoIn").addEventListener("change", function(e){
+  var f = e.target.files && e.target.files[0];
+  e.target.value = "";
+  if(!f) return;
+  var hint = document.getElementById("fotoHint");
+  hint.className = "hint"; hint.textContent = "Preparando la foto…";
+  comprimeFoto(f).then(function(b){ state.fotoNueva = b; pintaFotoNueva(); refrescaEmitir(); })
+    .catch(function(){ hint.className = "hint bad"; hint.textContent = "No se ha podido leer la foto. Prueba otra vez."; });
+});
+document.getElementById("fotoQuitar").addEventListener("click", function(){ state.fotoNueva = null; pintaFotoNueva(); refrescaEmitir(); });
+
+/* ---------- qué falta para guardar ---------- */
 document.getElementById("firmante").addEventListener("input", refrescaEmitir);
+function numRepetido(num, cod){
+  var k = normNum(num);
+  return state.albaranes.some(function(a){
+    return a.tipo === "papel" && !a.anulado && normNum(a.num) === k && (state.serie === "unica" || a.obra.cod === cod);
+  });
+}
 function faltaPara(){
-  var faltan = [];
+  var faltan = [], papel = state.tipo === "papel";
+  var num = document.getElementById("numPapel").value.trim(), firmante = document.getElementById("firmante").value.trim();
   if(!state.obra) faltan.push("la obra");
-  if(!fechaValida(fechaParte())) faltan.push("un día de "+mesNombre(state.mes));
+  if(papel){
+    if(!num) faltan.push("el número del albarán");
+    else if(state.obra && numRepetido(num, state.obra.cod)) faltan.push("otro número: el "+num+" ya está pasado"+(state.serie === "unica" ? "" : " en esta obra"));
+  }
+  if(!fechaValida(fechaParte(), document.getElementById("fecha"))) faltan.push(REAL ? "un día de los dos últimos meses" : "un día de "+mesNombre(state.mes));
   if(totalHoras() <= 0) faltan.push("las horas de algún trabajador");
-  if(!state.firmado) faltan.push("la firma del cliente");
-  if(!document.getElementById("firmante").value.trim()) faltan.push("el nombre de quien firma");
+  if(papel){
+    if(!state.firmaPapel) faltan.push("decir si trae firma y fecha del cliente");
+    else if(state.firmaPapel === "si" && !firmante) faltan.push("el nombre de quien firma");
+  }else{
+    if(!state.firmado) faltan.push("la firma del cliente");
+    if(!firmante) faltan.push("el nombre de quien firma");
+  }
   return faltan;
 }
 function refrescaEmitir(){
   var faltan = faltaPara(), hint = document.getElementById("emitirHint");
   document.getElementById("emitir").disabled = faltan.length > 0;
   hint.className = "hint" + (faltan.length ? "" : " ok");
-  hint.textContent = faltan.length
-    ? "Falta "+(faltan.length === 1 ? faltan[0] : faltan.slice(0,-1).join(", ")+" y "+faltan[faltan.length-1])+"."
-    : "Listo para emitir.";
+  if(faltan.length){
+    hint.textContent = "Falta "+(faltan.length === 1 ? faltan[0] : faltan.slice(0,-1).join(", ")+" y "+faltan[faltan.length-1])+".";
+  }else if(state.tipo === "papel"){
+    hint.textContent = state.firmaPapel === "no" ? "Listo. Quedará pendiente de firma en Control."
+      : state.fotoNueva ? "Listo para guardar." : "Listo. Sin foto quedará pendiente en Control.";
+  }else hint.textContent = "Listo para emitir.";
 }
 
-/* ---------- emitir ---------- */
+/* ---------- guardar / emitir ---------- */
 document.getElementById("emitir").addEventListener("click", function(){
   if(faltaPara().length) return;
-  var t = talDe(state.talon);
-  var seq = state.series[t.id] || t.desde;
   var lineas = PLANTILLA.filter(function(w){ return (state.horas[w.id]||0) > 0; })
                         .map(function(w){ return {n:w.n, c:w.c, h:state.horas[w.id]}; });
-  var a = {
-    num: folio(t.id, seq), tal:t.id, seq:seq,
-    fecha: fechaParte(), obra: state.obra, lineas: lineas,
-    firmante: document.getElementById("firmante").value.trim().slice(0,80),
-    firma: firmaLigera(), emitido: new Date().toISOString(), propio:true
-  };
-  state.series[t.id] = seq + 1;
+  var a, foto = null;
+  if(state.tipo === "papel"){
+    var num = document.getElementById("numPapel").value.trim().slice(0,20);
+    var firmado = state.firmaPapel === "si";
+    a = {id:nuevoId("p"), num:num, tal:"papel", seq:parseInt(num.replace(/\D/g,""),10) || 0, tipo:"papel",
+         fecha:fechaParte(), obra:state.obra, lineas:lineas,
+         firmante: firmado ? document.getElementById("firmante").value.trim().slice(0,80) : "",
+         sinFirma:!firmado, firma:"", foto:!!state.fotoNueva, emitido:new Date().toISOString(), propio:true};
+    foto = state.fotoNueva;
+  }else{
+    var t = talDe(state.talon);
+    var seq = state.series[t.id] || t.desde;
+    a = {id:nuevoId("a"), num:folio(t.id, seq), tal:t.id, seq:seq, tipo:"app",
+         fecha:fechaParte(), obra:state.obra, lineas:lineas,
+         firmante:document.getElementById("firmante").value.trim().slice(0,80),
+         firma:firmaLigera(), emitido:new Date().toISOString(), propio:true};
+    state.series[t.id] = seq + 1;
+  }
   state.albaranes.unshift(a);
   ordena();
   var guardado = save();
-  state.horas = {};
-  borraFirma();
+  state.horas = {}; state.firmaPapel = ""; state.fotoNueva = null;
+  borraFirma(); pintaFotoNueva();
   document.getElementById("firmante").value = "";
-  pintaTalon(); pintaCrew(); refrescaEmitir();
+  document.getElementById("numPapel").value = "";
+  pintaTalon(); pintaCrew(); pintaTipo();
+  var hint = document.getElementById("emitirHint");
   if(!guardado){
-    var hint = document.getElementById("emitirHint");
     hint.className = "hint bad";
-    hint.textContent = "Albarán emitido, pero este navegador no ha podido guardarlo. Descárgalo en PDF antes de cerrar.";
+    hint.textContent = "Albarán hecho, pero este móvil no ha podido guardarlo. Descárgalo en PDF antes de cerrar.";
+  }
+  if(foto){
+    guardaFoto(a.id, foto).catch(function(){
+      a.foto = false; save();
+      hint.className = "hint bad";
+      hint.textContent = "El albarán está guardado pero la foto no. Repítela desde la lista de albaranes.";
+    });
   }
   abreAlbaran(a);
 });
 
-/* ---------- papel ---------- */
+/* ---------- el papel en pantalla ---------- */
 function papelHTML(a){
-  var tot = horasDe(a);
+  var tot = horasDe(a), papel = a.tipo === "papel", o = a.obra;
   var filas = a.lineas.map(function(l){
     return '<tr><td>'+esc(l.n)+'<span class="cat">'+esc(l.c)+'</span></td><td class="r">'+nf(l.h,1)+' h</td></tr>';
   }).join("");
   var hora = ""; try{ hora = new Date(a.emitido).toLocaleTimeString("es-ES",{hour:"2-digit",minute:"2-digit"}); }catch(e){}
-  var firmaImg = a.firma && RE_FIRMA.test(a.firma)
-    ? '<img class="sgimg" src="'+a.firma+'" alt="Firma de conformidad de '+esc(a.firmante)+'">'
-    : '<div class="sgimg" style="display:grid;place-items:end start;color:var(--pen);font-size:19px;font-style:italic;opacity:.8">firmado</div>';
-  return '<div class="paper">'+
+  var encargado = o.enc || (papel ? "" : talDe(a.tal).enc);
+  var izq = '<div class="sgcell"><span class="label">Encargado</span>'+
+    '<div class="sgimg sgtxt">'+esc(encargado || "—")+'</div>'+
+    '<div class="sgname">'+(papel ? "Copia del papel nº "+esc(a.num) : "Talonario "+esc(a.tal))+'</div></div>';
+  var der;
+  if(papel){
+    der = a.sinFirma
+      ? '<div class="sgcell"><span class="label">Conforme cliente</span><div class="sgimg sgtxt sinfirma">Falta firma y fecha</div><div class="sgname">Pendiente</div></div>'
+      : '<div class="sgcell"><span class="label">Conforme cliente</span><div class="sgimg sgtxt pen">Firmado en el papel</div><div class="sgname">'+esc(a.firmante)+'</div></div>';
+  }else{
+    var firmaImg = a.firma && RE_FIRMA.test(a.firma)
+      ? '<img class="sgimg" src="'+a.firma+'" alt="Firma de conformidad de '+esc(a.firmante)+'">'
+      : '<div class="sgimg sgtxt pen firmado">firmado</div>';
+    der = '<div class="sgcell"><span class="label">Conforme cliente</span>'+firmaImg+'<div class="sgname">'+esc(a.firmante)+'</div></div>';
+  }
+  var gente = (o.enc || o.jefe)
+    ? '<div class="mcell"><span class="label">Encargado</span><div class="val">'+esc(o.enc || "—")+'</div></div>'+
+      '<div class="mcell"><span class="label">Jefe de obra</span><div class="val">'+esc(o.jefe || "—")+'</div></div>'
+    : '';
+  return '<div class="paper'+(a.anulado ? " anulado" : "")+'">'+
+    (a.anulado ? '<div class="sello-anulado">Anulado</div>' : '')+
     '<div class="paper-head"><div class="row1">'+
-      '<div class="emblock"><img class="lg" src="'+LOGO_PAPEL+'" alt="" width="38" height="38"><div><div class="emisor">'+esc(state.emisor)+'</div><div class="doctype">Albarán de horas · mano de obra</div></div></div>'+
-      '<div class="folio"><div class="num">'+esc(a.num)+'</div><div class="fecha">'+esc(fechaCorta(a.fecha))+'</div></div>'+
+      '<div class="emblock"><img class="lg" src="'+LOGO_PAPEL+'" alt="" width="38" height="38"><div><div class="emisor">'+esc(state.emisor)+'</div><div class="doctype">'+(papel ? "Albarán de horas · copia del papel" : "Albarán de horas · mano de obra")+'</div></div></div>'+
+      '<div class="folio"><div class="num">'+(papel ? "Nº " : "")+esc(a.num)+'</div><div class="fecha">'+esc(fechaCorta(a.fecha))+'</div></div>'+
     '</div></div>'+
     '<div class="paper-meta">'+
-      '<div class="mcell full"><span class="label">Empresa cliente</span><div class="val">'+esc(cliente(a.obra))+'</div></div>'+
-      '<div class="mcell"><span class="label">Código de obra</span><div class="val mono">'+esc(a.obra.cod)+'</div></div>'+
+      '<div class="mcell full"><span class="label">Empresa cliente</span><div class="val">'+esc(cliente(o))+'</div></div>'+
+      '<div class="mcell"><span class="label">Código de obra</span><div class="val mono">'+esc(o.cod)+'</div></div>'+
       '<div class="mcell"><span class="label">Total horas</span><div class="val mono">'+nf(tot,1)+'</div></div>'+
-      '<div class="mcell full"><span class="label">Dirección de la obra</span><div class="val">'+esc(a.obra.dir)+'</div></div>'+
+      '<div class="mcell full"><span class="label">Dirección de la obra</span><div class="val">'+esc(o.dir || "—")+'</div></div>'+
+      gente+
     '</div>'+
-    '<table class="lines"><thead><tr><th>Trabajador</th><th class="r">Horas</th></tr></thead><tbody>'+filas+
+    '<table class="lines"><thead><tr><th>Operario</th><th class="r">Horas</th></tr></thead><tbody>'+filas+
       '</tbody><tfoot><tr><td>Total jornada</td><td class="r">'+nf(tot,1)+' h</td></tr></tfoot></table>'+
-    '<div class="paper-sign">'+
-      '<div class="sgcell"><span class="label">Por la empresa</span>'+
-        '<div class="sgimg" style="display:grid;place-items:end start;color:var(--paper-ink-2);font-size:13px">'+esc(talDe(a.tal).enc)+'</div>'+
-        '<div class="sgname">Talonario '+esc(a.tal)+'</div></div>'+
-      '<div class="sgcell"><span class="label">Conforme cliente</span>'+firmaImg+
-        '<div class="sgname">'+esc(a.firmante)+'</div></div>'+
-    '</div>'+
-    '<div class="stamp"><b>Firmado en obra</b>'+(hora?'<span>· '+esc(hora)+'</span>':'')+
+    '<div class="paper-sign">'+izq+der+'</div>'+
+    '<div class="stamp"><b>'+(papel ? "Pasado del papel" : "Firmado en obra")+'</b>'+(hora?'<span>· '+esc(hora)+'</span>':'')+
       '<span class="vcode">'+verifCode(a)+'</span></div>'+
+    (papel ? '<div class="paper-foto" data-foto="'+esc(a.id)+'">'+(a.foto ? '<p>Cargando la foto…</p>' : '<p>Sin foto del papel</p>')+'</div>' : '')+
   '</div>';
 }
+var fotoVistaURL = "";
+function cargaFoto(a){
+  var host = document.querySelector('#paperHost [data-foto]');
+  if(!host || !a.foto) return;
+  leeFoto(a.id).then(function(b){
+    if(!b || abierto !== a) { if(!b) host.innerHTML = '<p>La foto no está en este móvil</p>'; return; }
+    if(fotoVistaURL) URL.revokeObjectURL(fotoVistaURL);
+    fotoVistaURL = URL.createObjectURL(b);
+    host.innerHTML = '<img src="'+fotoVistaURL+'" alt="Foto del albarán en papel nº '+esc(a.num)+'">';
+  }).catch(function(){ host.innerHTML = '<p>La foto no está en este móvil</p>'; });
+}
 var abierto = null, vueltaFoco = null;
+function pintaAbierto(){
+  var a = abierto;
+  document.getElementById("paperHost").innerHTML = papelHTML(a);
+  document.getElementById("sheetTitle").textContent = a.anulado ? "Albarán anulado" : a.tipo === "papel" ? "Albarán pasado" : "Albarán emitido";
+  document.getElementById("shareAlb").textContent = REAL ? "Compartir" : "Enviar al cliente";
+  document.getElementById("anularAlb").hidden = !!a.anulado;
+  cargaFoto(a);
+}
 function abreAlbaran(a){
   abierto = a;
   vueltaFoco = document.activeElement;
-  document.getElementById("paperHost").innerHTML = papelHTML(a);
+  pintaAbierto();
+  document.body.classList.remove("imprime-informe");
   document.getElementById("sheet").hidden = false;
   document.querySelector(".shell").inert = true;
   document.body.classList.add("modal");
@@ -980,7 +1818,8 @@ function cierraAlbaran(){
   document.getElementById("sheet").hidden = true;
   document.querySelector(".shell").inert = false;
   document.body.classList.remove("modal");
-  var destino = vueltaFoco && document.contains(vueltaFoco) && !vueltaFoco.disabled ? vueltaFoco : document.getElementById("talSel");
+  var destino = vueltaFoco && document.contains(vueltaFoco) && !vueltaFoco.disabled && vueltaFoco.offsetParent ? vueltaFoco : null;
+  if(!destino) destino = document.querySelector('nav.tabs [aria-selected="true"]');
   if(destino && destino.focus) destino.focus();
   abierto = null;
 }
@@ -989,49 +1828,822 @@ document.getElementById("sheet").addEventListener("click", function(e){
   if(e.target === document.getElementById("sheet")) cierraAlbaran();
 });
 document.addEventListener("keydown", function(e){ if(e.key === "Escape") cierraAlbaran(); });
-document.getElementById("printAlb").addEventListener("click", function(){ window.print(); });
+document.getElementById("printAlb").addEventListener("click", function(){
+  document.body.classList.remove("imprime-informe");
+  window.print();
+});
+function textoAlbaran(a){
+  var o = a.obra;
+  return "Albarán "+(a.tipo === "papel" ? "nº " : "")+a.num+" · "+state.emisor+"\n"+
+    "Obra "+o.cod+" · "+(o.dir || "")+"\n"+
+    "Cliente: "+cliente(o)+"\n"+
+    (o.enc ? "Encargado: "+o.enc+"\n" : "")+
+    fechaCorta(a.fecha)+" · "+nf(horasDe(a),1)+" h · "+a.lineas.length+(a.lineas.length===1?" operario":" operarios")+"\n"+
+    a.lineas.map(function(l){ return "  "+l.n+" ("+l.c+"): "+nf(l.h,1)+" h"; }).join("\n")+"\n"+
+    (a.tipo === "papel" && a.sinFirma ? "SIN FIRMA DEL CLIENTE\n" : "Conforme: "+a.firmante+"\n")+
+    (a.anulado ? "ANULADO\n" : "")+
+    "Código de verificación: "+verifCode(a);
+}
 document.getElementById("shareAlb").addEventListener("click", function(){
   if(!abierto) return;
-  var a = abierto;
-  var texto = "Albarán "+a.num+" · "+state.emisor+"\n"+
-    "Obra "+a.obra.cod+" · "+a.obra.dir+"\n"+
-    "Cliente: "+cliente(a.obra)+"\n"+
-    fechaCorta(a.fecha)+" · "+nf(horasDe(a),1)+" h · "+a.lineas.length+(a.lineas.length===1?" trabajador":" trabajadores")+"\n"+
-    "Conforme: "+a.firmante+"\n"+
-    "Código de verificación: "+verifCode(a);
-  if(navigator.share){
-    navigator.share({title:"Albarán "+a.num, text:texto}).catch(function(){});
-  }else{
-    window.open("https://wa.me/?text="+encodeURIComponent(texto), "_blank", "noopener");
+  var a = abierto, texto = textoAlbaran(a), datos = {title:"Albarán "+a.num, text:texto};
+  var b = a.foto ? fotosCache[a.id] : null;           // ya cargada al abrir: se comparte sin esperar
+  if(b){
+    try{
+      var f = new File([b], "albaran-"+String(a.num).replace(/[^\w-]/g,"")+".jpg", {type:"image/jpeg"});
+      if(navigator.canShare && navigator.canShare({files:[f]})) datos.files = [f];
+    }catch(e){}
   }
+  if(navigator.share){
+    navigator.share(datos).catch(function(){});
+  }else{
+    window.open("https://wa.me/"+telLimpio(state.admin.tel)+"?text="+encodeURIComponent(texto), "_blank", "noopener");
+  }
+});
+document.getElementById("anularAlb").addEventListener("click", function(){
+  var a = abierto;
+  if(!a || a.anulado) return;
+  if(!window.confirm("¿Anular el albarán "+a.num+"? Se queda en la lista marcado como anulado y deja de contar horas.")) return;
+  a.anulado = true; a.anuladoEn = new Date().toISOString();
+  save();
+  pintaAbierto(); pintaCrew(); pintaLista(); pintaControl();
+  document.getElementById("closeSheet").focus();
 });
 
 /* ---------- lista ---------- */
+function estadoAlbaran(a){
+  if(a.anulado) return '<span class="pill bad">Anulado</span>';
+  if(a.tipo === "papel" && a.sinFirma) return '<span class="pill bad">Sin firma</span>';
+  if(a.tipo === "papel" && !a.foto) return '<span class="pill warn">Sin foto</span>';
+  return '<span class="pill ok">Firmado</span>';
+}
 function pintaLista(){
   var host = document.getElementById("listaAlb");
-  if(!state.albaranes.length){ host.innerHTML = '<p class="empty">Todavía no hay albaranes.</p>'; return; }
+  if(!state.albaranes.length){
+    host.innerHTML = '<p class="empty">Todavía no hay albaranes. Se pasan desde <button type="button" class="linklike" data-ir="nuevo">Nuevo albarán</button>.</p>';
+    return;
+  }
   host.innerHTML = "";
   state.albaranes.forEach(function(a){
     var tot = horasDe(a);
     var b = document.createElement("button");
-    b.type = "button"; b.className = "alb";
-    b.innerHTML = '<span class="top"><span class="n">'+esc(a.num)+'</span><span class="c">'+clienteHTML(a.obra)+
-      '</span><span class="pill ok">Firmado</span></span><span class="h">'+nf(tot,1)+' h</span>'+
+    b.type = "button"; b.className = "alb" + (a.anulado ? " off" : "");
+    b.innerHTML = '<span class="top"><span class="n">'+(a.tipo === "papel" ? "Nº " : "")+esc(a.num)+'</span><span class="c">'+clienteHTML(a.obra)+
+      '</span>'+estadoAlbaran(a)+'</span><span class="h">'+nf(tot,1)+' h</span>'+
       '<span class="sub">'+esc(a.obra.cod)+' · '+esc(fechaCorta(a.fecha))+' · '+a.lineas.length+
-      (a.lineas.length===1?" trabajador":" trabajadores")+'</span>';
+      (a.lineas.length===1?" operario":" operarios")+'</span>';
     b.addEventListener("click", function(){ abreAlbaran(a); });
     host.appendChild(b);
   });
 }
 
+/* ---------- obras y personal ---------- */
+function horasSemanaPorObra(){
+  var lun = lunesDe(hoyISO()), dom = sumaDias(lun, 6), out = {};
+  vivos().forEach(function(a){
+    if(a.fecha < lun || a.fecha > dom) return;
+    var o = out[a.obra.cod] || (out[a.obra.cod] = {t:0, w:{}});
+    a.lineas.forEach(function(l){ o.t += l.h; o.w[l.n] = (o.w[l.n] || 0) + l.h; });
+  });
+  return out;
+}
+function ultimaVisita(cod, hasta){
+  var u = null;
+  state.visitas.forEach(function(v){
+    if(v.obra !== cod || (hasta && v.fecha > hasta)) return;
+    if(!u || v.fecha > u.fecha || (v.fecha === u.fecha && v.hora > u.hora)) u = v;
+  });
+  return u;
+}
+function opcionesObra(sel, valor, conNinguna){
+  sel.innerHTML = (conNinguna ? '<option value="">Sin obra</option>' : '') + OBRAS.map(function(o){
+    return '<option value="'+esc(o.cod)+'">'+esc(o.cod)+(o.cli ? ' · '+esc(o.cli) : '')+'</option>';
+  }).join("");
+  sel.value = valor || "";
+  if(sel.selectedIndex < 0 && sel.options.length) sel.selectedIndex = 0;
+}
+function opcionesCat(sel, valor){
+  sel.innerHTML = CATS.map(function(c){ return '<option>'+esc(c)+'</option>'; }).join("");
+  sel.value = valor;
+}
+function campo(id, etiqueta, valor, tipo, extra){
+  return '<div><label class="label" for="'+id+'">'+etiqueta+'</label><input type="'+(tipo||"text")+'" id="'+id+'" value="'+esc(valor||"")+'" autocomplete="off" maxlength="'+((extra && extra.max) || 80)+'"'+
+    (extra && extra.ph ? ' placeholder="'+esc(extra.ph)+'"' : '')+'></div>';
+}
+function avisoObras(texto, bien){
+  var h = document.getElementById("obrasHint"); h.className = "hint" + (bien ? " ok" : " bad"); h.textContent = texto;
+}
+function filaTrabajador(w, horas, i){
+  var li = document.createElement("li");
+  var base = "w"+i;
+  li.innerHTML = '<details class="wrow"><summary><span class="wn"><b></b><small></small></span><span class="wh"></span></summary>'+
+    '<div class="wedit">'+
+      campo(base+"n", "Nombre y apellidos", w.n)+
+      '<div class="duo"><div><label class="label" for="'+base+'c">Categoría</label><select id="'+base+'c" class="field"></select></div>'+
+      '<div><label class="label" for="'+base+'o">Obra</label><select id="'+base+'o" class="field"></select></div></div>'+
+      '<div class="duo">'+campo(base+"d", "DNI / NIE", w.dni, "text", {max:20})+campo(base+"t", "Teléfono", w.tel, "tel", {max:20})+'</div>'+
+      campo(base+"z", "Tallas de EPIs", w.talla, "text", {max:40, ph:"Botas 43 · guantes 10 · chaleco L"})+
+      '<div class="btnrow">'+(w.tel ? '<a class="btn" href="tel:+'+esc(telLimpio(w.tel))+'">Llamar</a>' : '')+
+      '<button type="button" class="btn ghost danger" data-quita>Quitar de la plantilla</button></div>'+
+    '</div></details>';
+  function resumen(){
+    li.querySelector(".wn b").textContent = w.n;
+    li.querySelector(".wn small").textContent = w.c + (w.dni ? " · "+w.dni : "");
+    li.querySelector(".wh").textContent = horas ? nh(horas)+" h" : "";
+    li.querySelector("summary").setAttribute("aria-label", w.n+", "+w.c+(horas ? ", "+nh(horas)+" horas esta semana" : ""));
+  }
+  resumen();
+  opcionesCat(li.querySelector("#"+base+"c"), w.c);
+  opcionesObra(li.querySelector("#"+base+"o"), w.obra, true);
+  li.querySelector("#"+base+"n").addEventListener("change", function(e){
+    var v = e.target.value.trim().slice(0,80), otro = trabajadorPorNombre(v);
+    if(!v || (otro && otro !== w)){ e.target.value = w.n; avisoObras(v ? "Ya hay alguien que se llama "+v+"." : "El nombre no puede quedar vacío."); return; }
+    w.n = v; save(); resumen();
+  });
+  li.querySelector("#"+base+"c").addEventListener("change", function(e){ w.c = e.target.value; save(); resumen(); });
+  li.querySelector("#"+base+"d").addEventListener("change", function(e){ w.dni = e.target.value.trim().toUpperCase().slice(0,20); e.target.value = w.dni; save(); resumen(); });
+  li.querySelector("#"+base+"t").addEventListener("change", function(e){ w.tel = e.target.value.trim().slice(0,20); save(); });
+  li.querySelector("#"+base+"z").addEventListener("change", function(e){ w.talla = e.target.value.trim().slice(0,40); e.target.value = w.talla; save(); });
+  li.querySelector("#"+base+"o").addEventListener("change", function(e){
+    mueve(w, e.target.value); save();
+    avisoObras(w.n+(w.obra ? " pasa a la obra "+w.obra+"." : " queda sin obra."), true);
+    pintaObrasPantalla();
+  });
+  li.querySelector("[data-quita]").addEventListener("click", function(){
+    if(!window.confirm("¿Quitar a "+w.n+" de la plantilla? Sus albaranes se conservan.")) return;
+    PLANTILLA.splice(PLANTILLA.indexOf(w), 1); delete state.horas[w.id]; save();
+    avisoObras(w.n+" ya no está en la plantilla.", true);
+    pintaObrasPantalla();
+  });
+  return li;
+}
+function tarjetaObra(o, sem, idx){
+  var art = document.createElement("article");
+  art.className = "ocard";
+  var gente = PLANTILLA.filter(function(w){ return o ? w.obra === o.cod : !obraDe(w.obra); });
+  var s = (o && sem[o.cod]) || {t:0, w:{}};
+  if(!o){
+    art.innerHTML = '<div class="oc-head"><span class="cod">—</span><div class="oc-t"><h3>Sin obra asignada</h3><p>Asigna a cada uno la obra en la que trabaja.</p></div></div><ul class="oc-crew"></ul>';
+  }else{
+    var v = ultimaVisita(o.cod);
+    var base = "o"+idx;
+    art.innerHTML =
+      '<div class="oc-head"><span class="cod">'+esc(o.cod)+'</span><div class="oc-t"><h3></h3><p></p></div>'+
+        '<div class="oc-h"><b>'+nh(s.t)+'</b><span>h semana</span></div></div>'+
+      '<dl class="oc-meta"></dl>'+
+      '<div class="oc-acc"></div>'+
+      '<ul class="oc-crew"></ul>'+
+      '<details class="oedit traer"><summary>Traer personal de otra obra<span class="sr"> a la '+esc(o.cod)+'</span></summary><div class="wedit"></div></details>'+
+      '<details class="oedit"><summary>Datos de la obra<span class="sr"> '+esc(o.cod)+'</span></summary><div class="wedit">'+
+        campo(base+"k", "Código de obra", o.cod, "text", {max:20})+
+        campo(base+"c", "Cliente de la obra "+esc(o.cod), o.cli, "text", {ph:SIN_CLIENTE})+
+        campo(base+"d", "Dirección", o.dir, "text", {max:120, ph:"Calle, número · población"})+
+        campo(base+"e", "Encargado de Amra", o.enc)+
+        '<div class="duo">'+campo(base+"j", "Jefe de obra del cliente", o.jefe)+campo(base+"t", "Su teléfono", o.tel, "tel", {max:20})+'</div>'+
+        campo(base+"m", "Ubicación en Google Maps", o.mapa, "url", {max:500, ph:"Pega aquí el enlace de Maps"})+
+        '<p class="hint" style="margin-top:-6px">En Google Maps: busca la obra, Compartir y Copiar enlace. Sin enlace, «Cómo llegar» busca la dirección.</p>'+
+        '<button type="button" class="btn ghost danger" data-quita>Quitar la obra</button>'+
+      '</div></details>';
+    var pinta = function(){
+      art.querySelector(".oc-t h3").innerHTML = clienteHTML(o);
+      art.querySelector(".oc-t p").textContent = o.dir || "Sin dirección";
+      art.querySelector(".oc-head .cod").textContent = o.cod;
+      art.querySelector(".oc-meta").innerHTML =
+        '<div><dt>Encargado</dt><dd>'+esc(o.enc || "—")+'</dd></div>'+
+        '<div><dt>Jefe de obra</dt><dd>'+esc(o.jefe || "—")+'</dd></div>'+
+        '<div><dt>Última visita</dt><dd>'+(v ? esc(diaMes(v.fecha))+' <span class="pill '+(v.estado === "ok" ? "ok" : v.estado === "atencion" ? "warn" : "bad")+'">'+ESTADOS[v.estado]+'</span>' : 'Ninguna')+'</dd></div>'+
+        (porLlevar(o.cod).length ? '<div><dt>Por llevar</dt><dd class="falta">'+esc(porLlevar(o.cod).map(function(x){ return x.que; }).join(", "))+'</dd></div>' : '');
+      var mapa = enlaceMapa(o);
+      art.querySelector(".oc-acc").innerHTML =
+        (mapa ? '<a class="btn primary" href="'+esc(mapa)+'" target="_blank" rel="noopener">Cómo llegar<span class="sr"> a la obra '+esc(o.cod)+'</span></a>' : '')+
+        (o.tel ? '<a class="btn" href="tel:+'+esc(telLimpio(o.tel))+'">Llamar'+(o.jefe ? ' a '+esc(o.jefe.split(" ")[0]) : '')+'</a>' : '');
+      art.querySelector(".oc-acc").hidden = !mapa && !o.tel;
+    };
+    pinta();
+    var enlaza = function(suf, prop, max, mayus){
+      art.querySelector("#"+base+suf).addEventListener("change", function(e){
+        var val = e.target.value.trim().slice(0, max || 80);
+        if(mayus) val = val.toUpperCase();
+        e.target.value = val; o[prop] = val; save(); pinta();
+      });
+    };
+    enlaza("c","cli"); enlaza("d","dir",120); enlaza("e","enc"); enlaza("j","jefe"); enlaza("t","tel",20);
+    art.querySelector("#"+base+"m").addEventListener("change", function(e){
+      var val = e.target.value.trim();
+      if(val && !esMapa(val)){ e.target.value = o.mapa; avisoObras("Eso no es un enlace de Google Maps. En Maps: Compartir y Copiar enlace."); return; }
+      o.mapa = val; save(); pinta();
+      avisoObras(val ? "Ubicación guardada para la obra "+o.cod+"." : "Sin enlace: «Cómo llegar» buscará la dirección.", true);
+    });
+    art.querySelector("#"+base+"k").addEventListener("change", function(e){
+      var nuevo = e.target.value.trim().slice(0,20), viejo = o.cod;
+      if(!nuevo || (nuevo !== viejo && obraDe(nuevo))){ e.target.value = viejo; avisoObras(nuevo ? "Ya hay una obra "+nuevo+"." : "El código no puede quedar vacío."); return; }
+      o.cod = nuevo;
+      PLANTILLA.forEach(function(w){ if(w.obra === viejo) w.obra = nuevo; });
+      state.visitas.forEach(function(x){ if(x.obra === viejo) x.obra = nuevo; });
+      save(); pinta();
+    });
+    art.querySelector("[data-quita]").addEventListener("click", function(){
+      if(!window.confirm("¿Quitar la obra "+o.cod+"? Su gente queda sin obra y los albaranes se conservan.")) return;
+      OBRAS.splice(OBRAS.indexOf(o), 1);
+      PLANTILLA.forEach(function(w){ if(w.obra === o.cod) w.obra = ""; });
+      if(state.obra === o) state.obra = OBRAS[0] || null;
+      save(); avisoObras("Obra "+o.cod+" quitada.", true); pintaObrasPantalla();
+    });
+  }
+  if(o) pintaTraer(art, o);
+  var ul = art.querySelector(".oc-crew");
+  if(!gente.length) ul.innerHTML = '<li class="empty">Sin personal asignado.</li>';
+  gente.forEach(function(w){ ul.appendChild(filaTrabajador(w, s.w[w.n] || 0, PLANTILLA.indexOf(w))); });
+  return art;
+}
+function pintaTraer(art, o){
+  var det = art.querySelector(".traer"), host = det.querySelector(".wedit");
+  var fuera = PLANTILLA.filter(function(w){ return w.obra !== o.cod; });
+  det.hidden = !fuera.length;
+  if(!fuera.length) return;
+  host.innerHTML = '<p class="hint" style="margin:0">Marca a quién pasas a esta obra. El cambio queda apuntado con la fecha de hoy.</p>'+
+    fuera.map(function(w){
+      var de = obraDe(w.obra);
+      return '<label class="pick"><input type="checkbox" value="'+esc(w.id)+'"><span><b>'+esc(w.n)+'</b><small>'+esc(w.c)+' · '+
+        (de ? 'ahora en '+esc(de.cod)+(de.cli ? ' · '+esc(de.cli) : '') : 'sin obra')+'</small></span></label>';
+    }).join("")+
+    '<button type="button" class="btn primary" data-traer>Pasar a la obra '+esc(o.cod)+'</button>';
+  host.querySelector("[data-traer]").addEventListener("click", function(){
+    var ids = Array.prototype.map.call(host.querySelectorAll("input:checked"), function(x){ return x.value; });
+    if(!ids.length){ avisoObras("Marca a quién quieres pasar a la obra "+o.cod+"."); return; }
+    var nombres = [];
+    PLANTILLA.forEach(function(w){ if(ids.indexOf(w.id) >= 0){ mueve(w, o.cod); nombres.push(w.n); } });
+    save(); pintaObrasPantalla();
+    avisoObras("Pasan a la obra "+o.cod+": "+nombres.join(", ")+".", true);
+  });
+}
+function pintaObrasPantalla(){
+  var sem = horasSemanaPorObra(), host = document.getElementById("obrasLista");
+  var total = Object.keys(sem).reduce(function(t,k){ return t + sem[k].t; }, 0);
+  document.getElementById("koObras").textContent = OBRAS.length;
+  document.getElementById("koGente").textContent = PLANTILLA.length;
+  document.getElementById("koHoras").textContent = nh(total);
+  host.innerHTML = "";
+  if(!OBRAS.length){
+    host.innerHTML = '<div class="vacio card pad"><p><b>Aún no tienes obras.</b> Da de alta cada una con su código, cliente, dirección, encargado y jefe de obra. Después añade a su gente.</p></div>';
+    document.getElementById("altaObra").open = true;
+  }
+  OBRAS.forEach(function(o, i){ host.appendChild(tarjetaObra(o, sem, i)); });
+  if(PLANTILLA.some(function(w){ return !obraDe(w.obra); })) host.appendChild(tarjetaObra(null, sem));
+  var nwObra = document.getElementById("nwObra"), previa = nwObra.value;
+  opcionesObra(nwObra, previa || (OBRAS[0] && OBRAS[0].cod), true);
+  var nwCat = document.getElementById("nwCat");
+  if(!nwCat.options.length) opcionesCat(nwCat, "Peón ordinario");
+}
+document.getElementById("noAdd").addEventListener("click", function(){
+  var v = function(id, max){ return document.getElementById(id).value.trim().slice(0, max || 80); };
+  var cod = v("noCod", 20);
+  if(!cod){ avisoObras("Pon el código de la obra, tal y como viene en el albarán."); document.getElementById("noCod").focus(); return; }
+  if(obraDe(cod)){ avisoObras("La obra "+cod+" ya existe."); return; }
+  var mapa = v("noMapa", 500);
+  if(mapa && !esMapa(mapa)){ avisoObras("Eso no es un enlace de Google Maps. En Maps: Compartir y Copiar enlace."); document.getElementById("noMapa").focus(); return; }
+  var o = {cod:cod, cli:v("noCli"), dir:v("noDir",120), enc:v("noEnc"), jefe:v("noJefe"), tel:v("noTel",20), mapa:mapa};
+  OBRAS.push(o);
+  if(!state.obra) state.obra = o;
+  save();
+  ["noCod","noCli","noDir","noEnc","noJefe","noTel","noMapa"].forEach(function(id){ document.getElementById(id).value = ""; });
+  document.getElementById("altaObra").open = false;
+  pintaObrasPantalla();
+  document.getElementById("nwObra").value = cod;
+  avisoObras("Obra "+cod+" añadida. Ahora añade a su gente.", true);
+  document.getElementById("altaPersona").open = true;
+});
+function anadeTrabajador(w){
+  if(!w.n) return "vacio";
+  if(trabajadorPorNombre(w.n)) return "repetido";
+  PLANTILLA.push({id:nuevoId("w"), n:w.n.slice(0,80), c:CATS.indexOf(w.c) >= 0 ? w.c : "Peón ordinario",
+                  obra:w.obra || "", dni:(w.dni||"").toUpperCase().slice(0,20), tel:(w.tel||"").slice(0,20), talla:""});
+  return "ok";
+}
+document.getElementById("nwAdd").addEventListener("click", function(){
+  var nombre = document.getElementById("nwNombre").value.trim();
+  var r = anadeTrabajador({n:nombre, c:document.getElementById("nwCat").value, obra:document.getElementById("nwObra").value,
+                           dni:document.getElementById("nwDni").value.trim(), tel:document.getElementById("nwTel").value.trim()});
+  if(r === "vacio"){ avisoObras("Escribe el nombre."); document.getElementById("nwNombre").focus(); return; }
+  if(r === "repetido"){ avisoObras(nombre+" ya está en la plantilla."); return; }
+  save();
+  ["nwNombre","nwDni","nwTel"].forEach(function(id){ document.getElementById(id).value = ""; });
+  pintaObrasPantalla();
+  var obra = document.getElementById("nwObra").value;
+  avisoObras(nombre+" añadido"+(obra ? " a la obra "+obra : " sin obra")+".", true);
+  document.getElementById("nwNombre").focus();
+});
+/* pegar filas de Excel: cada celda se reconoce por su forma, en cualquier orden */
+function categoriaDe(s){
+  var k = clave(s).replace(/[ªº.]/g,"");
+  if(/^encargad/.test(k)) return "Encargado";
+  if(/oficial\s*(1|primera)/.test(k) || /^of\s*1/.test(k)) return "Oficial 1ª";
+  if(/oficial\s*(2|segunda)/.test(k) || /^of\s*2/.test(k)) return "Oficial 2ª";
+  if(/^oficial/.test(k)) return "Oficial 1ª";
+  if(/ayudante/.test(k)) return "Ayudante";
+  if(/especialista/.test(k)) return "Peón especialista";
+  if(/^peon/.test(k)) return "Peón ordinario";
+  return "";
+}
+function leeFila(linea){
+  var celdas = linea.split(linea.indexOf("\t") >= 0 ? "\t" : /[;,]/).map(function(c){ return c.trim(); }).filter(Boolean);
+  var w = {n:"", c:"", obra:"", dni:"", tel:""};
+  celdas.forEach(function(c){
+    var compacto = c.replace(/[\s.-]/g,"");
+    if(!w.dni && /^[XYZ]?\d{7,8}[A-Z]$/i.test(compacto)) w.dni = compacto.toUpperCase();
+    else if(!w.tel && /^(\+?34)?[6789]\d{8}$/.test(compacto)) w.tel = c;
+    else if(!w.c && categoriaDe(c)) w.c = categoriaDe(c);
+    else if(!w.obra && /^[A-Z]{0,2}\d{3,6}$/i.test(compacto)) w.obra = compacto.toUpperCase();
+    else if(!w.n && /[a-záéíóúñ]/i.test(c)) w.n = c.replace(/\s+/g," ");
+  });
+  return w;
+}
+document.getElementById("pegarBtn").addEventListener("click", function(){
+  var lineas = document.getElementById("pegarTxt").value.split(/\r?\n/).filter(function(l){ return l.trim(); });
+  var n = 0, rep = 0, mal = 0, nuevas = [];
+  lineas.forEach(function(l){
+    var w = leeFila(l);
+    if(/^nombre|^trabajador|^operario/i.test(w.n)) return;          // fila de cabecera
+    if(w.obra && !obraDe(w.obra)){ OBRAS.push({cod:w.obra, cli:"", dir:"", enc:"", jefe:"", tel:"", mapa:""}); nuevas.push(w.obra); }
+    var r = anadeTrabajador(w);
+    if(r === "ok") n++; else if(r === "repetido") rep++; else mal++;
+  });
+  save();
+  document.getElementById("pegarTxt").value = "";
+  pintaObrasPantalla();
+  avisoObras("Añadidas "+n+(n===1?" persona":" personas")+"."+
+    (rep ? " "+rep+" ya estaban." : "")+(mal ? " "+mal+(mal===1?" fila":" filas")+" sin nombre." : "")+
+    (nuevas.length ? " Obras nuevas: "+nuevas.join(", ")+" (completa sus datos)." : ""), n > 0);
+});
+
+/* ---------- visitas ---------- */
+function pintaTemas(){
+  [["visTemas", TEMAS, "tema"], ["visFaltas", FALTAS, "falta"]].forEach(function(g){
+    var fs = document.getElementById(g[0]);
+    if(fs.querySelector("label")) return;
+    g[1].forEach(function(t, i){
+      var l = document.createElement("label");
+      l.innerHTML = '<input type="checkbox" value="'+esc(t)+'" id="'+g[2]+i+'"><span>'+esc(t)+'</span>';
+      fs.appendChild(l);
+    });
+  });
+}
+document.getElementById("visFaltas").addEventListener("change", function(){
+  document.getElementById("visFaltaBox").hidden = !document.querySelector("#visFaltas input:checked");
+});
+function pintaVisitas(){
+  pintaTemas();
+  var sel = document.getElementById("visObra");
+  if(!obraDe(state.visObra)) state.visObra = (state.obra && state.obra.cod) || (OBRAS[0] && OBRAS[0].cod) || "";
+  opcionesObra(sel, state.visObra, false);
+  sel.disabled = !OBRAS.length;
+  limitesFecha(document.getElementById("visFecha"));
+  var o = obraDe(state.visObra), con = document.getElementById("visCon");
+  if(o && (!con.value || con.dataset.auto === "1")){ con.value = o.jefe ? o.jefe+" · jefe de obra" : ""; con.dataset.auto = "1"; }
+  pintaPresentes();
+  pintaListaVisitas();
+}
+document.getElementById("visCon").addEventListener("input", function(e){ e.target.dataset.auto = "0"; });
+document.getElementById("visObra").addEventListener("change", function(e){
+  state.visObra = e.target.value; state.visPres = {};
+  pintaVisitas();
+});
+function pintaPresentes(){
+  var host = document.getElementById("visCrew"), cod = state.visObra; host.innerHTML = "";
+  var propios = PLANTILLA.filter(function(w){ return w.obra === cod; });
+  var otros = PLANTILLA.filter(function(w){ return w.obra !== cod; });
+  function fila(w){
+    var on = !!state.visPres[w.n];
+    var row = document.createElement("div");
+    row.className = "worker" + (on ? " on" : "");
+    row.innerHTML = '<button type="button" class="tick" aria-pressed="'+on+'" aria-label="'+esc(w.n)+' está en obra">'+
+      '<span class="box"><svg viewBox="0 0 16 16" aria-hidden="true"><polyline points="3,8.5 6.5,12 13,4.5"/></svg></span></button>'+
+      '<span class="wname"><strong>'+esc(w.n)+'</strong><span>'+esc(w.c)+'</span></span>';
+    row.querySelector(".tick").addEventListener("click", function(){
+      if(state.visPres[w.n]) delete state.visPres[w.n]; else state.visPres[w.n] = true;
+      pintaPresentes();
+      host.querySelector('.tick[aria-label="'+esc(w.n)+' está en obra"]').focus();
+    });
+    host.appendChild(row);
+  }
+  if(!PLANTILLA.length) host.innerHTML = '<p class="empty">Sin personal todavía. <button type="button" class="linklike" data-ir="obras">Añádelo en Obras</button></p>';
+  propios.forEach(fila);
+  if(otros.length){
+    var sep = document.createElement("div");
+    sep.className = "crew-sep"; sep.textContent = propios.length ? "De otras obras" : "Plantilla";
+    host.appendChild(sep);
+    otros.forEach(fila);
+  }
+  var n = Object.keys(state.visPres).length;
+  document.getElementById("visN").textContent = n;
+  document.getElementById("visDe").textContent = propios.length ? "presentes de "+propios.length+" asignados" : (n === 1 ? "presente" : "presentes");
+}
+function estadoElegido(){ var r = document.querySelector('input[name="estado"]:checked'); return r ? r.value : ""; }
+document.getElementById("visGuardar").addEventListener("click", function(){
+  var hint = document.getElementById("visHint"), f = document.getElementById("visFecha");
+  var faltan = [];
+  if(!obraDe(state.visObra)) faltan.push("la obra");
+  if(!fechaValida(f.value, f)) faltan.push("un día válido");
+  if(!estadoElegido()) faltan.push("cómo va la obra");
+  if(faltan.length){ hint.className = "hint bad"; hint.textContent = "Falta "+faltan.join(" y ")+"."; return; }
+  var ahora = new Date();
+  var v = {id:nuevoId("v"), fecha:f.value, hora:ahora.toLocaleTimeString("es-ES",{hour:"2-digit",minute:"2-digit"}), obra:state.visObra,
+    con:document.getElementById("visCon").value.trim().slice(0,80), presentes:Object.keys(state.visPres), estado:estadoElegido(),
+    temas:Array.prototype.map.call(document.querySelectorAll("#visTemas input:checked"), function(x){ return x.value; }),
+    nota:document.getElementById("visNota").value.trim().slice(0,600), oport:document.getElementById("visOport").value.trim().slice(0,200),
+    paso:document.getElementById("visPaso").value.trim().slice(0,200), creado:ahora.toISOString(),
+    faltas:Array.prototype.map.call(document.querySelectorAll("#visFaltas input:checked"), function(x){ return x.value; })};
+  var det = document.getElementById("visFaltaDet").value.trim().slice(0,120);
+  v.faltas.forEach(function(que){ state.pedidos.push({id:nuevoId("m"), fecha:v.fecha, obra:v.obra, que:que, det:det, hecho:""}); });
+  state.visitas.push(v);
+  save();
+  state.visPres = {};
+  Array.prototype.forEach.call(document.querySelectorAll('#visEstado input, #visTemas input, #visFaltas input'), function(x){ x.checked = false; });
+  ["visNota","visOport","visPaso","visFaltaDet"].forEach(function(id){ document.getElementById(id).value = ""; });
+  document.getElementById("visFaltaBox").hidden = true;
+  pintaPresentes(); pintaListaVisitas();
+  hint.className = "hint ok";
+  hint.textContent = "Visita guardada: "+v.obra+" · "+v.presentes.length+(v.presentes.length === 1 ? " presente" : " presentes")+
+    (v.faltas.length ? " · apuntado para llevar: "+v.faltas.join(", ")+"." : ".");
+});
+function pintaListaVisitas(){
+  var host = document.getElementById("visLista");
+  var lista = state.visitas.slice().sort(function(a,b){ return a.fecha+a.hora < b.fecha+b.hora ? 1 : -1; }).slice(0,10);
+  if(!lista.length){ host.innerHTML = '<p class="empty">Aún no hay visitas.</p>'; return; }
+  host.innerHTML = "";
+  lista.forEach(function(v){
+    var o = obraDe(v.obra), div = document.createElement("div");
+    div.className = "vis-row";
+    div.innerHTML = '<div class="vr-top"><span class="cod">'+esc(v.obra)+'</span><span class="pill '+(v.estado === "ok" ? "ok" : v.estado === "atencion" ? "warn" : "bad")+'">'+ESTADOS[v.estado]+'</span>'+
+      '<span class="vr-f">'+esc(diaMes(v.fecha))+(v.hora ? ' · '+esc(v.hora) : '')+'</span></div>'+
+      '<p class="vr-t">'+(o && o.cli ? esc(o.cli)+' · ' : '')+v.presentes.length+(v.presentes.length === 1 ? ' presente' : ' presentes')+(v.temas.length ? ' · '+esc(v.temas.join(", ")) : '')+'</p>'+
+      (v.faltas && v.faltas.length ? '<p class="vr-n"><b>Faltaba:</b> '+esc(v.faltas.join(", "))+'</p>' : '')+
+      (v.nota ? '<p class="vr-n">'+esc(v.nota)+'</p>' : '')+
+      (v.oport ? '<p class="vr-n"><b>Oportunidad:</b> '+esc(v.oport)+'</p>' : '')+
+      (v.paso ? '<p class="vr-n"><b>Próximo paso:</b> '+esc(v.paso)+'</p>' : '')+
+      '<button type="button" class="btn ghost small" aria-label="Borrar la visita del '+esc(diaMes(v.fecha))+' a la obra '+esc(v.obra)+'">Borrar</button>';
+    div.querySelector("button").addEventListener("click", function(){
+      if(!window.confirm("¿Borrar esta visita?")) return;
+      state.visitas.splice(state.visitas.indexOf(v), 1); save(); pintaListaVisitas();
+    });
+    host.appendChild(div);
+  });
+}
+
+/* ---------- parte semanal ---------- */
+function datosSemana(lun, cod){
+  var dias = [0,1,2,3,4,5,6].map(function(i){ return sumaDias(lun, i); }), idx = {};
+  dias.forEach(function(f,i){ idx[f] = i; });
+  var filas = {}, albs = [], porDia = {};
+  vivos().forEach(function(a){
+    if(!idx.hasOwnProperty(a.fecha) || (cod && a.obra.cod !== cod)) return;
+    albs.push(a);
+    var i = idx[a.fecha];
+    a.lineas.forEach(function(l){
+      var k = a.obra.cod+"|"+l.n, w = trabajadorPorNombre(l.n);
+      var f = filas[k] || (filas[k] = {n:l.n, c:l.c, dni:w ? w.dni : "", obra:a.obra, h:[0,0,0,0,0,0,0], t:0, nums:[], obs:[]});
+      f.h[i] += l.h; f.t += l.h;
+      if(f.nums.indexOf(a.num) < 0) f.nums.push(a.num);
+      if(a.tipo === "papel" && a.sinFirma && f.obs.indexOf("sin firma") < 0) f.obs.push("sin firma");
+      porDia[l.n+"|"+i] = (porDia[l.n+"|"+i] || 0) + l.h;
+    });
+  });
+  var lista = Object.keys(filas).map(function(k){ return filas[k]; });
+  lista.forEach(function(f){
+    f.h.forEach(function(h,i){ if(h > 0 && porDia[f.n+"|"+i] > JORNADA_H) f.obs.push(DIAS_CORTOS[i]+" "+nh(porDia[f.n+"|"+i])+" h"); });
+  });
+  lista.sort(function(a,b){ return a.obra.cod < b.obra.cod ? -1 : a.obra.cod > b.obra.cod ? 1 : a.n.localeCompare(b.n, "es"); });
+  var totDia = [0,0,0,0,0,0,0], nombres = {};
+  lista.forEach(function(f){ f.h.forEach(function(h,i){ totDia[i] += h; }); nombres[f.n] = 1; });
+  var obras = [];
+  lista.forEach(function(f){ if(obras.indexOf(f.obra) < 0) obras.push(f.obra); });
+  var sw = semanaISO(lun);
+  return {lun:lun, dom:dias[6], dias:dias, filas:lista, albs:albs, totDia:totDia, total:totDia.reduce(function(a,b){ return a+b; },0),
+          trab:Object.keys(nombres).length, obras:obras, finde:totDia[5] > 0 || totDia[6] > 0, num:sw.n, anio:sw.a, cod:cod || ""};
+}
+function obrasDeLaSemana(D){
+  var out = D.obras.slice();
+  OBRAS.forEach(function(o){
+    if(D.cod && o.cod !== D.cod) return;
+    if(out.indexOf(o) < 0 && PLANTILLA.some(function(w){ return w.obra === o.cod; })) out.push(o);
+  });
+  return out;
+}
+function estadosSemana(D){
+  return obrasDeLaSemana(D).map(function(o){
+    var v = null;
+    state.visitas.forEach(function(x){
+      if(x.obra !== o.cod || x.fecha < D.lun || x.fecha > D.dom) return;
+      if(!v || x.fecha+x.hora > v.fecha+v.hora) v = x;
+    });
+    return {o:o, v:v};
+  });
+}
+function tablaSemanaHTML(D){
+  if(!D.filas.length) return '<p class="empty">Sin albaranes esta semana'+(D.cod ? ' en la obra '+esc(D.cod) : '')+'.</p>';
+  var cols = D.finde ? [0,1,2,3,4,5,6] : [0,1,2,3,4];
+  var head = '<thead><tr><th scope="col" class="wn">Operario</th>'+cols.map(function(i){
+    return '<th scope="col" class="d"><abbr title="'+DIAS_LARGOS[i]+' '+diaMes(D.dias[i])+'">'+DIAS_INI[i]+'</abbr><span>'+aFecha(D.dias[i]).getDate()+'</span></th>';
+  }).join("")+'<th scope="col" class="t">Total</th></tr></thead>';
+  var cuerpo = D.obras.map(function(o){
+    var filas = D.filas.filter(function(f){ return f.obra === o; });
+    var sub = [0,0,0,0,0,0,0], st = 0;
+    var trs = filas.map(function(f){
+      f.h.forEach(function(h,i){ sub[i] += h; }); st += f.t;
+      return '<tr><th scope="row" class="wn"><b>'+esc(f.n)+'</b><small>'+esc(f.c)+'</small></th>'+cols.map(function(i){
+        var h = f.h[i];
+        return h ? '<td class="d'+(f.obs.some(function(x){ return x.indexOf(DIAS_CORTOS[i]+" ") === 0; }) ? ' x' : '')+'">'+nh(h)+'</td>' : '<td class="d z">·</td>';
+      }).join("")+'<td class="t">'+nh(f.t)+'</td></tr>';
+    }).join("");
+    return '<tbody><tr class="og"><th colspan="'+(cols.length+2)+'" scope="colgroup"><span class="cod">'+esc(o.cod)+'</span> '+clienteHTML(o)+
+      '<small>'+esc(o.dir || "")+(o.enc ? ' · Encargado: '+esc(o.enc) : '')+'</small></th></tr>'+trs+
+      '<tr class="st"><th scope="row">Total obra</th>'+cols.map(function(i){ return '<td class="d">'+(sub[i] ? nh(sub[i]) : '')+'</td>'; }).join("")+
+      '<td class="t">'+nh(st)+'</td></tr></tbody>';
+  }).join("");
+  var pie = '<tfoot><tr><th scope="row">Semana</th>'+cols.map(function(i){ return '<td class="d">'+(D.totDia[i] ? nh(D.totDia[i]) : '')+'</td>'; }).join("")+
+    '<td class="t">'+nh(D.total)+'</td></tr></tfoot>';
+  return '<table class="sem"><caption class="sr">Horas por operario y día, semana '+D.num+'</caption>'+head+cuerpo+pie+'</table>';
+}
+function pendientesSemana(D){
+  var hasta = D.dom < hoyISO() ? D.dom : hoyISO();
+  var lista = pendientes(D.lun, hasta);
+  porLlevar().forEach(function(x){
+    if(x.fecha > hasta) return;
+    var o = obraDe(x.obra);
+    lista.push({g:x.fecha < sumaDias(hoyISO(), -2) ? 2 : 1, t:"Por llevar: "+x.que, m:x.obra+(o && o.cli ? " · "+o.cli : "")+(x.det ? " · "+x.det : "")+" · desde el "+fechaCorta(x.fecha), cod:x.obra});
+  });
+  lista.sort(function(x,y){ return y.g - x.g; });
+  return lista.filter(function(p){ return !D.cod || p.cod === D.cod; });
+}
+function movsSemana(D){
+  return state.movs.filter(function(m){ return m.fecha >= D.lun && m.fecha <= D.dom && (!D.cod || m.de === D.cod || m.a === D.cod); });
+}
+function textoMov(m){ return m.n+": "+(m.de || "sin obra")+" → "+(m.a || "sin obra")+" ("+diaMes(m.fecha)+")"; }
+function filaPendiente(p){
+  var tag = p.a ? "button" : "div";
+  return '<'+tag+(p.a ? ' type="button" data-alb="'+esc(p.a.id)+'"' : '')+' class="aviso g'+p.g+'"><span class="at">'+esc(p.t)+'</span><span class="am">'+esc(p.m)+'</span></'+tag+'>';
+}
+function enlazaPendientes(host){
+  Array.prototype.forEach.call(host.querySelectorAll("[data-alb]"), function(b){
+    b.addEventListener("click", function(){
+      var a = state.albaranes.filter(function(x){ return x.id === b.dataset.alb; })[0];
+      if(a) abreAlbaran(a);
+    });
+  });
+}
+function pintaSemana(){
+  var hoyLun = lunesDe(hoyISO());
+  if(!state.semana) state.semana = hoyLun;
+  var sel = document.getElementById("semObra");
+  sel.innerHTML = '<option value="">Todas las obras</option>' + OBRAS.map(function(o){
+    return '<option value="'+esc(o.cod)+'">'+esc(o.cod)+(o.cli ? ' · '+esc(o.cli) : '')+'</option>';
+  }).join("");
+  if(state.semObra && !obraDe(state.semObra)) state.semObra = "";
+  sel.value = state.semObra;
+  var D = datosSemana(state.semana, state.semObra);
+  document.getElementById("semTit").textContent = "Semana "+D.num;
+  document.getElementById("semRango").textContent = rangoTexto(D.lun, D.dom) + (state.enviadas[D.lun] ? " · enviada "+state.enviadas[D.lun] : "");
+  document.getElementById("semNext").disabled = state.semana >= hoyLun;
+  document.getElementById("swT").textContent = D.trab;
+  document.getElementById("swA").textContent = D.albs.length;
+  document.getElementById("swH").textContent = nh(D.total);
+  document.getElementById("semTabla").innerHTML = tablaSemanaHTML(D);
+  var est = estadosSemana(D);
+  document.getElementById("semObras").innerHTML = est.length ? est.map(function(e){
+    var v = e.v;
+    return '<div class="est-row"><span class="cod">'+esc(e.o.cod)+'</span><div><p class="et">'+clienteHTML(e.o)+
+      (v ? ' <span class="pill '+(v.estado === "ok" ? "ok" : v.estado === "atencion" ? "warn" : "bad")+'">'+ESTADOS[v.estado]+'</span>' : ' <span class="pill warn">Sin visita</span>')+'</p>'+
+      (v ? '<p class="em">Visita '+esc(diaMes(v.fecha))+(v.temas.length ? ' · '+esc(v.temas.join(", ")) : '')+(v.nota ? ' · '+esc(v.nota) : '')+'</p>' : '<p class="em">Nadie ha pasado por la obra esta semana.</p>')+
+      (v && v.oport ? '<p class="em"><b>Oportunidad:</b> '+esc(v.oport)+'</p>' : '')+'</div></div>';
+  }).join("") : '<p class="empty">Sin obras con actividad esta semana.</p>';
+  var movs = movsSemana(D);
+  document.getElementById("semMovsBox").hidden = !movs.length;
+  document.getElementById("semMovs").innerHTML = movs.map(function(m){
+    return '<div class="est-row"><span class="cod">'+esc(diaMes(m.fecha))+'</span><div><p class="et">'+esc(m.n)+'</p><p class="em">'+esc(m.de || "Sin obra")+' → '+esc(m.a || "sin obra")+'</p></div></div>';
+  }).join("");
+  var pend = pendientesSemana(D), hp = document.getElementById("semPend");
+  hp.innerHTML = pend.length ? pend.slice(0,12).map(filaPendiente).join("") + (pend.length > 12 ? '<p class="empty">y '+(pend.length-12)+' más en Control</p>' : '')
+    : '<p class="empty ok">Nada pendiente. Lista para enviar.</p>';
+  enlazaPendientes(hp);
+  var hay = D.filas.length > 0;
+  ["semEnviar","semCsv","semPdf"].forEach(function(id){ document.getElementById(id).disabled = !hay; });
+}
+document.getElementById("semPrev").addEventListener("click", function(){ state.semana = sumaDias(state.semana, -7); pintaSemana(); });
+document.getElementById("semNext").addEventListener("click", function(){ state.semana = sumaDias(state.semana, 7); pintaSemana(); });
+document.getElementById("semObra").addEventListener("change", function(e){ state.semObra = e.target.value; pintaSemana(); });
+
+/* Excel: CSV con BOM, punto y coma y coma decimal, como lo abre Excel en español */
+function celda(v){
+  v = String(v == null ? "" : v);
+  if(/^[=+\-@\t\r]/.test(v)) v = "'"+v;           // que Excel no lo tome por una fórmula
+  if(/[;"\r\n]/.test(v)) v = '"'+v.replace(/"/g,'""')+'"';
+  return v;
+}
+function csvSemana(D){
+  var cab = ["Semana","Operario","DNI/NIE","Categoría","Código de obra","Cliente","Dirección","Encargado"]
+    .concat(D.dias.map(function(f,i){ return DIAS_CORTOS[i]+" "+diaMes(f); }))
+    .concat(["Total horas","Albaranes","Observaciones"]);
+  var etiqueta = "S"+D.num+" "+fechaCorta(D.lun);
+  var filas = D.filas.map(function(f){
+    return [etiqueta, f.n, f.dni, f.c, f.obra.cod, cliente(f.obra), f.obra.dir, f.obra.enc]
+      .concat(f.h.map(function(h){ return h ? nh(h) : ""; }))
+      .concat([nh(f.t), f.nums.join(" "), f.obs.join(", ")]);
+  });
+  filas.push(["", "TOTAL", "", "", "", "", "", ""].concat(D.totDia.map(function(h){ return h ? nh(h) : ""; })).concat([nh(D.total), "", ""]));
+  return [cab].concat(filas).map(function(r){ return r.map(celda).join(";"); }).join("\r\n");
+}
+function nombreArchivo(D, ext){ return "parte-semanal-"+D.anio+"-S"+String(D.num).padStart(2,"0")+(D.cod ? "-obra-"+D.cod.replace(/[^\w-]/g,"") : "")+"."+ext; }
+function descarga(contenido, nombre, tipo){
+  var url = URL.createObjectURL(new Blob([contenido], {type:tipo}));
+  var a = document.createElement("a"); a.href = url; a.download = nombre;
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(function(){ URL.revokeObjectURL(url); }, 4000);
+}
+function textoSemana(D){
+  var porObra = D.obras.map(function(o){
+    var fs = D.filas.filter(function(f){ return f.obra === o; });
+    return "· "+o.cod+" "+cliente(o)+(o.dir ? " ("+o.dir+")" : "")+": "+fs.length+(fs.length === 1 ? " operario · " : " operarios · ")+
+      nh(fs.reduce(function(t,f){ return t+f.t; },0))+" h";
+  });
+  var est = estadosSemana(D).map(function(e){ return e.o.cod+" "+(e.v ? ESTADOS[e.v.estado]+(e.v.temas.length ? " ("+e.v.temas.join(", ")+")" : "") : "sin visita"); });
+  var pend = pendientesSemana(D);
+  return "Parte semanal "+state.emisor+" · Semana "+D.num+" ("+fechaCorta(D.lun)+" – "+fechaCorta(D.dom)+")"+(D.cod ? " · obra "+D.cod : "")+"\n"+
+    D.trab+(D.trab === 1 ? " operario · " : " operarios · ")+nh(D.total)+" h · "+D.albs.length+(D.albs.length === 1 ? " albarán" : " albaranes")+"\n\n"+
+    porObra.join("\n")+"\n\n"+
+    (est.length ? "Estado de las obras: "+est.join(" · ")+"\n" : "")+
+    (movsSemana(D).length ? "Cambios de personal: "+movsSemana(D).map(textoMov).join(" · ")+"\n" : "")+
+    (porLlevar(D.cod).length ? "EPIs y material por llevar: "+porLlevar(D.cod).map(function(x){ return x.que+" ("+x.obra+")"; }).join(", ")+"\n" : "")+
+    (pend.length ? "Pendiente: "+pend.length+(pend.length === 1 ? " aviso" : " avisos")+" (detalle en el Excel y en el PDF).\n" : "")+
+    "\nVa el Excel con el detalle por operario y día."+(state.yo ? "\n"+state.yo : "");
+}
+function marcaEnviada(D){
+  var d = new Date();
+  state.enviadas[D.lun] = diaMes(hoyISO())+" "+d.toLocaleTimeString("es-ES",{hour:"2-digit",minute:"2-digit"});
+  save(); pintaSemana();
+}
+function avisoSemana(t, bien){ var h = document.getElementById("semHint"); h.className = "hint" + (bien ? " ok" : ""); h.textContent = t; }
+document.getElementById("semCsv").addEventListener("click", function(){
+  var D = datosSemana(state.semana, state.semObra);
+  descarga("﻿"+csvSemana(D), nombreArchivo(D, "csv"), "text/csv;charset=utf-8");
+  avisoSemana("Excel descargado: "+nombreArchivo(D, "csv")+".", true);
+});
+document.getElementById("semEnviar").addEventListener("click", function(){
+  var D = datosSemana(state.semana, state.semObra), nombre = nombreArchivo(D, "csv"), csv = "﻿"+csvSemana(D), texto = textoSemana(D);
+  var archivo = null;
+  try{ archivo = new File([csv], nombre, {type:"text/csv"}); }catch(e){}
+  if(archivo && navigator.canShare && navigator.share && navigator.canShare({files:[archivo]})){
+    navigator.share({files:[archivo], title:"Parte semanal · semana "+D.num, text:texto})
+      .then(function(){ marcaEnviada(D); avisoSemana("Parte enviado.", true); }).catch(function(){});
+    return;
+  }
+  descarga(csv, nombre, "text/csv;charset=utf-8");
+  if(state.admin.email){
+    location.href = "mailto:"+encodeURIComponent(state.admin.email)+"?subject="+encodeURIComponent("Parte semanal · semana "+D.num)+"&body="+encodeURIComponent(texto);
+    avisoSemana("Excel descargado. Adjúntalo al correo que se ha abierto.", true);
+  }else if(state.admin.tel){
+    window.open("https://wa.me/"+telLimpio(state.admin.tel)+"?text="+encodeURIComponent(texto), "_blank", "noopener");
+    avisoSemana("Excel descargado. Adjúntalo en el chat de administración.", true);
+  }else{
+    avisoSemana("Excel descargado. Pon el correo o el WhatsApp de administración en Ajustes y se abrirá directo.", true);
+  }
+  marcaEnviada(D);
+});
+
+/* PDF: el parte en A4 apaisado, con la tabla completa */
+function informeHTML(D){
+  var cab = '<tr><th>Operario</th><th>DNI/NIE</th><th>Categoría</th><th>Obra</th><th>Cliente</th><th>Dirección</th>'+
+    D.dias.map(function(f,i){ return '<th class="n">'+DIAS_CORTOS[i]+'<br>'+diaMes(f)+'</th>'; }).join("")+'<th class="n">Total</th><th>Albaranes</th><th>Observaciones</th></tr>';
+  var filas = D.filas.map(function(f){
+    return '<tr><td><b>'+esc(f.n)+'</b></td><td>'+esc(f.dni)+'</td><td>'+esc(f.c)+'</td><td>'+esc(f.obra.cod)+'</td><td>'+esc(cliente(f.obra))+'</td><td>'+esc(f.obra.dir || "")+'</td>'+
+      f.h.map(function(h){ return '<td class="n">'+(h ? nh(h) : '')+'</td>'; }).join("")+'<td class="n"><b>'+nh(f.t)+'</b></td><td>'+esc(f.nums.join(" "))+'</td><td>'+esc(f.obs.join(", "))+'</td></tr>';
+  }).join("");
+  var pie = '<tr class="tot"><td colspan="6">Total semana · '+D.trab+(D.trab === 1 ? ' operario' : ' operarios')+'</td>'+
+    D.totDia.map(function(h){ return '<td class="n">'+(h ? nh(h) : '')+'</td>'; }).join("")+'<td class="n">'+nh(D.total)+'</td><td colspan="2"></td></tr>';
+  var est = estadosSemana(D).map(function(e){
+    var v = e.v;
+    return '<tr><td>'+esc(e.o.cod)+'</td><td>'+esc(cliente(e.o))+'</td><td>'+esc(e.o.enc || "")+'</td><td>'+(v ? esc(ESTADOS[v.estado])+' · '+esc(diaMes(v.fecha)) : 'Sin visita')+'</td>'+
+      '<td>'+(v ? esc([v.temas.join(", "), v.nota].filter(Boolean).join(" · ")) : '')+'</td><td>'+(v ? esc(v.oport) : '')+'</td><td>'+(v ? esc(v.paso) : '')+'</td></tr>';
+  }).join("");
+  var pend = pendientesSemana(D);
+  var ahora = new Date();
+  return '<div class="informe">'+
+    '<header class="inf-h"><img src="'+LOGO_PAPEL+'" alt="" width="40" height="40"><div><h1>'+esc(state.emisor)+' · Parte semanal de personal</h1>'+
+    '<p>Semana '+D.num+' · del '+fechaCorta(D.lun)+' al '+fechaCorta(D.dom)+(D.cod ? ' · obra '+esc(D.cod) : ' · todas las obras')+'</p></div>'+
+    '<p class="inf-q">'+(state.yo ? 'Preparado por '+esc(state.yo)+'<br>' : '')+fechaCorta(hoyISO())+' '+ahora.toLocaleTimeString("es-ES",{hour:"2-digit",minute:"2-digit"})+'</p></header>'+
+    '<p class="inf-k"><b>'+D.trab+'</b> operarios · <b>'+nh(D.total)+'</b> horas · <b>'+D.obras.length+'</b> obras · <b>'+D.albs.length+'</b> albaranes</p>'+
+    '<table class="inf-t"><thead>'+cab+'</thead><tbody>'+filas+'</tbody><tfoot>'+pie+'</tfoot></table>'+
+    (est ? '<h2>Estado de las obras</h2><table class="inf-t"><thead><tr><th>Obra</th><th>Cliente</th><th>Encargado</th><th>Visita</th><th>Qué se vio</th><th>Oportunidad</th><th>Próximo paso</th></tr></thead><tbody>'+est+'</tbody></table>' : '')+
+    (movsSemana(D).length ? '<h2>Cambios de personal</h2><ul class="inf-p">'+movsSemana(D).map(function(m){ return '<li>'+esc(textoMov(m))+'</li>'; }).join("")+'</ul>' : '')+
+    (pend.length ? '<h2>Pendiente</h2><ul class="inf-p">'+pend.map(function(p){ return '<li><b>'+esc(p.t)+'</b> · '+esc(p.m)+'</li>'; }).join("")+'</ul>' : '')+
+  '</div>';
+}
+document.getElementById("semPdf").addEventListener("click", function(){
+  var D = datosSemana(state.semana, state.semObra);
+  document.getElementById("printHost").innerHTML = informeHTML(D);
+  document.body.classList.add("imprime-informe");
+  window.print();
+});
+window.addEventListener("afterprint", function(){ document.body.classList.remove("imprime-informe"); });
+
 /* ---------- control: lo que se escapa ---------- */
+function obrasActivas(){
+  var desde = sumaDias(hoyISO(), -21);
+  return OBRAS.filter(function(o){
+    return PLANTILLA.some(function(w){ return w.obra === o.cod; }) ||
+      vivos().some(function(a){ return a.obra.cod === o.cod && a.fecha >= desde; });
+  });
+}
+/* lo que hay que revisar entre dos fechas, lo más grave primero */
+function pendientes(desde, hasta){
+  var out = [], hoy = hoyISO(), vistos = {};
+  var albs = vivos().filter(function(a){ return a.fecha >= desde && a.fecha <= hasta; });
+  function mete(p){ var k = p.t+"|"+p.m; if(vistos[k]) return; vistos[k] = 1; out.push(p); }
+  albs.forEach(function(a){
+    if(a.tipo !== "papel") return;
+    var m = "Nº "+a.num+" · "+a.obra.cod+" · "+fechaCorta(a.fecha)+" · "+nf(horasDe(a),1)+" h";
+    if(a.sinFirma) mete({g:3, t:a.foto ? "Albarán sin firma del cliente" : "Albarán sin firma ni foto", m:m, a:a, cod:a.obra.cod});
+    else if(!a.foto) mete({g:1, t:"Albarán sin foto", m:m, a:a, cod:a.obra.cod});
+  });
+  state.visitas.forEach(function(v){
+    if(v.fecha < desde || v.fecha > hasta) return;
+    var estaba = {}; v.presentes.forEach(function(n){ estaba[n] = 1; });
+    albs.forEach(function(a){
+      if(a.fecha !== v.fecha || a.obra.cod !== v.obra) return;
+      a.lineas.forEach(function(l){
+        if(!estaba[l.n] && l.h > 0) mete({g:3, t:"Horas a alguien que no viste en obra", m:l.n+" · "+nf(l.h,1)+" h · "+a.obra.cod+" · "+fechaCorta(a.fecha)+(v.hora ? " (visita de las "+v.hora+")" : ""), a:a, cod:a.obra.cod});
+      });
+    });
+  });
+  var dia = {};
+  albs.forEach(function(a){ a.lineas.forEach(function(l){ var k = l.n+"|"+a.fecha; dia[k] = (dia[k] || 0) + l.h; }); });
+  Object.keys(dia).forEach(function(k){
+    if(dia[k] <= 12) return;
+    var p = k.split("|");
+    mete({g:2, t:"Más de 12 h en un día", m:p[0]+" · "+fechaCorta(p[1])+" · "+nh(dia[k])+" h entre varios albaranes"});
+  });
+  if(hasta >= hoy){
+    obrasActivas().forEach(function(o){
+      var u = ultimaVisita(o.cod, hoy), d = u ? diasEntre(u.fecha, hoy) : null;
+      if(!u) mete({g:1, t:"Obra sin visitas", m:o.cod+" · "+cliente(o), cod:o.cod});
+      else if(d >= 7) mete({g:2, t:"Obra sin visita desde hace "+d+" días", m:o.cod+" · "+cliente(o)+" · última el "+fechaCorta(u.fecha), cod:o.cod});
+    });
+  }
+  if(REAL){
+    var ayer = sumaDias(hoy, -1), ini = [desde, sumaDias(hoy, -14), state.inicio || hoy].sort()[2], fin = hasta < ayer ? hasta : ayer;
+    obrasActivas().forEach(function(o){
+      if(!PLANTILLA.some(function(w){ return w.obra === o.cod; })) return;
+      for(var f = ini; f <= fin; f = sumaDias(f, 1)){
+        if(diaSemana(f) > 4) continue;
+        var fecha = f;
+        if(!albs.some(function(a){ return a.obra.cod === o.cod && a.fecha === fecha; }))
+          mete({g:2, t:"Día laborable sin albarán", m:o.cod+" · "+cliente(o)+" · "+DIAS_LARGOS[diaSemana(f)]+" "+fechaCorta(f), cod:o.cod});
+      }
+    });
+  }
+  out.sort(function(x,y){ return y.g - x.g; });
+  return out;
+}
+/* jornadas que deberían tener albarán: la nómina en la demo; en tus datos, la gente que viste en obra */
+function esperadas(desde, hasta){
+  if(!REAL){
+    var nombreDe = {};
+    PLANTILLA.forEach(function(w){ nombreDe[w.id] = w.n; });
+    return state.jornadas.filter(function(j){ return nombreDe[j.w] && j.fecha >= desde && j.fecha <= hasta; })
+      .map(function(j){ return {n:nombreDe[j.w], fecha:j.fecha, h:j.h}; });
+  }
+  var vistas = {};
+  state.visitas.forEach(function(v){
+    if(v.fecha < desde || v.fecha > hasta) return;
+    v.presentes.forEach(function(n){ vistas[n+"|"+v.fecha] = {n:n, fecha:v.fecha, h:JORNADA_H}; });
+  });
+  return Object.keys(vistas).map(function(k){ return vistas[k]; });
+}
+function seriesControl(){
+  var filas = [];
+  if(!REAL) TALONARIOS.forEach(function(t){
+    filas.push({id:t.id, who:t.enc, seqs:state.albaranes.filter(function(a){ return a.tal === t.id; }).map(function(a){ return a.seq; })});
+  });
+  var grupos = {};
+  state.albaranes.forEach(function(a){
+    if(a.tipo !== "papel" || !a.seq) return;
+    var k = REAL && state.serie === "unica" ? "papel" : a.obra.cod;
+    (grupos[k] || (grupos[k] = [])).push(a.seq);
+  });
+  Object.keys(grupos).sort().forEach(function(k){
+    filas.push({id:k === "papel" ? "Papel" : k, who:k === "papel" ? "Talonario en papel" : (obraDe(k) && obraDe(k).cli) || "Talonario en papel", seqs:grupos[k]});
+  });
+  return filas;
+}
 function pintaControl(){
-  var catDe = {}, nombreDe = {};
-  PLANTILLA.forEach(function(w){ catDe[w.n] = w.c; nombreDe[w.id] = w.n; });
+  var hoy = hoyISO(), desde, hasta, nombre;
+  if(REAL){ desde = sumaDias(hoy, -34); hasta = hoy; nombre = "últimas 5 semanas"; }
+  else{ desde = state.mes+"-01"; hasta = state.mes+"-31"; nombre = mesNombre(state.mes); }
+  var catDe = {};
+  PLANTILLA.forEach(function(w){ catDe[w.n] = w.c; });
 
   // horas firmadas por trabajador y día
   var firmadas = {};
-  state.albaranes.forEach(function(a){
+  vivos().forEach(function(a){
     a.lineas.forEach(function(l){
       var k = l.n+"|"+a.fecha;
       firmadas[k] = (firmadas[k] || 0) + l.h;
@@ -1039,65 +2651,113 @@ function pintaControl(){
   });
 
   var pagadas = 0, facturadas = 0, huecos = [], fugaEur = 0;
-  state.jornadas.forEach(function(j){
-    var nom = nombreDe[j.w]; if(!nom || j.fecha.slice(0,7) !== state.mes) return;
-    var f = firmadas[nom+"|"+j.fecha] || 0;
+  var esp = esperadas(desde, hasta);
+  esp.forEach(function(j){
+    var f = firmadas[j.n+"|"+j.fecha] || 0;
     pagadas += j.h;
     facturadas += Math.min(f, j.h);
     var dif = j.h - f;
     if(dif > 0.01){
-      var precio = parseFloat(state.tarifas[catDe[nom]]) || 0;
+      var precio = parseFloat(state.tarifas[catDe[j.n]]) || 0;
       fugaEur += dif * precio;
-      huecos.push({n:nom, c:catDe[nom], fecha:j.fecha, h:dif, e:dif*precio});
+      huecos.push({n:j.n, c:catDe[j.n] || "", fecha:j.fecha, h:dif, e:dif*precio});
     }
   });
   var fugaH = pagadas - facturadas;
 
-  document.getElementById("fugaK").textContent = "Pagado y no facturado · "+mesNombre(state.mes);
-  document.getElementById("fugaE").textContent = eur0(fugaEur);
-  document.getElementById("fugaD").textContent = fugaH > 0.01
-    ? nf(fugaH,1)+" horas pagadas este mes no tienen ningún albarán firmado detrás. Repartidas en "+
-      huecos.length+(huecos.length===1?" jornada":" jornadas")+", que hoy no se ven hasta el cierre."
-    : "Todas las horas pagadas este mes tienen albarán firmado.";
+  document.getElementById("subControl").textContent = REAL
+    ? "Cruce entre la gente que ves en obra y los albaranes que pasas. Lo que no cuadra está aquí, antes de que lo vea el cliente o administración."
+    : "Cruce entre las horas que la empresa paga y las que tiene firmadas para facturar. La diferencia es dinero trabajado que nadie cobra.";
+  document.getElementById("fugaK").textContent = (REAL ? "Visto en obra sin albarán · " : "Pagado y no facturado · ")+nombre;
+  document.getElementById("fugaE").textContent = REAL ? nh(Math.round(fugaH*10)/10)+" h" : eur0(fugaEur);
+  document.getElementById("fugaD").textContent = REAL
+    ? (!esp.length ? "Marca quién está en obra al guardar cada visita: aquí saldrá quien trabaja sin albarán."
+      : fugaH > 0.01 ? "De la gente que viste trabajando, "+nf(fugaH,1)+" horas no tienen albarán pasado, en "+huecos.length+(huecos.length===1?" jornada":" jornadas")+". Cuento jornadas de "+JORNADA_H+" h."
+      : "Todo el personal que viste en obra tiene su albarán.")
+    : (fugaH > 0.01
+      ? nf(fugaH,1)+" horas pagadas este mes no tienen ningún albarán firmado detrás. Repartidas en "+
+        huecos.length+(huecos.length===1?" jornada":" jornadas")+", que hoy no se ven hasta el cierre."
+      : "Todas las horas pagadas este mes tienen albarán firmado.");
+  document.getElementById("lPag").textContent = REAL ? "Horas vistas en obra" : "Horas pagadas en nómina";
   document.getElementById("bPag").textContent = nf(pagadas,0)+" h";
   document.getElementById("bFac").textContent = nf(facturadas,0)+" h";
   document.getElementById("fFac").style.width = (pagadas > 0 ? (facturadas/pagadas*100) : 0).toFixed(1)+"%";
   document.getElementById("fPag").className = "fill" + (fugaH > 0.01 ? " bad" : "");
-  document.querySelector("#t-control .dot").hidden = !(fugaEur > 0);
+  document.getElementById("huecosTit").textContent = REAL ? "Visto en obra sin albarán" : "Jornadas pagadas sin albarán";
 
   var hh = document.getElementById("huecos");
-  if(!huecos.length){ hh.innerHTML = '<p class="empty">Ninguna. Todo lo pagado está firmado.</p>'; }
+  if(!huecos.length){ hh.innerHTML = '<p class="empty">'+(REAL ? "Nadie. Todo lo que viste tiene albarán." : "Ninguna. Todo lo pagado está firmado.")+'</p>'; }
   else{
     huecos.sort(function(a,b){ return a.fecha < b.fecha ? 1 : a.fecha > b.fecha ? -1 : a.n.localeCompare(b.n, "es"); });
     hh.innerHTML = huecos.slice(0,12).map(function(x){
       return '<div class="hueco"><span class="w">'+esc(x.n)+'</span>'+
-        '<span class="m">'+esc(x.c)+' · '+esc(diaMes(x.fecha))+' · '+nf(x.h,1)+' h sin firmar</span>'+
-        '<span class="e"><b>'+eur0(x.e)+'</b><span>no facturado</span></span></div>';
+        '<span class="m">'+esc(x.c ? x.c+' · ' : '')+esc(diaMes(x.fecha))+' · '+nf(x.h,1)+' h sin firmar</span>'+
+        '<span class="e"><b>'+(REAL ? nf(x.h,1)+" h" : eur0(x.e))+'</b><span>'+(REAL ? "sin albarán" : "no facturado")+'</span></span></div>';
     }).join("") + (huecos.length > 12 ? '<p class="empty">y '+(huecos.length-12)+' más</p>' : "");
   }
 
+  var pend = pendientes(desde, hasta < hoy ? hasta : hoy), hp = document.getElementById("pendientes");
+  hp.innerHTML = pend.length ? pend.slice(0,15).map(filaPendiente).join("") + (pend.length > 15 ? '<p class="empty">y '+(pend.length-15)+' más</p>' : "")
+    : '<p class="empty">Nada pendiente.</p>';
+  enlazaPendientes(hp);
+  document.querySelector("#t-control .dot").hidden = !(fugaH > 0.01 || porLlevar().length || pend.some(function(p){ return p.g >= 2; }));
+
+  pintaPedidos();
+
   // control de talonarios: saltos de numeración
-  document.getElementById("talones").innerHTML = TALONARIOS.map(function(t){
-    var seqs = state.albaranes.filter(function(a){ return a.tal === t.id; })
-                              .map(function(a){ return a.seq; })
-                              .sort(function(a,b){ return a-b; });
-    var faltan = [];
+  var series = seriesControl();
+  document.getElementById("talones").innerHTML = series.length ? series.map(function(t){
+    var seqs = t.seqs.slice().sort(function(a,b){ return a-b; }), faltan = [];
     if(seqs.length){
-      for(var n = seqs[0]; n <= seqs[seqs.length-1]; n++){
+      for(var n = seqs[0]; n <= seqs[seqs.length-1] && faltan.length <= 40; n++){
         if(seqs.indexOf(n) < 0) faltan.push(String(n).padStart(4,"0"));
       }
     }
     var rango = seqs.length ? String(seqs[0]).padStart(4,"0")+" – "+String(seqs[seqs.length-1]).padStart(4,"0") : "sin uso";
+    var falta = faltan.length > 6 ? "faltan "+(faltan.length > 40 ? "más de 40" : faltan.length)+" números: revisa" : "falta el "+faltan.join(", ");
     return '<div class="tal-row"><span class="tid">'+esc(t.id)+'</span>'+
-      '<span class="who">'+esc(t.enc)+'<span>'+rango+' · '+seqs.length+' albaranes</span></span>'+
-      (faltan.length
-        ? '<span class="missing">falta el '+faltan.join(", ")+'</span>'
-        : '<span class="missing none">correlativo correcto</span>')+'</div>';
-  }).join("");
+      '<span class="who">'+esc(t.who)+'<span>'+rango+' · '+seqs.length+' albaranes</span></span>'+
+      (faltan.length ? '<span class="missing">'+esc(falta)+'</span>' : '<span class="missing none">correlativo correcto</span>')+'</div>';
+  }).join("") : '<p class="empty">Aún no hay albaranes pasados.</p>';
 }
 
-/* ---------- cierre ---------- */
+function pintaPedidos(){
+  var host = document.getElementById("pedidos"), hoy = hoyISO();
+  var lista = porLlevar().sort(function(a,b){ return a.fecha < b.fecha ? -1 : 1; });
+  host.innerHTML = lista.length ? lista.map(function(x){
+    var o = obraDe(x.obra), dias = diasEntre(x.fecha, hoy);
+    return '<div class="ped-row'+(dias >= 3 ? ' tarde' : '')+'"><div class="pt"><b>'+esc(x.que)+'</b> · '+esc(x.obra)+(o && o.cli ? ' · '+esc(o.cli) : '')+
+      '<small>'+(x.det ? esc(x.det)+' · ' : '')+(dias <= 0 ? 'desde hoy' : 'desde hace '+dias+(dias === 1 ? ' día' : ' días'))+'</small></div>'+
+      '<button type="button" class="btn small" data-hecho="'+esc(x.id)+'" aria-label="Entregado: '+esc(x.que)+' en la obra '+esc(x.obra)+'">Entregado</button></div>';
+  }).join("") : '<p class="empty ok">Nada pendiente. Tu gente tiene lo que necesita.</p>';
+  Array.prototype.forEach.call(host.querySelectorAll("[data-hecho]"), function(b){
+    b.addEventListener("click", function(){
+      var x = state.pedidos.filter(function(y){ return y.id === b.dataset.hecho; })[0];
+      if(!x) return;
+      x.hecho = hoy; save(); pintaControl();
+      var h = document.getElementById("pdHint"); h.className = "hint ok"; h.textContent = x.que+" entregado en la obra "+x.obra+".";
+    });
+  });
+  var pdObra = document.getElementById("pdObra"), previa = pdObra.value;
+  opcionesObra(pdObra, previa || (OBRAS[0] && OBRAS[0].cod), false);
+  var pdQue = document.getElementById("pdQue");
+  if(!pdQue.options.length) pdQue.innerHTML = FALTAS.map(function(f){ return '<option>'+esc(f)+'</option>'; }).join("");
+  document.getElementById("pdAdd").disabled = !OBRAS.length;
+}
+document.getElementById("pdAdd").addEventListener("click", function(){
+  var obra = document.getElementById("pdObra").value, h = document.getElementById("pdHint");
+  if(!obraDe(obra)){ h.className = "hint bad"; h.textContent = "Elige la obra."; return; }
+  var x = {id:nuevoId("m"), fecha:hoyISO(), obra:obra, que:document.getElementById("pdQue").value,
+           det:document.getElementById("pdDet").value.trim().slice(0,120), hecho:""};
+  state.pedidos.push(x); save();
+  document.getElementById("pdDet").value = "";
+  pintaControl();
+  h.className = "hint ok"; h.textContent = "Apuntado: "+x.que+" para la obra "+x.obra+".";
+});
+
+/* ---------- cierre (demo) ---------- */
 function pintaCierre(){
+  if(!state.cierreMes) state.cierreMes = state.mes;
   var horas = 0, importe = 0, porObra = {}, n = 0;
   state.albaranes.filter(delMes).forEach(function(a){
     var k = a.obra.cod;
@@ -1111,14 +2771,18 @@ function pintaCierre(){
       porObra[k].cats[l.c].h += l.h; porObra[k].cats[l.c].e += imp;
     });
   });
-  document.getElementById("cierreMes").textContent = mesNombre(state.mes);
+  var primero = state.albaranes.reduce(function(m,a){ return a.fecha.slice(0,7) < m ? a.fecha.slice(0,7) : m; }, state.mes);
+  document.getElementById("mesTit").textContent = mesNombre(state.cierreMes).replace(/^./, function(c){ return c.toUpperCase(); });
+  document.getElementById("mesPrev").disabled = state.cierreMes <= primero;
+  document.getElementById("mesNext").disabled = state.cierreMes >= state.mes;
+  document.getElementById("cierreMes").textContent = mesNombre(state.cierreMes);
   document.getElementById("kH").textContent = nf(horas,0);
   document.getElementById("kA").textContent = n;
   document.getElementById("kE").textContent = eur0(importe);
 
   var host = document.getElementById("facturas");
   var claves = Object.keys(porObra).sort();
-  if(!claves.length){ host.innerHTML = '<p class="empty">Sin horas firmadas todavía.</p>'; return; }
+  if(!claves.length){ host.innerHTML = '<p class="empty">Sin horas firmadas en '+esc(mesNombre(state.cierreMes))+'.</p>'; return; }
   host.innerHTML = claves.map(function(k){
     var g = porObra[k];
     var lineas = Object.keys(g.cats).map(function(c){
@@ -1126,36 +2790,30 @@ function pintaCierre(){
         nf(parseFloat(state.tarifas[c])||0,2)+' €</span><span>'+eur(g.cats[c].e)+'</span></div>';
     }).join("");
     return '<div class="fact"><h3>'+clienteHTML(g.obra)+'</h3>'+
-      '<div class="obra-l">'+esc(g.obra.cod)+' · '+esc(g.obra.dir)+' · '+esc(mesNombre(state.mes))+'</div>'+
+      '<div class="obra-l">'+esc(g.obra.cod)+' · '+esc(g.obra.dir)+' · '+esc(mesNombre(state.cierreMes))+'</div>'+
       lineas+'<div class="ftot"><span>Base a facturar · '+g.n+(g.n===1?" albarán":" albaranes")+
       '</span><span>'+eur(g.e)+'</span></div></div>';
   }).join("");
 }
+function mueveMes(n){
+  var y = parseInt(state.cierreMes.slice(0,4),10), m = parseInt(state.cierreMes.slice(5,7),10) - 1 + n;
+  state.cierreMes = iso(new Date(y, m, 1)).slice(0,7);
+  pintaCierre();
+}
+document.getElementById("mesPrev").addEventListener("click", function(){ mueveMes(-1); });
+document.getElementById("mesNext").addEventListener("click", function(){ mueveMes(1); });
 
 /* ---------- ajustes ---------- */
-function pintaClientes(){
-  var host = document.getElementById("clientes"); if(!host) return;
-  host.innerHTML = "";
-  OBRAS.forEach(function(o,i){
-    var row = document.createElement("div"); row.className = "tarifa";
-    var id = "cli"+i;
-    row.innerHTML = '<label for="'+id+'" class="cod-l">'+esc(o.cod)+'</label>'+
-      '<input type="text" id="'+id+'" value="'+esc(o.cli)+'" class="cli-i" maxlength="80" placeholder="'+SIN_CLIENTE+'"'+
-      ' aria-label="Cliente de la obra '+esc(o.cod)+'" autocomplete="off">';
-    row.querySelector("input").addEventListener("change", function(e){
-      var v = e.target.value.trim().slice(0,80);
-      e.target.value = v;
-      if(v) state.clientes[o.cod] = v; else delete state.clientes[o.cod];
-      aplicaClientes(); save();
-      pintaObras(); pintaLista(); pintaCierre();
-    });
-    host.appendChild(row);
-  });
-}
-
 function pintaAjustes(){
+  document.getElementById("modoBox").innerHTML = REAL
+    ? '<p><b>Tus datos.</b> Se guardan solo en este móvil: nadie más los ve.</p><a class="btn" href="?demo">Ver la demo con datos de ejemplo</a>'
+    : '<p><b>Demo con datos de ejemplo.</b> Tus datos reales no se tocan.</p><a class="btn primary" href="./">Volver a mis datos</a>';
+  document.getElementById("subAjustes").textContent = REAL ? "Tus datos, administración y la copia de seguridad." : "Lo que se personaliza para cada empresa antes de ponerlo en obra.";
   document.getElementById("emisorName").value = state.emisor;
-  pintaClientes();
+  document.getElementById("yoName").value = state.yo;
+  document.getElementById("admEmail").value = state.admin.email;
+  document.getElementById("admTel").value = state.admin.tel;
+  Array.prototype.forEach.call(document.querySelectorAll('input[name="serie"]'), function(r){ r.checked = r.value === state.serie; });
   var host = document.getElementById("tarifas"); host.innerHTML = "";
   CATS.forEach(function(c,i){
     var row = document.createElement("div"); row.className = "tarifa";
@@ -1174,27 +2832,71 @@ function pintaAjustes(){
 document.getElementById("emisorName").addEventListener("input", function(e){
   state.emisor = e.target.value.trim().slice(0,80) || "Amra Building"; save();
 });
+document.getElementById("yoName").addEventListener("input", function(e){ state.yo = e.target.value.trim().slice(0,80); save(); });
+document.getElementById("admEmail").addEventListener("input", function(e){ state.admin.email = e.target.value.trim().slice(0,120); save(); });
+document.getElementById("admTel").addEventListener("input", function(e){ state.admin.tel = e.target.value.trim().slice(0,20); save(); });
+Array.prototype.forEach.call(document.querySelectorAll('input[name="serie"]'), function(r){
+  r.addEventListener("change", function(){ if(r.checked){ state.serie = r.value; save(); } });
+});
+document.getElementById("copiaBtn").addEventListener("click", function(){
+  var d; try{ d = JSON.parse(localStorage.getItem(KEY) || "{}"); }catch(e){ d = {}; }
+  descarga(JSON.stringify({app:"amra-control", guardada:new Date().toISOString(), datos:d}, null, 1),
+           "copia-albaranes-"+hoyISO()+".json", "application/json");
+  var h = document.getElementById("copiaHint"); h.className = "hint ok"; h.textContent = "Copia descargada. Guárdala en tu correo o en Drive.";
+});
+document.getElementById("restaurarBtn").addEventListener("click", function(){ document.getElementById("restaurarIn").click(); });
+document.getElementById("restaurarIn").addEventListener("change", function(e){
+  var f = e.target.files && e.target.files[0], h = document.getElementById("copiaHint");
+  e.target.value = "";
+  if(!f) return;
+  f.text().then(function(t){
+    var c = JSON.parse(t), d = c && c.datos;
+    if(!c || c.app !== "amra-control" || !d || !Array.isArray(d.obras) || !Array.isArray(d.albaranes)) throw new Error("copia");
+    if(!window.confirm("¿Cambiar todo lo que hay en este móvil por la copia del "+fechaCorta(String(c.guardada).slice(0,10))+"?")) return;
+    localStorage.setItem(KEY, JSON.stringify(d));
+    location.reload();
+  }).catch(function(){ h.className = "hint bad"; h.textContent = "Ese archivo no es una copia de esta app."; });
+});
+document.getElementById("borrarReal").addEventListener("click", function(){
+  if(!window.confirm("¿Borrar todas tus obras, personal, albaranes y visitas de este móvil? No se puede deshacer.")) return;
+  try{ localStorage.removeItem(KEY); }catch(e){}
+  borraFotos("real:").then(function(){ location.reload(); });
+});
 document.getElementById("reset").addEventListener("click", function(){
   try{ localStorage.removeItem(KEY); }catch(e){}
   state.emisor = "Amra Building";
   state.tarifas = Object.assign({},TARIFAS_DEF);
-  state.clientes = {}; aplicaClientes();
+  OBRAS = copia(OBRAS_DEMO); PLANTILLA = copia(PLANTILLA_DEMO);
   state.horas = {}; borraFirma();
   generaMes(periodo());
   state.obra = obraDe(talDe(state.talon).obra);
-  limitesFecha(); pintaAjustes(); pintaTalon(); pintaObras(); pintaCrew(); refrescaEmitir();
+  state.cierreMes = state.mes;
+  borraFotos("demo:");
+  limitesFecha(document.getElementById("fecha")); pintaAjustes(); pintaTalon(); pintaObras(); pintaCrew(); refrescaEmitir();
   pintaLista(); pintaCierre(); pintaControl();
   ir("control");
 });
 
 /* ---------- arranque ---------- */
+Array.prototype.forEach.call(document.querySelectorAll("[data-solo]"), function(el){
+  if(el.dataset.solo !== (REAL ? "real" : "demo")) el.hidden = true;
+});
+if(REAL){
+  document.getElementById("chipModo").textContent = "Tus datos";
+  document.getElementById("chipModo").classList.add("real");
+  document.getElementById("pie").textContent = "Desarrollado por ROVIK.IA · Tus datos se guardan solo en este móvil";
+  document.getElementById("pieLista").textContent = "Los albaranes se guardan solo en este móvil. Descarga una copia cada viernes desde Ajustes.";
+}
 load();
 preparaDatos();
-limitesFecha();
-state.obra = obraDe(talDe(state.talon).obra);
-pintaTalon(); pintaObras(); pintaCrew(); pintaAjustes();
+state.cierreMes = state.mes;
+limitesFecha(document.getElementById("fecha"));
+state.obra = REAL ? (OBRAS[0] || null) : (obraDe(talDe(state.talon).obra) || OBRAS[0] || null);
+pintaTalon(); pintaObras(); pintaCrew(); pintaFotoNueva(); pintaTipo();
 pintaLista(); pintaCierre(); pintaControl();
-medirPad(); refrescaEmitir();
+medirPad(); refrescaEmitir(); marcaScrollTabs();
+if(REAL && !OBRAS.length) ir("obras");
+if(REAL && navigator.storage && navigator.storage.persist) navigator.storage.persist().catch(function(){});
 
 if("serviceWorker" in navigator){
   window.addEventListener("load", function(){

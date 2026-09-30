@@ -1,32 +1,14 @@
+// La demo con datos de ejemplo (?demo): lo que se enseña a una empresa.
 import { test, expect } from "@playwright/test";
 import AxeBuilder from "@axe-core/playwright";
+import { HOY, KEY_DEMO as KEY, vigilar, irA, sinDesbordes } from "./comun.mjs";
 
-// Reloj fijo: miércoles 30 de septiembre de 2026, 10:00 en Madrid.
-const HOY = new Date("2026-09-30T10:00:00+02:00");
-const KEY = "rovik.albaranes.amra";
-const PANTALLAS = ["Nuevo albarán", "Control", "Albaranes", "Cierre de mes", "Ajustes"];
-
-function vigilar(page) {
-  const problemas = [];
-  page.on("pageerror", (e) => problemas.push(`pageerror: ${e.message}`));
-  page.on("console", (m) => {
-    if (m.type() === "error") problemas.push(`console: ${m.text()}`);
-  });
-  page.on("request", (r) => {
-    const { hostname, protocol } = new URL(r.url());
-    if (protocol.startsWith("http") && hostname !== "127.0.0.1") problemas.push(`externa: ${r.url()}`);
-  });
-  return problemas;
-}
+const PANTALLAS = ["Nuevo albarán", "Obras", "Visitas", "Semana", "Control", "Albaranes", "Cierre de mes", "Ajustes"];
 
 async function abrir(page, fecha = HOY) {
   await page.clock.setFixedTime(fecha);
-  await page.goto("./");
+  await page.goto("./?demo");
   await expect(page.locator("#s-nuevo")).toBeVisible();
-}
-
-async function irA(page, nombre) {
-  await page.getByRole("tab", { name: nombre }).click();
 }
 
 const euros = (texto) => Number(texto.replace(/[^\d,-]/g, "").replace(",", "."));
@@ -57,6 +39,13 @@ async function emitir(page, { talonario = "T-01", fecha, trabajadores, firmante 
   await expect(page.locator("#sheet")).toBeVisible();
 }
 
+async function datosDeObra(page, cod) {
+  await irA(page, "Obras");
+  const tarjeta = page.locator(".ocard", { has: page.locator(".oc-head .cod", { hasText: cod }) });
+  await tarjeta.locator(".oedit:not(.traer) summary").click();
+  return tarjeta;
+}
+
 test.describe("carga y calidad base", () => {
   test("carga sin errores ni peticiones a terceros", async ({ page }) => {
     const problemas = vigilar(page);
@@ -70,20 +59,7 @@ test.describe("carga y calidad base", () => {
     await abrir(page);
     for (const p of PANTALLAS) {
       await irA(page, p);
-      const exceso = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
-      expect(exceso, `desborde en ${p}`).toBeLessThanOrEqual(0);
-      // nada se sale de su tarjeta (las tarjetas recortan, así que el desborde no se ve en la página)
-      const fuera = await page.evaluate(() =>
-        [...document.querySelectorAll(".card *, .kpis *")]
-          .filter((el) => el.offsetParent !== null)
-          .filter((el) => {
-            const caja = el.closest(".card, .kpis").getBoundingClientRect();
-            const r = el.getBoundingClientRect();
-            return r.width > 0 && (r.right > caja.right + 1 || r.left < caja.left - 1);
-          })
-          .map((el) => el.id || el.className || el.tagName),
-      );
-      expect(fuera, `se sale de su tarjeta en ${p}`).toEqual([]);
+      await sinDesbordes(page, p);
     }
   });
 
@@ -177,6 +153,17 @@ test.describe("parte del día", () => {
     await expect(page.locator(".alb").first()).toContainText(siguiente);
   });
 
+  test("también pasa un albarán en papel", async ({ page }) => {
+    await abrir(page);
+    await page.locator("#segPaso label", { hasText: "Pasar un papel" }).click();
+    await expect(page.locator("#pad")).toBeHidden();
+    await page.locator("#numPapel").fill("7781");
+    await marcarTrabajador(page, "A. Khan Mahmood");
+    await page.locator("#zonaPapel label", { hasText: "Falta" }).click();
+    await page.getByRole("button", { name: "Guardar albarán" }).click();
+    await expect(page.locator("#paperHost")).toContainText("Falta firma y fecha");
+  });
+
   test("no deja fechar un parte en el futuro", async ({ page }) => {
     await abrir(page);
     await expect(page.locator("#fecha")).toHaveAttribute("max", "2026-09-30");
@@ -224,6 +211,15 @@ test.describe("control y cierre", () => {
     expect(Math.abs(antes - despues - importe)).toBeLessThanOrEqual(1);
   });
 
+  test("las visitas destapan horas de quien no estaba y obras sin visitar", async ({ page }) => {
+    await abrir(page);
+    await irA(page, "Control");
+    await expect(page.locator("#pendientes")).toContainText("Horas a alguien que no viste en obra");
+    await expect(page.locator("#pendientes")).toContainText("R. Ali Hussain");
+    await expect(page.locator("#pendientes")).toContainText(/Obra sin visita desde hace \d+ días/);
+    await expect(page.locator("#pedidos")).toContainText("Guantes");
+  });
+
   test("el cierre suma horas por tarifa y se recalcula al cambiarla", async ({ page }) => {
     await abrir(page);
     const esperado = () =>
@@ -256,9 +252,9 @@ test.describe("control y cierre", () => {
 });
 
 test.describe("datos y persistencia", () => {
-  test("los albaranes y los clientes de cada obra sobreviven a recargar", async ({ page }) => {
+  test("los albaranes y el cliente de cada obra sobreviven a recargar", async ({ page }) => {
     await abrir(page);
-    await irA(page, "Ajustes");
+    await datosDeObra(page, "2415");
     await page.getByLabel("Cliente de la obra 2415").fill("Promociones Ejemplo SL");
     await page.getByLabel("Cliente de la obra 2415").press("Tab");
     await emitir(page, { trabajadores: ["J. Moreno Lillo"] });
@@ -272,22 +268,24 @@ test.describe("datos y persistencia", () => {
 
   test("reiniciar la demo devuelve los valores de fábrica", async ({ page }) => {
     await abrir(page);
-    await irA(page, "Ajustes");
+    await datosDeObra(page, "2415");
     await page.getByLabel("Cliente de la obra 2415").fill("Otro cliente");
     await page.getByLabel("Cliente de la obra 2415").press("Tab");
-    await page.getByRole("button", { name: "Reiniciar la demo" }).click();
     await irA(page, "Ajustes");
+    await page.getByRole("button", { name: "Reiniciar la demo" }).click();
+    await datosDeObra(page, "2415");
     await expect(page.getByLabel("Cliente de la obra 2415")).not.toHaveValue("Otro cliente");
   });
 
   test("datos guardados corruptos no rompen la app", async ({ page }) => {
     const problemas = vigilar(page);
     await page.addInitScript((k) => {
-      localStorage.setItem(k, JSON.stringify({ albaranes: [{ num: "X" }, null, 7], jornadas: "roto", series: 3 }));
+      localStorage.setItem(k, JSON.stringify({ albaranes: [{ num: "X" }, null, 7], jornadas: "roto", series: 3, obras: [null, { cod: 5 }], plantilla: "x" }));
     }, KEY);
     await abrir(page);
     for (const p of PANTALLAS) await irA(page, p);
     expect(problemas.filter((p) => !p.startsWith("externa"))).toEqual([]);
+    expect(await page.evaluate(() => OBRAS.length)).toBe(3);
   });
 
   test("al volver otro día del mes regenera los datos hasta hoy", async ({ page }) => {
@@ -312,8 +310,10 @@ test.describe("albarán y navegación", () => {
     await abrir(page);
     await page.getByRole("tab", { name: "Nuevo albarán" }).focus();
     await page.keyboard.press("ArrowRight");
-    await expect(page.getByRole("tab", { name: "Control" })).toBeFocused();
-    await expect(page.getByRole("tab", { name: "Control" })).toHaveAttribute("aria-selected", "true");
+    await expect(page.getByRole("tab", { name: "Obras" })).toBeFocused();
+    await expect(page.getByRole("tab", { name: "Obras" })).toHaveAttribute("aria-selected", "true");
+    await page.keyboard.press("End");
+    await expect(page.getByRole("tab", { name: "Ajustes" })).toBeFocused();
   });
 
   test("el albarán se cierra con Escape y devuelve el foco", async ({ page }) => {

@@ -1,11 +1,11 @@
 // Red primero para la página: una versión nueva llega en cuanto hay cobertura.
 // Caché primero para fuentes, iconos y manifiesto (cambian con CACHE).
 // Sin cobertura, en obra, todo sale de la caché.
-const CACHE = "albaran-amra-v4";
+const CACHE = "albaran-amra-v5";
 const BASE = self.registration.scope;
 const ESPERA_RED_MS = 3500;
 const PRECARGA = [
-  "", "index.html", "manifest.webmanifest",
+  "", "index.html", "tarjeta.html", "vendor/qrcode.js", "manifest.webmanifest",
   "icon-192.png", "icon-512.png", "icon-maskable-512.png", "apple-touch-icon.png",
   "fonts/poppins-latin-300-normal.woff2", "fonts/poppins-latin-400-normal.woff2",
   "fonts/poppins-latin-500-normal.woff2", "fonts/poppins-latin-600-normal.woff2",

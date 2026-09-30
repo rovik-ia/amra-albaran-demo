@@ -1,7 +1,7 @@
 {
   "name": "amra-albaran-demo",
   "private": true,
-  "description": "Maqueta de albarán de horas (ROVIK.IA). Solo herramientas de verificación: la web es estática.",
+  "description": "Control de albaranes, obras, personal y visitas (ROVIK.IA). Solo herramientas de verificación: la web es estática.",
   "scripts": {
     "serve": "node tests/server.mjs",
     "test": "playwright test",
@@ -9,6 +9,8 @@
   },
   "devDependencies": {
     "@axe-core/playwright": "4.11.0",
-    "@playwright/test": "1.62.1"
+    "@playwright/test": "1.62.1",
+    "jsqr": "1.4.0",
+    "pngjs": "7.0.0"
   }
 }

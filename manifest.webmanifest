@@ -1,7 +1,7 @@
 {
   "name": "Albarán de Horas · Amra Building",
   "short_name": "Albaranes",
-  "description": "Parte de horas firmado en obra. Maqueta de producto de ROVIK.IA.",
+  "description": "Obras, personal, albaranes, visitas y parte semanal. Herramienta de ROVIK.IA.",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",

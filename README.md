@@ -1,36 +1,42 @@
-# Albarán de horas — maqueta
+# Control de obra · Amra Building
 
-Maqueta de producto de **ROVIK.IA**. **No es un sitio oficial de Amra Building** ni está
-operado por ellos: es una propuesta comercial que se le presenta a la empresa.
+Herramienta de **ROVIK.IA** para llevar el control de obras, personal y albaranes de horas en papel.
+Web estática que funciona como app en el móvil: sin servidor, sin cuentas y sin conexión una vez abierta.
 
-Empresas cliente, plantilla y tarifas son datos de ejemplo. Los códigos de obra son los que
-Amra Building publica en su propia web.
+**Los datos se guardan solo en el móvil que la usa.** No se envían a ningún sitio salvo cuando quien la
+usa comparte el parte o un albarán. No hay peticiones a terceros (las fuentes van incluidas).
 
-No recoge ni envía ningún dato: todo lo que se escribe se queda en el navegador del móvil.
-No hace peticiones a terceros (las fuentes van incluidas) y funciona sin conexión tras la
-primera visita.
+## Dos modos
 
-## Qué enseña
-
-| Pantalla | Qué demuestra |
+| Dirección | Qué abre |
 | --- | --- |
-| Nuevo albarán | Parte del día en obra: talonario numerado, obra, cuadrilla, horas y firma del cliente |
-| Control | Horas pagadas en nómina sin albarán firmado, en euros, y huecos de numeración en los talonarios |
-| Albaranes | Todo lo firmado; cada albarán se envía al cliente o se guarda en PDF |
-| Cierre de mes | La base a facturar por cliente y obra, con cada línea respaldada por albaranes |
-| Ajustes | Empresa, cliente de cada obra y precio por hora de cada categoría |
+| `./` | **Tus datos.** Empieza vacía: das de alta tus obras y tu personal. Es lo que se instala en el móvil. |
+| `./?demo` | **Demo** con datos de ejemplo, para enseñarla. Se guarda aparte y nunca toca tus datos. |
 
-Los datos de ejemplo se generan para el mes en curso (o el anterior, los primeros días del
-mes). El día de hoy aparece como jornada pagada sin albarán hasta que se firma el parte.
+## Pantallas
+
+| Pantalla | Para qué |
+| --- | --- |
+| Nuevo albarán | Pasar a limpio el albarán en papel: nº, obra, día, horas de cada operario, si trae firma y fecha del cliente, y foto |
+| Obras | Cada obra con su cliente, dirección, encargado, jefe de obra, ubicación de Google Maps y su personal. Mover gente de obra |
+| Visitas | Quién estaba en obra, cómo va (bien, atención, riesgo), temas, EPIs y material que faltan, oportunidades |
+| Semana | Parte semanal por operario y día, con obra, cliente y dirección. Excel (CSV), PDF y envío a administración |
+| Control | Visto en obra sin albarán, horas a quien no estaba, sin firma, sin foto, días sin albarán, obras sin visitar, EPIs por llevar y huecos de numeración |
+| Albaranes | Todo lo registrado; cada uno se comparte, se guarda en PDF o se anula (queda marcado, deja de contar horas) |
+| Ajustes | Tu nombre, contacto de administración, talonarios, copia de seguridad |
+| `tarjeta.html` | Tarjeta de visita con el monograma de Amra y QR (WhatsApp o contacto). A4 de 10 con marcas de corte, o PDF de imprenta 85 × 55 mm con 3 mm de sangrado |
 
 ## Estructura
 
-- `index.html`: toda la aplicación (HTML, CSS y un único script).
-- `sw.js`: service worker. Red primero para la página, caché primero para fuentes e iconos.
-  Sube `CACHE` cuando cambies fuentes, iconos o el manifiesto.
+- `index.html`: la app (HTML, CSS y un único script).
+- `tarjeta.html`: la tarjeta de visita. Usa `vendor/qrcode.js` (qrcode-generator 1.4.4, Kazuhiko Arase, licencia MIT).
+- `sw.js`: service worker. Red primero para las páginas, caché primero para fuentes, iconos y la librería del QR.
+  Sube `CACHE` cuando cambies cualquiera de ellos.
 - `fonts/`: Poppins e IBM Plex Mono (licencia OFL, incluida).
-- `scripts/csp.mjs`: recalcula la huella del script en la Content-Security-Policy.
-  **Ejecútalo tras cualquier cambio en el script** (`npm run csp`); si no, el navegador lo bloquea.
+- `scripts/csp.mjs`: recalcula la huella de los scripts en la Content-Security-Policy de las dos páginas.
+  **Ejecútalo tras cualquier cambio en un script** (`npm run csp`); si no, el navegador lo bloquea.
+
+Las fotos de los albaranes se guardan reducidas (1.400 px de lado como mucho) en IndexedDB del propio móvil.
 
 ## Verificación
 
@@ -40,8 +46,13 @@ npm run csp
 CHROMIUM_PATH=/ruta/a/chromium npm test   # sin CHROMIUM_PATH usa el navegador de Playwright
 ```
 
-La batería (`tests/demo.spec.mjs`, Playwright + axe) prueba con el reloj fijado el
-30-09-2026 en móvil (375 y 390 px), tableta (768), portátil (1024) y escritorio (1440):
-emisión completa, persistencia, datos corruptos, cambio de mes, cierre y tarifas, control de
-huecos, accesibilidad WCAG 2.1 AA, zoom de iOS, objetivos táctiles de 44 px, teclado,
-impresión, uso sin conexión y llegada de versiones nuevas.
+La batería (`tests/`, Playwright + axe) prueba con el reloj fijado el 30-09-2026 en móvil (375 y 390 px),
+tableta (768), portátil (1024) y escritorio (1440):
+
+- `demo.spec.mjs`: la demo completa (emisión, control, cierre, persistencia, sin conexión, actualizaciones).
+- `real.spec.mjs`: arranque vacío, alta de obras y personal (también pegando desde Excel), cambios de obra,
+  Google Maps, albarán en papel con foto, números repetidos, anulación, cruce visitas–albaranes, EPIs,
+  parte semanal (tabla, Excel, PDF, envío), copia de seguridad y datos corruptos.
+- `tarjeta.spec.mjs`: lee los QR con un lector real (jsQR) y comprueba las medidas de los PDF.
+
+En todas: accesibilidad WCAG 2.1 AA, objetivos táctiles de 44 px, sin zoom en iPhone y sin desbordes.
