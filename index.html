@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex, nofollow, noarchive">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-gP0DoDoQ0Xyrso/N1Yk7Qrv3teIIwsU0SIG8uzy1fvI='; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; manifest-src 'self'; worker-src 'self'; connect-src 'self'; base-uri 'none'; form-action 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-dB9czfBGtXYbg635tYC+Q3LaMtGJM5qqnogBc/ItRTw='; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; manifest-src 'self'; worker-src 'self'; connect-src 'self'; base-uri 'none'; form-action 'none'">
 <title>Albarán de Horas Amra</title>
 <meta name="description" content="Control de albaranes de horas, obras, personal y visitas. Herramienta de ROVIK.IA.">
 <meta name="theme-color" content="#0B0E10">
@@ -545,6 +545,33 @@ input[type=url]:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3
   .inf-t tfoot td{font-weight:700;background:#F4F4F4}
   .inf-p{margin:0;padding-left:16px}
 }
+
+/* presupuesto: preguntas de la reunión, coste por hora y m², oferta */
+.cuenta{margin-left:auto;font-size:12px;font-weight:500;color:var(--ink-2);letter-spacing:.02em}
+.pgrupo{margin:22px 0 10px;font-size:11px;font-weight:600;letter-spacing:.15em;text-transform:uppercase;color:var(--accent)}
+.pgrupo:first-child{margin-top:4px}
+.pq{padding:10px 0;border-top:1px solid var(--line)}
+.pq:first-of-type{border-top:0}
+.pq label{display:block;margin-bottom:6px;font-size:13.5px;font-weight:400;line-height:1.4}
+.pq textarea{min-height:46px}
+.chk{display:flex;align-items:center;gap:12px;min-height:44px;padding:4px 0;font-size:13.5px;line-height:1.4;cursor:pointer}
+.chk input{width:22px;height:22px;margin:0;flex:0 0 auto;accent-color:var(--accent)}
+.pre-res{margin:14px 0 0;padding:0}
+.pre-res div{display:flex;justify-content:space-between;align-items:baseline;gap:12px;padding:9px 0;border-bottom:1px solid var(--line);font-size:13.5px}
+.pre-res dt{color:var(--ink-2)}
+.pre-res dd{margin:0;text-align:right;font-family:"IBM Plex Mono",monospace;font-weight:600;font-variant-numeric:tabular-nums}
+.pre-res .fin{border-bottom:0;padding-top:12px}
+.pre-res .fin dt{color:var(--ink);font-weight:600}
+.pre-res .fin dd{font-size:18px;color:var(--accent)}
+.plin{margin-top:10px;padding:12px;border:1px solid var(--line);border-radius:10px;background:var(--ground)}
+.pl-g{display:grid;grid-template-columns:1fr 92px 1fr;gap:8px;margin-top:10px}
+.pl-g > *{min-width:0}
+.pl-imp{margin:10px 0 0;text-align:right;font-family:"IBM Plex Mono",monospace;font-size:15px;font-weight:600;font-variant-numeric:tabular-nums}
+.plin .btnrow{margin-top:10px}
+.total{display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin-top:16px;padding-top:12px;border-top:2px solid var(--line-strong);font-weight:600}
+.total .v{font-family:"IBM Plex Mono",monospace;font-size:22px;font-variant-numeric:tabular-nums;color:var(--accent)}
+.respaldo{margin-top:10px;font-size:13px}
+input[aria-invalid="true"]{border-color:var(--bad)}
 </style>
 </head>
 <body>
@@ -556,6 +583,7 @@ input[type=url]:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3
     </div>
     <nav class="tabs" role="tablist" aria-label="Pantallas">
       <button type="button" role="tab" id="t-nuevo" aria-selected="true" aria-controls="s-nuevo" data-go="nuevo">Nuevo albarán</button>
+      <button type="button" role="tab" id="t-presupuesto" aria-selected="false" aria-controls="s-presupuesto" tabindex="-1" data-go="presupuesto" data-solo="real">Presupuesto</button>
       <button type="button" role="tab" id="t-obras" aria-selected="false" aria-controls="s-obras" tabindex="-1" data-go="obras">Obras</button>
       <button type="button" role="tab" id="t-visitas" aria-selected="false" aria-controls="s-visitas" tabindex="-1" data-go="visitas">Visitas</button>
       <button type="button" role="tab" id="t-semana" aria-selected="false" aria-controls="s-semana" tabindex="-1" data-go="semana">Semana</button>
@@ -908,6 +936,100 @@ input[type=url]:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3
     </div>
   </section>
 
+  <!-- ===== PRESUPUESTO ===== -->
+  <section id="s-presupuesto" role="tabpanel" aria-labelledby="t-presupuesto" hidden>
+    <h2 class="screen-title">Presupuesto</h2>
+    <p class="screen-sub">Para llevar la reunión y sacar la oferta en el momento. Todo se guarda solo en este móvil.</p>
+    <div class="stack">
+
+      <details class="card pad fold" id="pqPreg" open>
+        <summary>Preguntas para la reunión<span class="cuenta" id="pqCuenta"></span></summary>
+        <div id="pqLista"></div>
+        <div class="btnrow" style="margin-top:14px">
+          <button class="btn small" type="button" id="pqNotasCopiar">Copiar mis notas</button>
+          <button class="btn small" type="button" id="pqNotasComp" hidden>Compartir</button>
+        </div>
+        <p class="hint" id="pqNotasHint" aria-live="polite"></p>
+        <textarea class="respaldo" id="pqNotasResp" readonly hidden aria-label="Notas para copiar a mano" rows="6"></textarea>
+      </details>
+
+      <details class="card pad fold" id="pqCoste">
+        <summary>Coste de la hora y precio por m²</summary>
+        <p class="hint" style="margin-top:0">Rellena lo que te vaya diciendo. Lo que falte se avisa abajo: nada se da por supuesto.</p>
+        <p class="pgrupo">Coste de la hora</p>
+        <div class="duo">
+          <div><label class="label" for="pcSOf">Oficial 1.ª €/año</label><input type="text" inputmode="decimal" id="pcSOf" autocomplete="off"></div>
+          <div><label class="label" for="pcSPe">Peón ord. €/año</label><input type="text" inputmode="decimal" id="pcSPe" autocomplete="off"></div>
+        </div>
+        <p class="hint">Convenio de construcción de Barcelona 2026 (BOPB del 17-03-2026), según obrania.es. Otra fuente daba 31.290,43 € para el oficial de 1.ª: contrástalo con el anexo del BOPB.</p>
+        <div class="duo" style="margin-top:12px">
+          <div><label class="label" for="pcHoras">Horas al año</label><input type="text" inputmode="decimal" id="pcHoras" autocomplete="off"></div>
+          <div><label class="label" for="pcSS">SS empresa %</label><input type="text" inputmode="decimal" id="pcSS" autocomplete="off" placeholder="Su gestoría"></div>
+        </div>
+        <div class="duo" style="margin-top:12px">
+          <div><label class="label" for="pcOtros">Otros €/hora</label><input type="text" inputmode="decimal" id="pcOtros" autocomplete="off" placeholder="PRL, herramienta…"></div>
+          <div><label class="label" for="pcGG">Gastos gen. %</label><input type="text" inputmode="decimal" id="pcGG" autocomplete="off" placeholder="Obra pública: 13–17"></div>
+        </div>
+        <div class="duo" style="margin-top:12px">
+          <div><label class="label" for="pcBI">Beneficio %</label><input type="text" inputmode="decimal" id="pcBI" autocomplete="off" placeholder="Obra pública: 6"></div>
+          <div></div>
+        </div>
+        <p class="pgrupo">Cuadrilla</p>
+        <div class="duo">
+          <div><label class="label" for="pcNOf">Oficiales</label><input type="text" inputmode="decimal" id="pcNOf" autocomplete="off"></div>
+          <div><label class="label" for="pcNPe">Peones</label><input type="text" inputmode="decimal" id="pcNPe" autocomplete="off"></div>
+        </div>
+        <div class="duo" style="margin-top:12px">
+          <div><label class="label" for="pcJor">Jornada (horas)</label><input type="text" inputmode="decimal" id="pcJor" autocomplete="off"></div>
+          <div><label class="label" for="pcRend">m² por día</label><input type="text" inputmode="decimal" id="pcRend" autocomplete="off" placeholder="De la cuadrilla"></div>
+        </div>
+        <div class="duo" style="margin-top:12px">
+          <div><label class="label" for="pcMat">Material €/m²</label><input type="text" inputmode="decimal" id="pcMat" autocomplete="off" placeholder="Si lo pone Amra"></div>
+          <div></div>
+        </div>
+        <dl class="pre-res" id="pqRes" aria-live="polite"></dl>
+        <p class="hint" id="pqAviso" aria-live="polite"></p>
+        <p class="hint">Precio = coste directo + gastos generales + beneficio, calculados los dos sobre el coste directo.</p>
+      </details>
+
+      <details class="card pad fold" id="pqOferta" open>
+        <summary>Oferta<span class="cuenta" id="ofResumen"></span></summary>
+        <div class="duo">
+          <div><label class="label" for="ofSel">Oferta</label><select id="ofSel" class="field"></select></div>
+          <div class="btnrow" style="align-items:flex-end;flex-wrap:nowrap">
+            <button class="btn small" type="button" id="ofNueva" aria-label="Nueva oferta">Nueva</button>
+            <button class="btn small danger" type="button" id="ofBorrar" aria-label="Borrar esta oferta">Borrar</button>
+          </div>
+        </div>
+        <div id="ofCuerpo">
+          <label class="label" for="ofCli" style="margin-top:14px">Cliente</label>
+          <input type="text" id="ofCli" maxlength="80" autocomplete="off" placeholder="Constructora o promotora">
+          <label class="label" for="ofObra" style="margin-top:12px">Obra y trabajo</label>
+          <input type="text" id="ofObra" maxlength="120" autocomplete="off" placeholder="Qué se ofrece y dónde">
+          <div class="duo" style="margin-top:12px">
+            <div><label class="label" for="ofFecha">Fecha</label><input type="date" id="ofFecha"></div>
+            <div><label class="label" for="ofVal">Validez (días)</label><input type="text" inputmode="numeric" id="ofVal" autocomplete="off"></div>
+          </div>
+          <p class="pgrupo">Partidas</p>
+          <div id="ofLineas"></div>
+          <label class="label" for="ofAdd" style="margin-top:14px">Añadir partida</label>
+          <select id="ofAdd" class="field"></select>
+          <div class="total"><span>Total sin IVA</span><span class="v" id="ofTotal">0,00 €</span></div>
+          <p class="hint">Entre empresas de construcción se factura sin IVA, por inversión del sujeto pasivo (art. 84.uno.2.º f de la Ley del IVA). Confírmalo con su gestoría.</p>
+          <label class="label" for="ofCond" style="margin-top:14px">Condiciones</label>
+          <textarea id="ofCond" rows="5" maxlength="1500" placeholder="Material, medición, andamios, forma de pago…"></textarea>
+          <button class="btn small" type="button" id="ofCondTipo" style="margin-top:10px">Insertar condiciones tipo</button>
+          <div class="btnrow" style="margin-top:14px">
+            <button class="btn primary" type="button" id="ofCopiar">Copiar la oferta</button>
+            <button class="btn" type="button" id="ofComp" hidden>Compartir</button>
+          </div>
+          <p class="hint" id="ofHint" aria-live="polite"></p>
+          <textarea class="respaldo" id="ofResp" readonly hidden aria-label="Oferta para copiar a mano" rows="8"></textarea>
+        </div>
+      </details>
+    </div>
+  </section>
+
   <!-- ===== AJUSTES ===== -->
   <section id="s-ajustes" role="tabpanel" aria-labelledby="t-ajustes" hidden>
     <h2 class="screen-title">Ajustes</h2>
@@ -1064,13 +1186,14 @@ var state = {
   semObra:"",
   cierreMes:"",
   visObra:"",
-  visPres:{}
+  visPres:{},
+  pre:null              // real: presupuesto (preguntas de la reunión, coste por hora y m², ofertas)
 };
 
 function save(){
   var d = {v:2, emisor:state.emisor, tarifas:state.tarifas, obras:OBRAS, plantilla:PLANTILLA, series:state.series,
            albaranes:state.albaranes, visitas:state.visitas, pedidos:state.pedidos, movs:state.movs, enviadas:state.enviadas};
-  if(REAL){ d.yo = state.yo; d.admin = state.admin; d.serie = state.serie; d.inicio = state.inicio; }
+  if(REAL){ d.yo = state.yo; d.admin = state.admin; d.serie = state.serie; d.inicio = state.inicio; d.pre = state.pre; }
   else{ d.jornadas = state.jornadas; d.mes = state.mes; d.generado = state.generado; }
   try{ localStorage.setItem(KEY, JSON.stringify(d)); return true; }catch(e){ return false; }
 }
@@ -1143,6 +1266,7 @@ function load(){
     if(d.admin && typeof d.admin === "object") state.admin = {email:txt(d.admin.email,120), tel:txt(d.admin.tel,20)};
     if(d.serie === "unica" || d.serie === "obra") state.serie = d.serie;
     if(typeof d.inicio === "string" && RE_FECHA.test(d.inicio)) state.inicio = d.inicio;
+    state.pre = preLimpia(d.pre);
   }
 
   if(Array.isArray(d.pedidos)) state.pedidos = d.pedidos.filter(pedidoValido).map(limpiaPedido);
@@ -1335,7 +1459,7 @@ function preparaDatos(){
 }
 
 /* ---------- navegación ---------- */
-var PANTALLAS = ["nuevo","obras","visitas","semana","control","lista","cierre","ajustes"].filter(function(p){ return !(REAL && p === "cierre"); });
+var PANTALLAS = ["nuevo","presupuesto","obras","visitas","semana","control","lista","cierre","ajustes"].filter(function(p){ return !(REAL && p === "cierre") && !(DEMO && p === "presupuesto"); });
 function ir(to, conFoco){
   PANTALLAS.forEach(function(p){
     var tab = document.getElementById("t-"+p);
@@ -1347,6 +1471,7 @@ function ir(to, conFoco){
   if(activa.scrollIntoView) activa.scrollIntoView({block:"nearest", inline:"nearest"});
   if(conFoco) activa.focus();
   if(to === "nuevo"){ pintaObras(); pintaCrew(); pintaTipo(); }
+  if(to === "presupuesto") pintaPresupuesto();
   if(to === "obras") pintaObrasPantalla();
   if(to === "visitas") pintaVisitas();
   if(to === "semana") pintaSemana();
@@ -2897,7 +3022,7 @@ document.getElementById("restaurarIn").addEventListener("change", function(e){
   }).catch(function(){ h.className = "hint bad"; h.textContent = "Ese archivo no es una copia de esta app."; });
 });
 document.getElementById("borrarReal").addEventListener("click", function(){
-  if(!window.confirm("¿Borrar todas tus obras, personal, albaranes y visitas de este móvil? No se puede deshacer.")) return;
+  if(!window.confirm("¿Borrar todas tus obras, personal, albaranes, visitas y presupuestos de este móvil? No se puede deshacer.")) return;
   try{ localStorage.removeItem(KEY); }catch(e){}
   borraFotos("real:").then(function(){ location.reload(); });
 });
@@ -2915,6 +3040,431 @@ document.getElementById("reset").addEventListener("click", function(){
   pintaLista(); pintaCierre(); pintaControl();
   ir("control");
 });
+
+/* ---------- presupuesto (solo en "tus datos") ----------
+   Preguntas para la reunión, coste de la hora y precio por m², y ofertas por partidas.
+   Nada se da por supuesto: los porcentajes y el rendimiento empiezan vacíos y se avisa de lo que falta. */
+var UNIDADES = ["m²","ml","ud","h","día","global"];
+var PRE_PREGUNTAS = [
+  {g:"Cómo trabaja hoy", q:[
+    {k:"tarHora", t:"Tarifa que cobra hoy por hora (oficial y peón)"},
+    {k:"tarM2", t:"Precio que cobra hoy por m² de colocación (suelo y alicatado)"},
+    {k:"rend", t:"Cuántos m² saca una cuadrilla al día, según el formato de la pieza"},
+    {k:"ss", t:"Porcentaje de Seguridad Social de empresa (que lo confirme su gestoría)"}
+  ]},
+  {g:"Lo que le piden para aceptarle", q:[
+    {k:"rea", t:"¿Está inscrito en el REA? ¿Desde cuándo?"},
+    {k:"indef", t:"¿Cuántos de la plantilla son indefinidos? La ley pide un mínimo del 10 % los primeros 18 meses, 20 % hasta el mes 36 y 30 % después"},
+    {k:"cae", t:"Plataforma de coordinación que le piden (Nalanda, Obralia, otra)"},
+    {k:"seguro", t:"Seguro de responsabilidad civil, mutua y servicio de prevención"}
+  ]},
+  {g:"Clientes y cobro", q:[
+    {k:"clientes", t:"Constructoras y promotoras con las que trabaja hoy, y con cuáles quiere trabajar"},
+    {k:"pago", t:"Cuánto tardan en pagarle"},
+    {k:"sociedad", t:"Qué sociedad del grupo emplea a la plantilla y cuál factura las horas; quién firma por cada una"},
+    {k:"decide", t:"Quién interviene en las decisiones de contratación"}
+  ]},
+  {g:"Qué quiere", q:[
+    {k:"objetivo", t:"Qué sería un buen resultado a 30 días"},
+    {k:"obra", t:"Tipo de obra, zona y tamaño que busca"}
+  ]}
+];
+var PRE_CIERRE = [
+  {k:"c1", t:"Un albarán suyo en blanco y otro relleno (con su permiso)"},
+  {k:"c2", t:"Lista de obras activas con código y dirección"},
+  {k:"c3", t:"Su ok al acuerdo de confidencialidad y al encargo de tratamiento RGPD"},
+  {k:"c4", t:"Fecha de la siguiente reunión"}
+];
+var PRE_PARTIDAS = [
+  {c:"Colocación de pavimento cerámico", u:"m²"},
+  {c:"Colocación de alicatado en paredes", u:"m²"},
+  {c:"Rodapié cerámico", u:"ml"},
+  {c:"Preparación y nivelación del soporte", u:"m²"},
+  {c:"Rejuntado y limpieza", u:"m²"},
+  {c:"Remates, cantoneras y piezas especiales", u:"ml"},
+  {c:"Mano de obra por horas · oficial 1.ª", u:"h"},
+  {c:"Mano de obra por horas · peón", u:"h"}
+];
+var PRE_CONDICIONES = "Material, adhesivos y juntas: ______ (los pone el cliente / los pone Amra).\n"+
+  "Medición: contradictoria al terminar cada fase.\n"+
+  "Andamios, grúa y acopio en obra: a cargo del cliente.\n"+
+  "Agua, luz y local para guardar material: a cargo del cliente.\n"+
+  "No incluye: preparación del soporte ni reparación de desperfectos de otros gremios.\n"+
+  "Forma de pago: ______ días desde la factura.";
+// Convenio de construcción de Barcelona 2026 (BOPB 17-03-2026), según obrania.es. Hay que contrastarlo con el anexo.
+var PRE_CALC_DEF = {sOf:32178.55, sPe:27351.74, horas:1736, ss:null, otros:null, gg:null, bi:null, nOf:1, nPe:0, jornada:8, rend:null, mat:null};
+var PRE_CAMPOS = [["pcSOf","sOf"],["pcSPe","sPe"],["pcHoras","horas"],["pcSS","ss"],["pcOtros","otros"],["pcGG","gg"],["pcBI","bi"],
+                  ["pcNOf","nOf"],["pcNPe","nPe"],["pcJor","jornada"],["pcRend","rend"],["pcMat","mat"]];
+var PRE_MAX_OFERTAS = 40, PRE_MAX_LINEAS = 60;
+
+function preDefecto(){ return {calc:Object.assign({}, PRE_CALC_DEF), notas:{}, hechos:{}, ofertas:[], actual:""}; }
+function preNum(x, max){ return esNum(x) && x >= 0 && x <= max ? x : null; }
+function preLimpia(p){
+  var r = preDefecto();
+  if(!p || typeof p !== "object") return r;
+  var c = p.calc && typeof p.calc === "object" ? p.calc : {};
+  PRE_CAMPOS.forEach(function(f){
+    var k = f[1];
+    if(c[k] === null) r.calc[k] = null;
+    else if(esNum(c[k]) && c[k] >= 0 && c[k] <= 1e7) r.calc[k] = c[k];
+  });
+  var n = p.notas && typeof p.notas === "object" ? p.notas : {};
+  PRE_PREGUNTAS.forEach(function(g){ g.q.forEach(function(q){ var t = txt(n[q.k], 600); if(t) r.notas[q.k] = t; }); });
+  var h = p.hechos && typeof p.hechos === "object" ? p.hechos : {};
+  PRE_CIERRE.forEach(function(q){ if(h[q.k] === true) r.hechos[q.k] = true; });
+  if(Array.isArray(p.ofertas)) p.ofertas.slice(0, PRE_MAX_OFERTAS).forEach(function(o){
+    if(!o || typeof o !== "object" || typeof o.id !== "string" || !o.id) return;
+    var ps = [];
+    if(Array.isArray(o.partidas)) o.partidas.slice(0, PRE_MAX_LINEAS).forEach(function(l){
+      if(!l || typeof l !== "object" || typeof l.id !== "string" || !l.id) return;
+      ps.push({id:l.id.slice(0,40), c:txt(l.c,100), u:UNIDADES.indexOf(l.u) >= 0 ? l.u : "m²", q:preNum(l.q,1e7), p:preNum(l.p,1e7)});
+    });
+    r.ofertas.push({id:o.id.slice(0,40), cliente:txt(o.cliente,80), obra:txt(o.obra,120),
+      fecha:typeof o.fecha === "string" && RE_FECHA.test(o.fecha) ? o.fecha : hoyISO(),
+      validez:preNum(o.validez,365), cond:txt(o.cond,1500), partidas:ps});
+  });
+  var hay = typeof p.actual === "string" && r.ofertas.some(function(o){ return o.id === p.actual; });
+  r.actual = hay ? p.actual : (r.ofertas[0] ? r.ofertas[0].id : "");
+  return r;
+}
+state.pre = preDefecto();
+
+/* número escrito a la española: "1.736", "18,54" y también "18.54" */
+function numEs(s){
+  if(typeof s === "number") return isFinite(s) && s >= 0 ? s : null;
+  var t = String(s == null ? "" : s).replace(/[\s€%]/g, "");
+  if(!t) return null;
+  if(t.indexOf(",") >= 0) t = t.replace(/\./g, "").replace(",", ".");
+  else if(/^\d{1,3}(\.\d{3})+$/.test(t)) t = t.replace(/\./g, "");
+  if(!/^\d+(\.\d+)?$/.test(t)) return null;
+  var v = parseFloat(t);
+  return isFinite(v) && v <= 1e7 ? v : null;
+}
+function nz(n){ return nf(n, n % 1 ? 2 : 0); }
+function redondea(n){ return Math.round(n * 100) / 100; }
+function eurO(n){ return n == null ? "—" : eur(n); }
+
+/* coste de una hora: salario del convenio / horas efectivas, más Seguridad Social de empresa y otros costes.
+   Precio = coste directo + gastos generales + beneficio, ambos sobre el coste directo. */
+function preHora(c, sal){
+  if(!(sal > 0) || !(c.horas > 0)) return null;
+  var directo = sal / c.horas * (1 + (c.ss || 0) / 100) + (c.otros || 0);
+  return {directo:directo, venta:directo * (1 + (c.gg || 0) / 100 + (c.bi || 0) / 100)};
+}
+function preCalculo(c){
+  var of = preHora(c, c.sOf), pe = preHora(c, c.sPe);
+  var nOf = c.nOf || 0, nPe = c.nPe || 0, jor = c.jornada || 0, dia = null, m2d = null, m2v = null;
+  if(jor > 0 && nOf + nPe > 0 && (nOf === 0 || of) && (nPe === 0 || pe)){
+    dia = jor * (nOf * (of ? of.directo : 0) + nPe * (pe ? pe.directo : 0));
+    if(c.rend > 0){
+      m2d = dia / c.rend + (c.mat || 0);
+      m2v = m2d * (1 + (c.gg || 0) / 100 + (c.bi || 0) / 100);
+    }
+  }
+  return {of:of, pe:pe, dia:dia, m2d:m2d, m2v:m2v};
+}
+function importeLinea(l){ return redondea((l.q || 0) * (l.p || 0)); }
+function totalOferta(o){ return redondea(o.partidas.reduce(function(s, l){ return s + importeLinea(l); }, 0)); }
+function precioCalculado(l){
+  var R = preCalculo(state.pre.calc);
+  if(l.u === "h") return /pe[oó]n/i.test(l.c) ? (R.pe && R.pe.venta) : (R.of && R.of.venta);
+  if(l.u === "m²") return R.m2v;
+  return null;
+}
+
+function textoOferta(o){
+  var L = ["Oferta"+(o.cliente ? " · "+o.cliente : "")+(o.obra ? " · "+o.obra : ""),
+           "Fecha: "+fechaCorta(o.fecha)+(o.validez ? " · Válida "+nz(o.validez)+" días" : ""), ""];
+  o.partidas.forEach(function(l){
+    L.push("· "+(l.c || "Partida")+": "+(l.q == null ? "—" : nz(l.q)+" "+l.u)+" × "+(l.p == null ? "—" : eur(l.p))+" = "+eur(importeLinea(l)));
+  });
+  L.push("", "Total sin IVA: "+eur(totalOferta(o)));
+  if(o.cond.trim()) L.push("", "Condiciones:", o.cond.trim());
+  L.push("", state.emisor+(state.yo ? " · "+state.yo : ""));
+  return L.join("\n");
+}
+function textoNotas(){
+  var P = state.pre, L = ["Notas de la reunión · "+fechaCorta(hoyISO())];
+  PRE_PREGUNTAS.forEach(function(g){
+    L.push("", g.g);
+    g.q.forEach(function(q){ L.push("· "+q.t+": "+(P.notas[q.k] ? P.notas[q.k].replace(/\s*\n\s*/g, " / ") : "—")); });
+  });
+  L.push("", "Pedir antes de irme");
+  PRE_CIERRE.forEach(function(q){ L.push((P.hechos[q.k] ? "[x] " : "[ ] ")+q.t); });
+  return L.join("\n");
+}
+function copiaTexto(t){
+  if(navigator.clipboard && navigator.clipboard.writeText) return navigator.clipboard.writeText(t);
+  return new Promise(function(ok, ko){
+    var ta = document.createElement("textarea");
+    ta.value = t; ta.setAttribute("readonly", ""); ta.style.position = "fixed"; ta.style.opacity = "0";
+    document.body.appendChild(ta); ta.select();
+    var hecho = false; try{ hecho = document.execCommand("copy"); }catch(e){}
+    ta.remove();
+    if(hecho) ok(); else ko(new Error("copia"));
+  });
+}
+function preAviso(id, texto, bien){ var h = document.getElementById(id); h.className = "hint"+(bien === true ? " ok" : bien === false ? " bad" : ""); h.textContent = texto; }
+function copiaConAviso(texto, hintId, respId, queEs){
+  copiaTexto(texto).then(function(){
+    document.getElementById(respId).hidden = true;
+    preAviso(hintId, queEs+" copiada. Pégala en WhatsApp o en Notas.", true);
+  }).catch(function(){
+    var r = document.getElementById(respId);
+    r.value = texto; r.hidden = false; r.focus(); r.select();
+    preAviso(hintId, "No se ha podido copiar solo. Está el texto debajo: selecciónalo y cópialo.", false);
+  });
+}
+function compartirTexto(texto, titulo, hintId){
+  navigator.share({title:titulo, text:texto}).then(function(){ preAviso(hintId, "Enviado.", true); })
+    .catch(function(e){ if(!e || e.name !== "AbortError") preAviso(hintId, "No se ha podido compartir. Usa Copiar.", false); });
+}
+
+/* preguntas de la reunión */
+function cuentaPreguntas(){
+  var total = 0, hechas = 0;
+  PRE_PREGUNTAS.forEach(function(g){ g.q.forEach(function(q){ total++; if(state.pre.notas[q.k]) hechas++; }); });
+  document.getElementById("pqCuenta").textContent = hechas+" de "+total;
+}
+function pintaPreguntas(){
+  var h = "";
+  PRE_PREGUNTAS.forEach(function(g){
+    h += '<p class="pgrupo">'+esc(g.g)+'</p>';
+    g.q.forEach(function(q){
+      h += '<div class="pq"><label for="pq-'+q.k+'">'+esc(q.t)+'</label>'+
+           '<textarea id="pq-'+q.k+'" data-k="'+q.k+'" rows="2" maxlength="600" autocomplete="off">'+esc(state.pre.notas[q.k] || "")+'</textarea></div>';
+    });
+  });
+  h += '<p class="pgrupo">Pedir antes de irme</p>';
+  PRE_CIERRE.forEach(function(q){
+    h += '<label class="chk"><input type="checkbox" data-c="'+q.k+'"'+(state.pre.hechos[q.k] ? " checked" : "")+'><span>'+esc(q.t)+'</span></label>';
+  });
+  document.getElementById("pqLista").innerHTML = h;
+  cuentaPreguntas();
+}
+document.getElementById("pqLista").addEventListener("input", function(e){
+  var k = e.target.dataset && e.target.dataset.k;
+  if(!k) return;
+  var t = e.target.value.slice(0, 600);
+  if(t.trim()) state.pre.notas[k] = t; else delete state.pre.notas[k];
+  save(); cuentaPreguntas();
+});
+document.getElementById("pqLista").addEventListener("change", function(e){
+  var k = e.target.dataset && e.target.dataset.c;
+  if(!k) return;
+  if(e.target.checked) state.pre.hechos[k] = true; else delete state.pre.hechos[k];
+  save();
+});
+document.getElementById("pqNotasCopiar").addEventListener("click", function(){
+  copiaConAviso(textoNotas(), "pqNotasHint", "pqNotasResp", "La nota");
+});
+document.getElementById("pqNotasComp").addEventListener("click", function(){ compartirTexto(textoNotas(), "Notas de la reunión", "pqNotasHint"); });
+
+/* coste de la hora y precio por m² */
+function filaRes(t, v, fin){ return '<div'+(fin ? ' class="fin"' : '')+'><dt>'+t+'</dt><dd>'+v+'</dd></div>'; }
+function pintaCoste(){
+  var c = state.pre.calc, R = preCalculo(c), falta = [];
+  document.getElementById("pqRes").innerHTML =
+    filaRes("Oficial 1.ª · coste por hora", eurO(R.of && R.of.directo)) +
+    filaRes("Oficial 1.ª · precio por hora", eurO(R.of && R.of.venta)) +
+    filaRes("Peón · coste por hora", eurO(R.pe && R.pe.directo)) +
+    filaRes("Peón · precio por hora", eurO(R.pe && R.pe.venta)) +
+    filaRes("Cuadrilla · coste por día", eurO(R.dia)) +
+    filaRes("Coste por m²", eurO(R.m2d)) +
+    filaRes("Precio por m² (sin IVA)", eurO(R.m2v), true);
+  if(c.ss == null) falta.push("la Seguridad Social de empresa (el coste real es mayor)");
+  if(c.gg == null) falta.push("los gastos generales");
+  if(c.bi == null) falta.push("el beneficio");
+  if(!(c.rend > 0)) falta.push("los m² por día de la cuadrilla (sin ellos no hay precio por m²)");
+  preAviso("pqAviso", falta.length ? "Falta poner "+falta.join(", ")+"." : "Todos los datos puestos. Contrástalos con su gestoría antes de ofertar.", falta.length ? undefined : true);
+}
+PRE_CAMPOS.forEach(function(f){
+  var el = document.getElementById(f[0]), k = f[1];
+  el.addEventListener("input", function(){
+    var vacio = el.value.trim() === "", v = numEs(el.value);
+    el.setAttribute("aria-invalid", !vacio && v == null ? "true" : "false");
+    state.pre.calc[k] = v;
+    save(); pintaCoste();
+  });
+  el.addEventListener("change", function(){
+    if(el.value.trim() === "" || state.pre.calc[k] != null){
+      el.value = state.pre.calc[k] == null ? "" : nz(state.pre.calc[k]);
+      el.setAttribute("aria-invalid", "false");
+    }
+  });
+});
+
+/* oferta */
+function ofertaActual(){
+  var P = state.pre;
+  for(var i = 0; i < P.ofertas.length; i++) if(P.ofertas[i].id === P.actual) return P.ofertas[i];
+  return null;
+}
+function lineaDe(o, id){ for(var i = 0; i < o.partidas.length; i++) if(o.partidas[i].id === id) return o.partidas[i]; return null; }
+function nombreOferta(o){ return (o.cliente || "Sin cliente")+(o.obra ? " · "+o.obra : "")+" · "+diaMes(o.fecha); }
+function nuevaOferta(){
+  if(state.pre.ofertas.length >= PRE_MAX_OFERTAS) return null;
+  var o = {id:nuevoId("o"), cliente:"", obra:"", fecha:hoyISO(), validez:null, cond:"", partidas:[]};
+  state.pre.ofertas.push(o); state.pre.actual = o.id; save();
+  return o;
+}
+function refrescaTotales(o){
+  var t = eur(totalOferta(o));
+  document.getElementById("ofTotal").textContent = t;
+  document.getElementById("ofResumen").textContent = o.partidas.length+(o.partidas.length === 1 ? " partida · " : " partidas · ")+t;
+}
+function pintaLineas(o){
+  document.getElementById("ofLineas").innerHTML = o.partidas.map(function(l, i){
+    var n = i + 1, id = esc(l.id);
+    return '<div class="plin" data-id="'+id+'">'+
+      '<label class="sr" for="plc-'+id+'">Concepto de la partida '+n+'</label>'+
+      '<input type="text" id="plc-'+id+'" data-f="c" maxlength="100" autocomplete="off" placeholder="Concepto" value="'+esc(l.c)+'">'+
+      '<div class="pl-g">'+
+        '<div><label class="label" for="plq-'+id+'">Cantidad<span class="sr"> de la partida '+n+'</span></label>'+
+          '<input type="text" inputmode="decimal" id="plq-'+id+'" data-f="q" autocomplete="off" value="'+(l.q == null ? "" : esc(nz(l.q)))+'"></div>'+
+        '<div><label class="label" for="plu-'+id+'">Unidad<span class="sr"> de la partida '+n+'</span></label>'+
+          '<select class="field" id="plu-'+id+'" data-f="u">'+UNIDADES.map(function(u){ return '<option'+(u === l.u ? " selected" : "")+'>'+esc(u)+'</option>'; }).join("")+'</select></div>'+
+        '<div><label class="label" for="plp-'+id+'">Precio €/ud<span class="sr"> de la partida '+n+'</span></label>'+
+          '<input type="text" inputmode="decimal" id="plp-'+id+'" data-f="p" autocomplete="off" value="'+(l.p == null ? "" : esc(nz(l.p)))+'"></div>'+
+      '</div>'+
+      '<p class="pl-imp" id="pli-'+id+'">'+eur(importeLinea(l))+'</p>'+
+      '<div class="btnrow">'+
+        '<button type="button" class="btn small" data-act="calc" aria-label="Usar el precio calculado en la partida '+n+'">Usar precio calculado</button>'+
+        '<button type="button" class="btn small danger" data-act="del" aria-label="Quitar la partida '+n+'">Quitar</button>'+
+      '</div></div>';
+  }).join("");
+}
+function pintaOferta(){
+  var P = state.pre, o = ofertaActual(), sel = document.getElementById("ofSel");
+  sel.innerHTML = P.ofertas.map(function(x){ return '<option value="'+esc(x.id)+'"'+(x.id === P.actual ? " selected" : "")+'>'+esc(nombreOferta(x))+'</option>'; }).join("");
+  document.getElementById("ofCuerpo").hidden = !o;
+  document.getElementById("ofBorrar").disabled = !o;
+  document.getElementById("ofNueva").disabled = P.ofertas.length >= PRE_MAX_OFERTAS;
+  if(!o){ document.getElementById("ofResumen").textContent = ""; return; }
+  document.getElementById("ofCli").value = o.cliente;
+  document.getElementById("ofObra").value = o.obra;
+  document.getElementById("ofFecha").value = o.fecha;
+  document.getElementById("ofVal").value = o.validez == null ? "" : nz(o.validez);
+  document.getElementById("ofCond").value = o.cond;
+  preAviso("ofHint", "");
+  document.getElementById("ofResp").hidden = true;
+  pintaLineas(o); refrescaTotales(o);
+  var add = document.getElementById("ofAdd");
+  add.innerHTML = '<option value="">Elige una partida…</option>'+
+    PRE_PARTIDAS.map(function(p, i){ return '<option value="'+i+'">'+esc(p.c)+' ('+esc(p.u)+')</option>'; }).join("")+
+    '<option value="otra">Otra partida, en blanco</option>';
+}
+function pintaPresupuesto(){
+  if(!state.pre.ofertas.length) nuevaOferta();
+  pintaPreguntas();
+  PRE_CAMPOS.forEach(function(f){
+    var el = document.getElementById(f[0]), v = state.pre.calc[f[1]];
+    el.value = v == null ? "" : nz(v); el.setAttribute("aria-invalid", "false");
+  });
+  pintaCoste();
+  pintaOferta();
+}
+document.getElementById("ofSel").addEventListener("change", function(e){ state.pre.actual = e.target.value; save(); pintaOferta(); });
+document.getElementById("ofNueva").addEventListener("click", function(){ if(nuevaOferta()){ pintaOferta(); document.getElementById("ofCli").focus(); } });
+document.getElementById("ofBorrar").addEventListener("click", function(){
+  var o = ofertaActual(); if(!o) return;
+  if(!window.confirm("¿Borrar la oferta «"+nombreOferta(o)+"»? No se puede deshacer.")) return;
+  state.pre.ofertas = state.pre.ofertas.filter(function(x){ return x.id !== o.id; });
+  state.pre.actual = state.pre.ofertas.length ? state.pre.ofertas[state.pre.ofertas.length - 1].id : "";
+  save(); pintaOferta();
+});
+[["ofCli","cliente"],["ofObra","obra"]].forEach(function(f){
+  document.getElementById(f[0]).addEventListener("input", function(e){
+    var o = ofertaActual(); if(!o) return;
+    o[f[1]] = e.target.value.slice(0, f[1] === "cliente" ? 80 : 120);
+    var sel = document.getElementById("ofSel"); if(sel.selectedIndex >= 0) sel.options[sel.selectedIndex].textContent = nombreOferta(o);
+    save();
+  });
+});
+document.getElementById("ofFecha").addEventListener("change", function(e){
+  var o = ofertaActual(); if(!o || !RE_FECHA.test(e.target.value)) return;
+  o.fecha = e.target.value; save(); pintaOferta();
+});
+document.getElementById("ofVal").addEventListener("input", function(e){
+  var o = ofertaActual(); if(!o) return;
+  var v = numEs(e.target.value);
+  o.validez = v != null && v <= 365 ? Math.round(v) : null;
+  e.target.setAttribute("aria-invalid", e.target.value.trim() !== "" && o.validez == null ? "true" : "false");
+  save();
+});
+document.getElementById("ofCond").addEventListener("input", function(e){
+  var o = ofertaActual(); if(!o) return;
+  o.cond = e.target.value.slice(0, 1500); save();
+});
+document.getElementById("ofCondTipo").addEventListener("click", function(){
+  var o = ofertaActual(); if(!o) return;
+  o.cond = (o.cond.trim() ? o.cond.replace(/\s+$/, "")+"\n" : "")+PRE_CONDICIONES;
+  o.cond = o.cond.slice(0, 1500);
+  document.getElementById("ofCond").value = o.cond; save();
+});
+document.getElementById("ofAdd").addEventListener("change", function(e){
+  var o = ofertaActual(), v = e.target.value; e.target.value = "";
+  if(!o || v === "") return;
+  if(o.partidas.length >= PRE_MAX_LINEAS){ preAviso("ofHint", "Máximo "+PRE_MAX_LINEAS+" partidas por oferta.", false); return; }
+  var p = v === "otra" ? {c:"", u:"m²"} : PRE_PARTIDAS[parseInt(v, 10)];
+  if(!p) return;
+  var l = {id:nuevoId("p"), c:p.c, u:p.u, q:null, p:null};
+  o.partidas.push(l); save(); pintaLineas(o); refrescaTotales(o);
+  var campo = document.getElementById((v === "otra" ? "plc-" : "plq-")+l.id);
+  if(campo) campo.focus();
+});
+var ofLineas = document.getElementById("ofLineas");
+ofLineas.addEventListener("input", function(e){
+  var o = ofertaActual(), fila = e.target.closest && e.target.closest(".plin"), f = e.target.dataset && e.target.dataset.f;
+  if(!o || !fila || !f) return;
+  var l = lineaDe(o, fila.dataset.id); if(!l) return;
+  if(f === "c") l.c = e.target.value.slice(0, 100);
+  else if(f === "q" || f === "p"){
+    var vacio = e.target.value.trim() === "", v = numEs(e.target.value);
+    l[f] = v;
+    e.target.setAttribute("aria-invalid", !vacio && v == null ? "true" : "false");
+    document.getElementById("pli-"+l.id).textContent = eur(importeLinea(l));
+    refrescaTotales(o);
+  }
+  save();
+});
+ofLineas.addEventListener("change", function(e){
+  var o = ofertaActual(), fila = e.target.closest && e.target.closest(".plin"), f = e.target.dataset && e.target.dataset.f;
+  if(!o || !fila || !f) return;
+  var l = lineaDe(o, fila.dataset.id); if(!l) return;
+  if(f === "u" && UNIDADES.indexOf(e.target.value) >= 0){ l.u = e.target.value; save(); }
+  else if(f === "q" || f === "p"){
+    if(e.target.value.trim() === "" || l[f] != null){ e.target.value = l[f] == null ? "" : nz(l[f]); e.target.setAttribute("aria-invalid", "false"); }
+  }
+});
+ofLineas.addEventListener("click", function(e){
+  var b = e.target.closest && e.target.closest("button[data-act]"), o = ofertaActual();
+  if(!b || !o) return;
+  var fila = b.closest(".plin"), l = lineaDe(o, fila.dataset.id); if(!l) return;
+  if(b.dataset.act === "del"){
+    o.partidas = o.partidas.filter(function(x){ return x.id !== l.id; });
+    save(); pintaLineas(o); refrescaTotales(o); preAviso("ofHint", "Partida quitada.");
+  }else{
+    var v = precioCalculado(l);
+    if(v == null || !isFinite(v)){
+      preAviso("ofHint", l.u === "h" || l.u === "m²"
+        ? "Todavía no hay precio calculado para esa unidad: rellena el cálculo de arriba o escribe el precio."
+        : "El precio calculado solo existe para m² y para horas. Escribe el precio a mano.", false);
+      return;
+    }
+    l.p = redondea(v); save();
+    document.getElementById("plp-"+l.id).value = nz(l.p);
+    document.getElementById("pli-"+l.id).textContent = eur(importeLinea(l));
+    refrescaTotales(o); preAviso("ofHint", "Precio puesto: "+eur(l.p)+" por "+l.u+". Revísalo antes de ofertar.", true);
+  }
+});
+document.getElementById("ofCopiar").addEventListener("click", function(){
+  var o = ofertaActual(); if(o) copiaConAviso(textoOferta(o), "ofHint", "ofResp", "La oferta");
+});
+document.getElementById("ofComp").addEventListener("click", function(){
+  var o = ofertaActual(); if(o) compartirTexto(textoOferta(o), "Oferta", "ofHint");
+});
+if(navigator.share){ document.getElementById("ofComp").hidden = false; document.getElementById("pqNotasComp").hidden = false; }
 
 /* ---------- arranque ---------- */
 Array.prototype.forEach.call(document.querySelectorAll("[data-solo]"), function(el){
