@@ -1,4 +1,47 @@
-# Informe técnico · Pantalla «Presupuesto» (04-10-2026)
+# Informe técnico · Pantalla «Presupuesto»
+
+## Actualización del 05-10-2026: traer las mediciones de Presto
+
+Rama `claude/presupuesto-bc3`. Las constructoras piden precio sobre sus mediciones, y Amra trabaja con Presto.
+
+| Pieza | Qué hace |
+| --- | --- |
+| Abrir archivo BC3 | Lee en el móvil el BC3 (FIEBDC-3) que exporta Presto. Nada se envía a ningún sitio. Muestra la obra, los capítulos con su etiqueta (anidados: «2 REVESTIMIENTOS Y SOLADOS › 2.1 Solados») y cada partida con su código y su medición |
+| Marcado de cerámica | Se marcan solas las partidas de solado, alicatado, rodapié, gres, porcelánico, azulejo, baldosa, peldaño… y **no** las de cerámica de albañilería (ladrillo, bloque, teja, bovedilla). Buscador y «Desmarcar todo» |
+| Al añadir | Código o etiqueta, descripción, unidad normalizada (m2 → m², m → ml, u → ud…), cantidad y, como referencia, el **precio del proyecto de la constructora** si lo trae (0 = presupuesto ciego, se ignora). El precio de Amra queda vacío hasta que se pone |
+| Pegar filas | Filas copiadas de Presto o de Excel: detecta unidad, descripción y cantidad; si detrás vienen precio e importe y cuadran, guarda el precio del proyecto. Ignora cabeceras y capítulos y dice cuántas filas |
+| Descargar Excel | La oferta en CSV (punto y coma, coma decimal, como el parte semanal): código, concepto, unidad, cantidad, precio, importe y total sin IVA |
+
+Lector según la especificación oficial **FIEBDC-3/2020v2** (descargada de fiebdc.es):
+
+- Registros `~C` (`#` capítulo, `##` raíz), `~D` (cantidad = factor × rendimiento; campo 3 si existe, si no el 2) y `~M` (mismo total y etiqueta).
+- No baja a los descompuestos de las partidas ni cuenta los porcentajes.
+- **Juego de caracteres:** la especificación dice ANSI, 850 o 437 (850 si está vacío), pero dos BC3 reales no cumplían lo declarado. Se prueba UTF-8 y luego el declarado y su alternativo, y gana el que da texto en castellano legible. Las tablas DOS se generaron con los códecs de Python.
+
+Verificación:
+
+| Batería | Resultado |
+| --- | --- |
+| `presupuesto.spec.mjs` (13 pruebas × 5 anchos) | **65 de 65** |
+| Batería completa con 2 navegadores | **330 pasadas, 0 fallidas, 40 omitidas** (solo móvil o solo escritorio, por diseño) |
+| Seis BC3 públicos reales (Presto 8.8, Presto 22, IFC2BC3, pyCost), fuera del repo | Sin errores. El mayor: 17 capítulos y 104 partidas con cantidad y precio |
+
+Errores encontrados y corregidos en esta entrega:
+
+1. «Fábrica de ladrillo cerámico» se habría marcado como cerámica: se excluye la cerámica de albañilería.
+2. El estilo de los desplegables de la pantalla (`.fold summary`) alcanzaba a los capítulos anidados: los títulos se salían de su caja y la flecha siempre parecía abierta.
+3. Una prueba antigua daba «kg» por unidad inválida; ahora es una unidad válida y la prueba usa otra.
+
+Contenido que Rafael debe confirmar:
+
+- Que Amra recibe las mediciones en BC3. Si llegan solo en PDF, hace falta el lector de PDF, que tiene coste por uso.
+- Un BC3 real de una constructora, para probar el lector con un caso suyo antes de una oferta importante.
+
+Capturas: `docs/capturas/importar-bc3-movil-390.png` y `docs/capturas/importar-bc3-escritorio-1440.png`.
+
+---
+
+## Entrega del 04-10-2026
 
 Rama `claude/presupuesto-subcontrata`. Pensada para que Rafael la lleve en el móvil en la reunión con el dueño de
 Amra Building: ir apuntando lo que le cuenta, calcular el precio de la hora y del m², y sacar una oferta por partidas.

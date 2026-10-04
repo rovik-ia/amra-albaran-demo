@@ -1,0 +1,29 @@
+~V|ROVIK.IA (pruebas)|FIEBDC-3/2020\05102026|Escrito a mano para las pruebas||ANSI|Mediciones de ejemplo|2|||
+~K|\2\2\3\2\2\2\2\EUR\|
+~C|OBRA##||Bloque de viviendas de ejemplo|0|05102026|0|
+~D|OBRA##|01#\1\1\02#\1\1\|
+~C|01#||ALBAÑILERÍA|0|05102026|0|
+~D|01#|E07LD010\1\120.5\|
+~C|E07LD010|m2|Fábrica de ladrillo cerámico hueco doble|18.40|05102026|0|
+~D|E07LD010|O01OA030\1\0.45\P01LH020\1\0.033\%CI\\0.03\|
+~C|O01OA030|h|Oficial primera|21.50|05102026|1|
+~C|P01LH020|mu|Ladrillo hueco doble|120|05102026|3|
+~C|%CI|%|Costes indirectos|0|05102026|0|
+~C|02#||REVESTIMIENTOS Y SOLADOS|0|05102026|0|
+~D|02#|0201#\1\1\0202#\1\1\|
+~C|0201#||Solados|0|05102026|0|
+~D|0201#|E11EGP010\1\415.2\E11ERP020\1\390\|
+~C|E11EGP010|m2|Solado de gres porcelánico 60x60 cm|32.10|05102026|0|
+~C|E11ERP020|m|Rodapié de gres porcelánico 8 cm|7.80|05102026|0|
+~C|0202#||Alicatados|0|05102026|0|
+~D|0202#|E12AC020\1\268.75\E12PE010\2\12\|
+~C|E12AC020|M2|Alicatado con azulejo cerámico 20x30 cm|24.60|05102026|0|
+~C|E12PE010|ud|Peldaño de gres porcelánico|0|05102026|0|
+~M|OBRA##\01#|1\|1||1|
+~M|OBRA##\02#|2\|1||2|
+~M|02#\0201#|2\1\|1||2.1|
+~M|02#\0202#|2\2\|1||2.2|
+~M|0201#\E11EGP010|2\1\1\|415.2|\Planta baja\1\415.2\\\|2.1.1|
+~M|0201#\E11ERP020|2\1\2\|390|\\1\390\\\|2.1.2|
+~M|0202#\E12AC020|2\2\1\|268.75|\\1\268.75\\\|2.2.1|
+~T|E11EGP010|Solado de gres porcelánico rectificado de 60x60 cm, recibido con adhesivo cementoso.|

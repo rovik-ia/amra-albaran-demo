@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex, nofollow, noarchive">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-dB9czfBGtXYbg635tYC+Q3LaMtGJM5qqnogBc/ItRTw='; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; manifest-src 'self'; worker-src 'self'; connect-src 'self'; base-uri 'none'; form-action 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-U3ks+iyzTCbkf1nbzp1NUkShC0RpZfM7FGQROMqGPxc='; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; manifest-src 'self'; worker-src 'self'; connect-src 'self'; base-uri 'none'; form-action 'none'">
 <title>Albarán de Horas Amra</title>
 <meta name="description" content="Control de albaranes de horas, obras, personal y visitas. Herramienta de ROVIK.IA.">
 <meta name="theme-color" content="#0B0E10">
@@ -571,6 +571,21 @@ input[type=url]:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3
 .total{display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin-top:16px;padding-top:12px;border-top:2px solid var(--line-strong);font-weight:600}
 .total .v{font-family:"IBM Plex Mono",monospace;font-size:22px;font-variant-numeric:tabular-nums;color:var(--accent)}
 .respaldo{margin-top:10px;font-size:13px}
+.pl-cod{margin:0 0 6px;font-family:"IBM Plex Mono",monospace;font-size:12px;font-weight:600;color:var(--accent);letter-spacing:.03em}
+.pl-ref{margin:4px 0 0;text-align:right;font-size:12.5px;color:var(--ink-2)}
+#bc3Lista{margin-top:12px;display:flex;flex-direction:column;gap:8px}
+.bc3cap{border:1px solid var(--line);border-radius:10px;background:var(--ground);padding:0 12px}
+.bc3cap summary{list-style:none;cursor:pointer;min-height:46px;display:flex;align-items:center;gap:10px;font-size:13.5px;font-weight:600}
+.bc3cap summary::-webkit-details-marker{display:none}
+.bc3cap summary:focus-visible{outline:2px solid var(--accent);outline-offset:-2px;border-radius:6px}
+.bc3cap summary .cuenta{flex:0 0 auto}
+/* .fold summary (los desplegables de la pantalla) también alcanza a estos: se anulan su margen y su flecha */
+.fold .bc3cap summary,.fold[open] .bc3cap summary{margin:0;padding:10px 0;line-height:1.35}
+.fold .bc3cap summary::after{transform:rotate(45deg);margin:-4px 2px 0 0}
+.fold .bc3cap[open] summary::after{transform:rotate(-135deg);margin-top:4px}
+.bc3cap[open]{padding-bottom:6px}
+.bc3cap .chk{border-top:1px solid var(--line)}
+.bc3cap .chk small{display:block;font-family:"IBM Plex Mono",monospace;font-size:12px;color:var(--ink-2)}
 input[aria-invalid="true"]{border-color:var(--bad)}
 </style>
 </head>
@@ -1014,6 +1029,27 @@ input[aria-invalid="true"]{border-color:var(--bad)}
           <div id="ofLineas"></div>
           <label class="label" for="ofAdd" style="margin-top:14px">Añadir partida</label>
           <select id="ofAdd" class="field"></select>
+
+          <p class="pgrupo">Traer las mediciones de la constructora</p>
+          <button class="btn wide" type="button" id="bc3Btn">Abrir archivo BC3 (Presto)</button>
+          <input type="file" id="bc3In" hidden>
+          <p class="hint">El BC3 es el formato que exporta Presto y cualquier programa de presupuestos. Ábrelo desde Archivos o desde el adjunto del correo: se lee en el móvil, no se envía a ningún sitio.</p>
+          <div id="bc3Res" hidden>
+            <p class="hint ok" id="bc3Info" aria-live="polite"></p>
+            <label class="label" for="bc3Buscar" style="margin-top:12px">Buscar partidas</label>
+            <input type="text" id="bc3Buscar" autocomplete="off" placeholder="cerámica, alicatado, rodapié…">
+            <div class="btnrow" style="margin-top:10px">
+              <button class="btn small" type="button" id="bc3Cer">Marcar las de cerámica</button>
+              <button class="btn small" type="button" id="bc3Nada">Desmarcar todo</button>
+            </div>
+            <div id="bc3Lista"></div>
+            <button class="btn primary wide" type="button" id="bc3Add" style="margin-top:12px">Añadir a la oferta</button>
+          </div>
+          <label class="label" for="pegaTxt" style="margin-top:16px">O pega las filas copiadas de Presto o de Excel</label>
+          <textarea id="pegaTxt" rows="4" placeholder="Código · Ud · Resumen · Cantidad (una partida por fila)"></textarea>
+          <button class="btn small" type="button" id="pegaBtn" style="margin-top:10px">Añadir las filas pegadas</button>
+          <p class="hint" id="impHint" aria-live="polite"></p>
+
           <div class="total"><span>Total sin IVA</span><span class="v" id="ofTotal">0,00 €</span></div>
           <p class="hint">Entre empresas de construcción se factura sin IVA, por inversión del sujeto pasivo (art. 84.uno.2.º f de la Ley del IVA). Confírmalo con su gestoría.</p>
           <label class="label" for="ofCond" style="margin-top:14px">Condiciones</label>
@@ -1021,6 +1057,7 @@ input[aria-invalid="true"]{border-color:var(--bad)}
           <button class="btn small" type="button" id="ofCondTipo" style="margin-top:10px">Insertar condiciones tipo</button>
           <div class="btnrow" style="margin-top:14px">
             <button class="btn primary" type="button" id="ofCopiar">Copiar la oferta</button>
+            <button class="btn" type="button" id="ofCsv">Descargar Excel</button>
             <button class="btn" type="button" id="ofComp" hidden>Compartir</button>
           </div>
           <p class="hint" id="ofHint" aria-live="polite"></p>
@@ -3044,7 +3081,7 @@ document.getElementById("reset").addEventListener("click", function(){
 /* ---------- presupuesto (solo en "tus datos") ----------
    Preguntas para la reunión, coste de la hora y precio por m², y ofertas por partidas.
    Nada se da por supuesto: los porcentajes y el rendimiento empiezan vacíos y se avisa de lo que falta. */
-var UNIDADES = ["m²","ml","ud","h","día","global"];
+var UNIDADES = ["m²","ml","m³","ud","h","día","kg","PA","global"];
 var PRE_PREGUNTAS = [
   {g:"Cómo trabaja hoy", q:[
     {k:"tarHora", t:"Tarifa que cobra hoy por hora (oficial y peón)"},
@@ -3095,7 +3132,7 @@ var PRE_CONDICIONES = "Material, adhesivos y juntas: ______ (los pone el cliente
 var PRE_CALC_DEF = {sOf:32178.55, sPe:27351.74, horas:1736, ss:null, otros:null, gg:null, bi:null, nOf:1, nPe:0, jornada:8, rend:null, mat:null};
 var PRE_CAMPOS = [["pcSOf","sOf"],["pcSPe","sPe"],["pcHoras","horas"],["pcSS","ss"],["pcOtros","otros"],["pcGG","gg"],["pcBI","bi"],
                   ["pcNOf","nOf"],["pcNPe","nPe"],["pcJor","jornada"],["pcRend","rend"],["pcMat","mat"]];
-var PRE_MAX_OFERTAS = 40, PRE_MAX_LINEAS = 60;
+var PRE_MAX_OFERTAS = 40, PRE_MAX_LINEAS = 150;
 
 function preDefecto(){ return {calc:Object.assign({}, PRE_CALC_DEF), notas:{}, hechos:{}, ofertas:[], actual:""}; }
 function preNum(x, max){ return esNum(x) && x >= 0 && x <= max ? x : null; }
@@ -3117,7 +3154,8 @@ function preLimpia(p){
     var ps = [];
     if(Array.isArray(o.partidas)) o.partidas.slice(0, PRE_MAX_LINEAS).forEach(function(l){
       if(!l || typeof l !== "object" || typeof l.id !== "string" || !l.id) return;
-      ps.push({id:l.id.slice(0,40), c:txt(l.c,100), u:UNIDADES.indexOf(l.u) >= 0 ? l.u : "m²", q:preNum(l.q,1e7), p:preNum(l.p,1e7)});
+      ps.push({id:l.id.slice(0,40), cod:txt(l.cod,30), c:txt(l.c,100), u:UNIDADES.indexOf(l.u) >= 0 ? l.u : "m²",
+               q:preNum(l.q,1e7), p:preNum(l.p,1e7), ref:preNum(l.ref,1e7)});
     });
     r.ofertas.push({id:o.id.slice(0,40), cliente:txt(o.cliente,80), obra:txt(o.obra,120),
       fecha:typeof o.fecha === "string" && RE_FECHA.test(o.fecha) ? o.fecha : hoyISO(),
@@ -3176,7 +3214,7 @@ function textoOferta(o){
   var L = ["Oferta"+(o.cliente ? " · "+o.cliente : "")+(o.obra ? " · "+o.obra : ""),
            "Fecha: "+fechaCorta(o.fecha)+(o.validez ? " · Válida "+nz(o.validez)+" días" : ""), ""];
   o.partidas.forEach(function(l){
-    L.push("· "+(l.c || "Partida")+": "+(l.q == null ? "—" : nz(l.q)+" "+l.u)+" × "+(l.p == null ? "—" : eur(l.p))+" = "+eur(importeLinea(l)));
+    L.push("· "+(l.cod ? l.cod+" · " : "")+(l.c || "Partida")+": "+(l.q == null ? "—" : nz(l.q)+" "+l.u)+" × "+(l.p == null ? "—" : eur(l.p))+" = "+eur(importeLinea(l)));
   });
   L.push("", "Total sin IVA: "+eur(totalOferta(o)));
   if(o.cond.trim()) L.push("", "Condiciones:", o.cond.trim());
@@ -3317,6 +3355,7 @@ function pintaLineas(o){
   document.getElementById("ofLineas").innerHTML = o.partidas.map(function(l, i){
     var n = i + 1, id = esc(l.id);
     return '<div class="plin" data-id="'+id+'">'+
+      (l.cod ? '<p class="pl-cod">'+esc(l.cod)+'</p>' : '')+
       '<label class="sr" for="plc-'+id+'">Concepto de la partida '+n+'</label>'+
       '<input type="text" id="plc-'+id+'" data-f="c" maxlength="100" autocomplete="off" placeholder="Concepto" value="'+esc(l.c)+'">'+
       '<div class="pl-g">'+
@@ -3328,6 +3367,7 @@ function pintaLineas(o){
           '<input type="text" inputmode="decimal" id="plp-'+id+'" data-f="p" autocomplete="off" value="'+(l.p == null ? "" : esc(nz(l.p)))+'"></div>'+
       '</div>'+
       '<p class="pl-imp" id="pli-'+id+'">'+eur(importeLinea(l))+'</p>'+
+      (l.ref != null ? '<p class="pl-ref">Precio en el proyecto de la constructora: '+eur(l.ref)+' por '+esc(l.u)+'</p>' : '')+
       '<div class="btnrow">'+
         '<button type="button" class="btn small" data-act="calc" aria-label="Usar el precio calculado en la partida '+n+'">Usar precio calculado</button>'+
         '<button type="button" class="btn small danger" data-act="del" aria-label="Quitar la partida '+n+'">Quitar</button>'+
@@ -3464,6 +3504,295 @@ document.getElementById("ofCopiar").addEventListener("click", function(){
 document.getElementById("ofComp").addEventListener("click", function(){
   var o = ofertaActual(); if(o) compartirTexto(textoOferta(o), "Oferta", "ofHint");
 });
+/* ---------- traer mediciones: BC3 (FIEBDC-3) y filas pegadas de Presto o Excel ----------
+   Según la especificación FIEBDC-3/2020: registros separados por "~", campos por "|" y subcampos por "\".
+   Los capítulos llevan "#" y la raíz "##" en su registro ~C. La cantidad de una partida en un capítulo es
+   FACTOR × RENDIMIENTO de su línea en el ~D; el ~M de ese par padre\hijo trae el mismo total y la etiqueta.
+   El juego de caracteres declarado no siempre es el real: se prueba UTF-8 y luego el declarado y su alternativo. */
+var CP850_ALTO = "\u00C7\u00FC\u00E9\u00E2\u00E4\u00E0\u00E5\u00E7\u00EA\u00EB\u00E8\u00EF\u00EE\u00EC\u00C4\u00C5\u00C9\u00E6\u00C6\u00F4\u00F6\u00F2\u00FB\u00F9\u00FF\u00D6\u00DC\u00F8\u00A3\u00D8\u00D7\u0192\u00E1\u00ED\u00F3\u00FA\u00F1\u00D1\u00AA\u00BA\u00BF\u00AE\u00AC\u00BD\u00BC\u00A1\u00AB\u00BB\u2591\u2592\u2593\u2502\u2524\u00C1\u00C2\u00C0\u00A9\u2563\u2551\u2557\u255D\u00A2\u00A5\u2510\u2514\u2534\u252C\u251C\u2500\u253C\u00E3\u00C3\u255A\u2554\u2569\u2566\u2560\u2550\u256C\u00A4\u00F0\u00D0\u00CA\u00CB\u00C8\u0131\u00CD\u00CE\u00CF\u2518\u250C\u2588\u2584\u00A6\u00CC\u2580\u00D3\u00DF\u00D4\u00D2\u00F5\u00D5\u00B5\u00FE\u00DE\u00DA\u00DB\u00D9\u00FD\u00DD\u00AF\u00B4\u00AD\u00B1\u2017\u00BE\u00B6\u00A7\u00F7\u00B8\u00B0\u00A8\u00B7\u00B9\u00B3\u00B2\u25A0\u00A0";
+var CP437_ALTO = "\u00C7\u00FC\u00E9\u00E2\u00E4\u00E0\u00E5\u00E7\u00EA\u00EB\u00E8\u00EF\u00EE\u00EC\u00C4\u00C5\u00C9\u00E6\u00C6\u00F4\u00F6\u00F2\u00FB\u00F9\u00FF\u00D6\u00DC\u00A2\u00A3\u00A5\u20A7\u0192\u00E1\u00ED\u00F3\u00FA\u00F1\u00D1\u00AA\u00BA\u00BF\u2310\u00AC\u00BD\u00BC\u00A1\u00AB\u00BB\u2591\u2592\u2593\u2502\u2524\u2561\u2562\u2556\u2555\u2563\u2551\u2557\u255D\u255C\u255B\u2510\u2514\u2534\u252C\u251C\u2500\u253C\u255E\u255F\u255A\u2554\u2569\u2566\u2560\u2550\u256C\u2567\u2568\u2564\u2565\u2559\u2558\u2552\u2553\u256B\u256A\u2518\u250C\u2588\u2584\u258C\u2590\u2580\u03B1\u00DF\u0393\u03C0\u03A3\u03C3\u00B5\u03C4\u03A6\u0398\u03A9\u03B4\u221E\u03C6\u03B5\u2229\u2261\u00B1\u2265\u2264\u2320\u2321\u00F7\u2248\u00B0\u2219\u00B7\u221A\u207F\u00B2\u25A0\u00A0";
+var RE_CERAMICA = /cer[aá]mic|alicatad|solado|rodapi|gres|porcel[aá]nic|azulej|baldos|rajol|mosaic|pelda[ñn]o|zanquin/i;
+var RE_NO_CERAMICA = /ladrillo|bloque|teja|bovedilla|tabique|f[aá]brica de|termoarcilla|tubo|conducto|celos[ií]a/i;   // cerámica de albañilería, no de revestir
+function esCeramica(r){ return RE_CERAMICA.test(r) && !RE_NO_CERAMICA.test(r); }
+var BC3 = null;   // lo leído del último archivo, solo en memoria: {obra, caps:[{nombre, partidas}], n}
+
+function decodificaDOS(b, tabla){
+  var trozos = [], s = "";
+  for(var i = 0; i < b.length; i++){
+    s += b[i] < 128 ? String.fromCharCode(b[i]) : tabla.charAt(b[i] - 128);
+    if(s.length > 8192){ trozos.push(s); s = ""; }
+  }
+  trozos.push(s);
+  return trozos.join("");
+}
+function puntuaCastellano(t){
+  var bien = 0, mal = 0;
+  for(var i = 0; i < t.length; i++){
+    var c = t.charCodeAt(i);
+    if(c < 128) continue;
+    if("áéíóúñÑÁÉÍÓÚüÜºª¿¡²³·€".indexOf(t.charAt(i)) >= 0) bien++;
+    else if((c >= 0x80 && c <= 0x9f) || (c >= 0x2500 && c <= 0x259f) || c === 0xfffd) mal++;
+  }
+  return bien - 3 * mal;
+}
+function textoBC3(b){
+  if(b.length >= 3 && b[0] === 0xEF && b[1] === 0xBB && b[2] === 0xBF) return new TextDecoder("utf-8").decode(b.subarray(3));
+  var alto = false;
+  for(var i = 0; i < b.length; i++) if(b[i] > 127){ alto = true; break; }
+  if(!alto) return new TextDecoder("windows-1252").decode(b);
+  try{ return new TextDecoder("utf-8", {fatal:true}).decode(b); }catch(e){}
+  var cab = new TextDecoder("windows-1252").decode(b.subarray(0, Math.min(b.length, 4000)));
+  var m = /~V\|(?:[^|~]*\|){4}\s*([^|~]*)\|/.exec(cab), juego = m ? m[1].trim().toUpperCase() : "";
+  var lee = {
+    ANSI:function(){ return new TextDecoder("windows-1252").decode(b); },
+    "850":function(){ return decodificaDOS(b, CP850_ALTO); },
+    "437":function(){ return decodificaDOS(b, CP437_ALTO); }
+  };
+  var orden = juego === "ANSI" ? ["ANSI","850"] : juego === "437" ? ["437","ANSI"] : ["850","ANSI"];   // vacío = 850
+  var mejor = "", puntos = -Infinity;
+  orden.forEach(function(k){ var t = lee[k](), p = puntuaCastellano(t); if(p > puntos){ puntos = p; mejor = t; } });
+  return mejor;
+}
+function numBC3(s){
+  var t = String(s == null ? "" : s).trim();
+  if(t.indexOf(".") < 0) t = t.replace(",", ".");
+  var v = parseFloat(t);
+  return isFinite(v) ? v : null;
+}
+function codBC3(s){ return String(s == null ? "" : s).split("\\")[0].trim().replace(/#+$/, ""); }
+function unidadBC3(u){
+  var k = String(u == null ? "" : u).trim().toLowerCase().replace(/\.$/, "").replace("²", "2").replace("³", "3");
+  if(k === "m2") return "m²";
+  if(k === "m" || k === "ml" || k === "m.l") return "ml";
+  if(k === "m3") return "m³";
+  if(/^(u|ud|uds|un|und|unid|unidad|unidades)$/.test(k)) return "ud";
+  if(/^(h|hr|hora|horas)$/.test(k)) return "h";
+  if(k === "kg") return "kg";
+  if(k === "pa" || k === "p.a") return "PA";
+  if(k === "d" || k === "día" || k === "dia") return "día";
+  return null;
+}
+function leeBC3(b){
+  var t = textoBC3(b), C = {}, D = {}, M = {}, raiz = "", hayC = false;
+  t.split("~").forEach(function(r){
+    var fin = r.lastIndexOf("|");
+    if(fin < 0) return;                                   // lo que va tras el último "|" se ignora
+    var f = r.slice(0, fin).split("|").map(function(x){ return x.trim(); });
+    if(f[0] === "C"){
+      var crudo = String(f[1] || "").split("\\")[0].trim(), k = crudo.replace(/#+$/, "");
+      if(!k) return;
+      hayC = true;
+      var c = C[k] || (C[k] = {cod:k, u:"", r:"", p:null, cap:false});
+      if(f[2]) c.u = f[2];
+      if(f[3]) c.r = f[3];
+      var p = numBC3(String(f[4] || "").split("\\")[0]);
+      if(p != null) c.p = p;
+      if(/##$/.test(crudo)){ raiz = k; c.cap = true; }
+      else if(/#$/.test(crudo)) c.cap = true;
+    }else if(f[0] === "D"){
+      var padre = codBC3(f[1]);
+      if(!padre) return;
+      var tres = !!f[3] && f[3].replace(/\\/g, "").trim() !== "", paso = tres ? 4 : 3;   // el campo 3 manda si existe
+      var s = String((tres ? f[3] : f[2]) || "").split("\\").map(function(x){ return x.trim(); }), hijos = [];
+      for(var i = 0; i < s.length; i += paso){
+        var h = s[i].replace(/#+$/, "");
+        if(h) hijos.push({h:h, f:numBC3(s[i+1]), r:numBC3(s[i+2])});
+      }
+      D[padre] = hijos;
+    }else if(f[0] === "M"){
+      var par = String(f[1] || "").split("\\").map(function(x){ return x.trim().replace(/#+$/, ""); });
+      var hijo = par.length > 1 ? par[1] : par[0], pad = par.length > 1 ? par[0] : "";
+      if(hijo) M[pad+"\\"+hijo] = {t:numBC3(f[3]), et:String(f[5] || "").trim()};
+    }
+  });
+  if(!hayC) throw new Error("no-bc3");
+  var caps = [], visto = {};
+  function partida(padre, x){
+    var c = C[x.h] || {cod:x.h, u:"", r:"", p:null}, m = M[padre+"\\"+x.h] || M["\\"+x.h];
+    var q = m && m.t != null ? m.t : (x.f == null ? 1 : x.f) * (x.r == null ? 1 : x.r);
+    return {cod:x.h, et:m && m.et ? m.et : "", u:c.u, r:c.r || x.h, q:q, ref:c.p};
+  }
+  function camina(cod, nombre, prof){
+    if(visto[cod] || prof > 15) return;
+    visto[cod] = true;
+    var ps = [], subs = [];
+    (D[cod] || []).forEach(function(x){
+      if(/[%&]/.test(x.h)) return;                        // porcentajes, no partidas
+      var c = C[x.h];
+      if(c && (c.cap || (!c.u && D[x.h]))) subs.push(x.h);
+      else ps.push(partida(cod, x));
+    });
+    if(ps.length) caps.push({nombre:nombre || "Sin capítulo", partidas:ps});
+    subs.forEach(function(h){
+      var m = M[cod+"\\"+h], et = m && m.et ? m.et+" " : "";
+      camina(h, (nombre ? nombre+" › " : "")+et+(C[h].r || h), prof + 1);
+    });
+  }
+  if(raiz) camina(raiz, "", 0);
+  else{
+    var hijosDe = {};
+    Object.keys(D).forEach(function(p){ D[p].forEach(function(x){ hijosDe[x.h] = true; }); });
+    Object.keys(C).forEach(function(k){ if(C[k].cap && !hijosDe[k]) camina(k, C[k].r || k, 0); });
+    if(!caps.length){                                     // mediciones sueltas, sin capítulos
+      var sueltas = Object.keys(M).map(function(k){ var p = k.split("\\"); return partida(p[0], {h:p[1], f:null, r:null}); })
+        .filter(function(p){ return C[p.cod] && !C[p.cod].cap; });
+      if(sueltas.length) caps.push({nombre:"Mediciones", partidas:sueltas});
+    }
+  }
+  var n = caps.reduce(function(s, c){ return s + c.partidas.length; }, 0);
+  return {obra:raiz && C[raiz] ? (C[raiz].r || raiz) : "", caps:caps, n:n};
+}
+
+/* filas copiadas de Presto o de Excel: unidad, la descripción más larga y la primera cantidad que va detrás.
+   Si detrás vienen cantidad, precio e importe y cuadran, el precio se guarda como precio del proyecto. */
+function leePegado(txt){
+  var out = [], ignoradas = 0;
+  String(txt || "").split(/\r?\n/).forEach(function(linea){
+    if(!linea.trim()) return;
+    var cs = (linea.indexOf("\t") >= 0 ? linea.split("\t") : linea.split(/;|\s{2,}/)).map(function(x){ return x.trim(); });
+    var iu = -1;
+    for(var i = 0; i < cs.length; i++) if(unidadBC3(cs[i])){ iu = i; break; }
+    var ic = -1, largo = 0;
+    cs.forEach(function(c, i){ if(i !== iu && numEs(c) == null && c.length > largo){ largo = c.length; ic = i; } });
+    var nums = [];
+    cs.forEach(function(c, i){ if(i > Math.max(iu, ic) && c !== "" && numEs(c) != null) nums.push(numEs(c)); });
+    if(iu < 0 || ic < 0 || largo < 3 || !nums.length){ ignoradas++; return; }
+    var cod = "";
+    for(var j = 0; j < Math.min(iu, ic); j++) if(/^[A-Za-z0-9][\w.\-\/]{0,29}$/.test(cs[j]) && !unidadBC3(cs[j])){ cod = cs[j]; break; }
+    var ref = null;
+    if(nums.length >= 3 && Math.abs(nums[0] * nums[1] - nums[2]) <= Math.max(0.05, nums[2] * 0.005)) ref = nums[1];
+    out.push(partidaImportada(cod, cs[ic], cs[iu], nums[0], ref));
+  });
+  return {partidas:out, ignoradas:ignoradas};
+}
+function partidaImportada(cod, resumen, unidad, q, ref){
+  var u = unidadBC3(unidad), c = String(resumen || "").trim();
+  if(!u && String(unidad || "").trim()) c += " ["+String(unidad).trim()+"]";
+  return {id:nuevoId("p"), cod:String(cod || "").slice(0, 30), c:c.slice(0, 100), u:u || "ud",
+          q:q != null && isFinite(q) && q >= 0 ? redondea(q) : null, p:null,
+          ref:ref != null && isFinite(ref) && ref > 0 ? redondea(ref) : null};
+}
+function anadeImportadas(o, nuevas, deDonde){
+  var hueco = Math.max(0, PRE_MAX_LINEAS - o.partidas.length), entran = nuevas.slice(0, hueco);
+  o.partidas = o.partidas.concat(entran);
+  save(); pintaLineas(o); refrescaTotales(o);
+  var msg = entran.length ? "Añadidas "+entran.length+(entran.length === 1 ? " partida " : " partidas ")+deDonde+". Ponles precio con «Usar precio calculado» o a mano." : "No se ha añadido nada.";
+  if(entran.length < nuevas.length) msg += " En una oferta caben "+PRE_MAX_LINEAS+" partidas: "+(nuevas.length - entran.length)+" se han quedado fuera.";
+  preAviso("impHint", msg, entran.length ? true : false);
+}
+
+function bc3Casillas(){ return document.querySelectorAll("#bc3Lista input[type=checkbox]"); }
+function bc3Cuenta(){
+  var n = 0;
+  Array.prototype.forEach.call(bc3Casillas(), function(x){ if(x.checked) n++; });
+  var b = document.getElementById("bc3Add");
+  b.textContent = n ? "Añadir "+n+(n === 1 ? " partida" : " partidas")+" a la oferta" : "Marca las partidas que quieras añadir";
+  b.disabled = !n;
+}
+function pintaBC3(){
+  var h = "", cer = 0;
+  BC3.caps.forEach(function(cap, ci){
+    var filas = "", marcadas = 0;
+    cap.partidas.forEach(function(p, pi){
+      var es = esCeramica(p.r), u = unidadBC3(p.u) || p.u || "";
+      if(es) marcadas++;
+      filas += '<label class="chk"><input type="checkbox" data-c="'+ci+'" data-p="'+pi+'"'+(es ? " checked" : "")+'>'+
+        '<span>'+esc(p.r)+'<small>'+esc(p.et || p.cod)+' · '+esc(nz(redondea(p.q)))+' '+esc(u)+'</small></span></label>';
+    });
+    cer += marcadas;
+    h += '<details class="bc3cap"'+(marcadas ? " open" : "")+'><summary>'+esc(cap.nombre)+'<span class="cuenta">'+cap.partidas.length+'</span></summary>'+filas+'</details>';
+  });
+  document.getElementById("bc3Lista").innerHTML = h;
+  document.getElementById("bc3Buscar").value = "";
+  document.getElementById("bc3Info").textContent = (BC3.obra ? "«"+BC3.obra+"» · " : "")+BC3.caps.length+(BC3.caps.length === 1 ? " capítulo · " : " capítulos · ")+
+    BC3.n+(BC3.n === 1 ? " partida. " : " partidas. ")+(cer ? "Marcadas "+cer+" que parecen de cerámica: revísalas antes de añadir." : "Ninguna parece de cerámica: búscalas o márcalas a mano.");
+  bc3Cuenta();
+}
+document.getElementById("bc3Btn").addEventListener("click", function(){ document.getElementById("bc3In").click(); });
+document.getElementById("bc3In").addEventListener("change", function(e){
+  var f = e.target.files && e.target.files[0];
+  e.target.value = "";
+  if(!f) return;
+  if(f.size > 30 * 1024 * 1024){ preAviso("impHint", "El archivo pasa de 30 MB: no parece un BC3 de mediciones.", false); return; }
+  f.arrayBuffer().then(function(buf){
+    var r = leeBC3(new Uint8Array(buf));
+    if(!r.n) throw new Error("vacio");
+    BC3 = r; pintaBC3();
+    document.getElementById("bc3Res").hidden = false;
+    preAviso("impHint", "");
+  }).catch(function(err){
+    BC3 = null; document.getElementById("bc3Res").hidden = true;
+    preAviso("impHint", err && err.message === "vacio"
+      ? "El archivo se ha leído, pero no trae partidas con medición."
+      : "Ese archivo no es un BC3 que se pueda leer. Pide a la constructora las mediciones exportadas en BC3 (FIEBDC-3).", false);
+  });
+});
+document.getElementById("bc3Lista").addEventListener("change", bc3Cuenta);
+document.getElementById("bc3Buscar").addEventListener("input", function(e){
+  var q = clave(e.target.value);
+  Array.prototype.forEach.call(document.querySelectorAll("#bc3Lista .bc3cap"), function(d){
+    var alguna = false;
+    Array.prototype.forEach.call(d.querySelectorAll(".chk"), function(l){
+      var si = !q || clave(l.textContent).indexOf(q) >= 0;
+      l.hidden = !si;
+      if(si) alguna = true;
+    });
+    d.hidden = !alguna;
+    if(q && alguna) d.open = true;
+  });
+});
+document.getElementById("bc3Cer").addEventListener("click", function(){
+  Array.prototype.forEach.call(bc3Casillas(), function(x){
+    if(esCeramica(BC3.caps[+x.dataset.c].partidas[+x.dataset.p].r)){ x.checked = true; x.closest("details").open = true; }
+  });
+  bc3Cuenta();
+});
+document.getElementById("bc3Nada").addEventListener("click", function(){
+  Array.prototype.forEach.call(bc3Casillas(), function(x){ x.checked = false; });
+  bc3Cuenta();
+});
+document.getElementById("bc3Add").addEventListener("click", function(){
+  var o = ofertaActual();
+  if(!o || !BC3) return;
+  var nuevas = [];
+  Array.prototype.forEach.call(bc3Casillas(), function(x){
+    if(!x.checked) return;
+    var p = BC3.caps[+x.dataset.c].partidas[+x.dataset.p];
+    nuevas.push(partidaImportada(p.et || p.cod, p.r, p.u, p.q, p.ref));
+    x.checked = false;
+  });
+  anadeImportadas(o, nuevas, "del BC3");
+  bc3Cuenta();
+});
+document.getElementById("pegaBtn").addEventListener("click", function(){
+  var o = ofertaActual(), ta = document.getElementById("pegaTxt");
+  if(!o) return;
+  var r = leePegado(ta.value);
+  if(!r.partidas.length){ preAviso("impHint", "No he encontrado partidas: cada fila tiene que traer al menos unidad, descripción y cantidad.", false); return; }
+  anadeImportadas(o, r.partidas, "pegadas");
+  if(r.ignoradas) document.getElementById("impHint").textContent += " "+r.ignoradas+(r.ignoradas === 1 ? " fila ignorada" : " filas ignoradas")+" (capítulos o filas sin unidad o cantidad).";
+  ta.value = "";
+});
+
+/* la oferta en Excel (CSV con punto y coma y coma decimal, como el parte semanal) */
+function dinCsv(n){ return n == null ? "" : n.toFixed(2).replace(".", ","); }
+function csvOferta(o){
+  var filas = [["Oferta", (o.cliente || "")+(o.obra ? " · "+o.obra : "")], ["Fecha", fechaCorta(o.fecha)], [],
+               ["Código","Concepto","Unidad","Cantidad","Precio (€)","Importe (€)"]];
+  o.partidas.forEach(function(l){
+    filas.push([l.cod || "", l.c, l.u, l.q == null ? "" : String(redondea(l.q)).replace(".", ","), dinCsv(l.p), dinCsv(importeLinea(l))]);
+  });
+  filas.push(["", "", "", "", "Total sin IVA", dinCsv(totalOferta(o))]);
+  return filas.map(function(r){ return r.map(celda).join(";"); }).join("\r\n");
+}
+document.getElementById("ofCsv").addEventListener("click", function(){
+  var o = ofertaActual();
+  if(!o) return;
+  var nombre = "oferta-"+(clave(o.cliente || "").replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "") || "sin-cliente")+"-"+o.fecha+".csv";
+  descarga("\ufeff"+csvOferta(o), nombre, "text/csv;charset=utf-8");
+  preAviso("ofHint", "Excel descargado: "+nombre+".", true);
+});
+
 if(navigator.share){ document.getElementById("ofComp").hidden = false; document.getElementById("pqNotasComp").hidden = false; }
 
 /* ---------- arranque ---------- */

@@ -18,7 +18,7 @@ usa comparte el parte o un albarán. No hay peticiones a terceros (las fuentes v
 | Pantalla | Para qué |
 | --- | --- |
 | Nuevo albarán | Pasar a limpio el albarán en papel: nº, obra, día, horas de cada operario, si trae firma y fecha del cliente, y foto |
-| Presupuesto | Solo en tus datos. Preguntas para la reunión (las respuestas se copian como nota), coste de la hora desde el convenio y precio por m² de una cuadrilla, y ofertas por partidas con su total sin IVA, que se copian o se comparten. Los porcentajes y el rendimiento empiezan vacíos y la pantalla avisa de lo que falta |
+| Presupuesto | Solo en tus datos. Preguntas para la reunión (las respuestas se copian como nota), coste de la hora desde el convenio y precio por m² de una cuadrilla, y ofertas por partidas con su total sin IVA, que se copian, se comparten o se descargan en Excel. Las partidas se traen del **BC3 de Presto** (o pegando filas de Presto o Excel): se leen en el móvil, se marcan solas las de cerámica y guardan la cantidad y el precio del proyecto como referencia. Los porcentajes y el rendimiento empiezan vacíos y la pantalla avisa de lo que falta |
 | Obras | Cada obra con su cliente, dirección, encargado, jefe de obra, ubicación de Google Maps y su personal. Mover gente de obra |
 | Visitas | Quién estaba en obra, cómo va (bien, atención, riesgo), temas, EPIs y material que faltan, oportunidades |
 | Semana | Parte semanal por operario y día, con obra, cliente y dirección. Excel (CSV), PDF y envío a administración |
@@ -58,9 +58,21 @@ tableta (768), portátil (1024) y escritorio (1440):
 - `presupuesto.spec.mjs`: coste de la hora y precio por m² contra cifras calculadas a mano, avisos de lo que falta,
   números mal escritos, partidas con el precio calculado, texto copiado de la oferta y de las notas, varias ofertas,
   recarga, datos rotos, teclado, 44 px y axe. Con `CAPTURAS=docs/capturas` guarda las capturas de móvil y escritorio.
+  Importación: BC3 en Windows (ANSI), DOS (850) y UTF-8 declarado como ANSI (`tests/fixtures/`, escritos a mano según la
+  especificación FIEBDC-3/2020), capítulos anidados con etiqueta, factor × rendimiento, descompuestos y porcentajes que no
+  entran, cerámica de albañilería que no se marca, filas pegadas de Presto con cabecera y capítulos, y el Excel descargado.
 
 Las cifras que trae el presupuesto por defecto (oficial de 1.ª 32.178,55 €/año, peón 27.351,74 €/año, 1.736 h) salen del convenio de
 construcción de Barcelona 2026 (BOPB del 17-03-2026), según obrania.es. Hay que contrastarlo con el anexo del BOPB:
 otra fuente daba 31.290,43 € para el oficial de 1.ª. Se cambia en `PRE_CALC_DEF` dentro de `index.html`.
+
+### Lector de BC3 (FIEBDC-3)
+
+`leeBC3()` en `index.html`, sin librerías. Registros `~C` (conceptos; `#` capítulo, `##` raíz), `~D` (descomposición: la
+cantidad de una partida en su capítulo es factor × rendimiento; se lee el campo 3 si existe, si no el 2) y `~M` (mismo total
+y la etiqueta, p. ej. «2.1.1»). No baja a los descompuestos de las partidas (mano de obra, materiales) ni cuenta los
+porcentajes. El juego de caracteres declarado no siempre es el real: se prueba UTF-8 y luego el declarado y su alternativo
+(Windows-1252 o DOS 850/437, tablas generadas con los códecs de Python), y gana el que da texto en castellano legible.
+Probado además, fuera del repo, con seis BC3 públicos (Presto 8.8, Presto 22, IFC2BC3, pyCost): sin errores.
 
 En todas: accesibilidad WCAG 2.1 AA, objetivos táctiles de 44 px, sin zoom en iPhone y sin desbordes.
