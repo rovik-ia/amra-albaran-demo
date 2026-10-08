@@ -3,7 +3,7 @@ import { test, expect } from "@playwright/test";
 import AxeBuilder from "@axe-core/playwright";
 import { HOY, KEY_DEMO as KEY, vigilar, irA, sinDesbordes } from "./comun.mjs";
 
-const PANTALLAS = ["Nuevo albarán", "Obras", "Visitas", "Semana", "Control", "Albaranes", "Cierre de mes", "Ajustes"];
+const PANTALLAS = ["Mediciones", "Nuevo albarán", "Obras", "Visitas", "Semana", "Control", "Albaranes", "Cierre de mes", "Ajustes"];
 
 async function abrir(page, fecha = HOY) {
   await page.clock.setFixedTime(fecha);
@@ -65,6 +65,7 @@ test.describe("carga y calidad base", () => {
 
   test("accesibilidad sin fallos graves (axe, WCAG 2.1 AA)", async ({ page }, info) => {
     test.skip(!["movil-390", "escritorio-1440"].includes(info.project.name), "basta con móvil y escritorio");
+    test.setTimeout(120_000);   // axe recorre 9 pantallas: sola tarda ~24 s, con 3 navegadores a la vez en este Mac pasa de 45 s
     await abrir(page);
     const graves = [];
     const revisar = async (donde) => {

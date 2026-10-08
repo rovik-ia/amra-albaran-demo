@@ -11,12 +11,14 @@ usa comparte el parte o un albarán. No hay peticiones a terceros (las fuentes v
 | Dirección | Qué abre |
 | --- | --- |
 | `./` | **Tus datos.** Empieza vacía: das de alta tus obras y tu personal. Es lo que se instala en el móvil. |
+| `./#obras=[…]` | **Enlace privado** que carga obras (código, dirección, Maps) en «tus datos». Lo que va tras `#` no llega nunca al servidor, así que las obras reales no quedan en la web ni en el repositorio. Solo añade las que faltan |
 | `./?demo` | **Demo** con datos de ejemplo, para enseñarla. Se guarda aparte y nunca toca tus datos. |
 
 ## Pantallas
 
 | Pantalla | Para qué |
 | --- | --- |
+| Mediciones | **La primera pantalla.** Lo hecho en cada obra semana a semana (lunes a domingo, cortadas en el mes). Se elige el trabajo de una lista con su unidad (m³ solo el vertido de hormigón, todo lo demás m²) y su criterio de medición; se escribe el total o se mide por paños, y se restan puertas, ventanas y huecos **según el criterio de ese trabajo** (CYPE, ver `docs/informe-mediciones.md`). Parte semanal en PDF para el jefe (se comparte por WhatsApp desde el móvil) y certificación del mes en Excel, PDF o texto. Arriba, el **panel de obras**: se toca la obra, luego el trabajo, y solo queda poner la cantidad |
 | Nuevo albarán | Pasar a limpio el albarán en papel: nº, obra, día, horas de cada operario, si trae firma y fecha del cliente, y foto |
 | Presupuesto | Solo en tus datos. Preguntas para la reunión (las respuestas se copian como nota), coste de la hora desde el convenio y precio por m² de una cuadrilla, y ofertas por partidas con su total sin IVA, que se copian, se comparten o se descargan en Excel. Las partidas se traen del **BC3 de Presto** (o pegando filas de Presto o Excel): se leen en el móvil, se marcan solas las de cerámica y guardan la cantidad y el precio del proyecto como referencia. Los porcentajes y el rendimiento empiezan vacíos y la pantalla avisa de lo que falta |
 | Obras | Cada obra con su cliente, dirección, encargado, jefe de obra, ubicación de Google Maps y su personal. Mover gente de obra |
@@ -55,6 +57,10 @@ tableta (768), portátil (1024) y escritorio (1440):
   Google Maps, albarán en papel con foto, números repetidos, anulación, cruce visitas–albaranes, EPIs,
   parte semanal (tabla, Excel, PDF, envío), copia de seguridad y datos corruptos.
 - `tarjeta.spec.mjs`: lee los QR con un lector real (jsQR) y comprueba las medidas de los PDF.
+- `mediciones.spec.mjs` (reloj el 08-10-2026, obras de prueba inventadas): enlace privado de obras, panel, semanas del mes, paños, puertas y ventanas con el criterio de
+  cada trabajo (cifras calculadas a mano), m³ del vertido, corregir y borrar, datos rotos, Excel y resumen línea a línea,
+  parte semanal en PDF (estructura del PDF comprobada: tabla xref, longitudes de los streams, varias páginas) y compartirlo,
+  certificación en PDF, desbordes, axe, 44 px y teclado. Con `CAPTURAS=docs/capturas` guarda capturas y los PDF de muestra.
 - `presupuesto.spec.mjs`: coste de la hora y precio por m² contra cifras calculadas a mano, avisos de lo que falta,
   números mal escritos, partidas con el precio calculado, texto copiado de la oferta y de las notas, varias ofertas,
   recarga, datos rotos, teclado, 44 px y axe. Con `CAPTURAS=docs/capturas` guarda las capturas de móvil y escritorio.

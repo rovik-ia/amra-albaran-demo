@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex, nofollow, noarchive">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-U3ks+iyzTCbkf1nbzp1NUkShC0RpZfM7FGQROMqGPxc='; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; manifest-src 'self'; worker-src 'self'; connect-src 'self'; base-uri 'none'; form-action 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-kg0tsvOz5KOPV3rLTcWlV+LGNEnodHAeJ36/43KJIOc='; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; manifest-src 'self'; worker-src 'self'; connect-src 'self'; base-uri 'none'; form-action 'none'">
 <title>Albarán de Horas Amra</title>
 <meta name="description" content="Control de albaranes de horas, obras, personal y visitas. Herramienta de ROVIK.IA.">
 <meta name="theme-color" content="#0B0E10">
@@ -587,6 +587,104 @@ input[type=url]:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3
 .bc3cap .chk{border-top:1px solid var(--line)}
 .bc3cap .chk small{display:block;font-family:"IBM Plex Mono",monospace;font-size:12px;color:var(--ink-2)}
 input[aria-invalid="true"]{border-color:var(--bad)}
+
+/* ---- mediciones ---- */
+.md-gap{margin-top:14px}
+.md-ft{margin:0 0 14px;font-size:17px;font-weight:600;letter-spacing:-.01em}
+.md-ft:focus{outline:none}
+.md-semtxt{margin:0;min-height:46px;display:flex;align-items:center;font-size:13px;line-height:1.3;color:var(--ink-2)}
+.md-qrow{display:flex;align-items:center;gap:10px}
+.md-qrow input{flex:1 1 auto;min-width:0;font-family:"IBM Plex Mono",monospace;font-size:20px;font-weight:600}
+.md-qrow input[readonly]{color:var(--accent);border-style:dashed}
+.md-ud{flex:0 0 auto;font-family:"IBM Plex Mono",monospace;font-weight:600;color:var(--ink-2);min-width:2.4em}
+.md-panos{margin-top:12px;border:1px solid var(--line);border-radius:10px;background:var(--ground);padding:0 12px}
+.md-panos summary{list-style:none;cursor:pointer;min-height:46px;display:flex;align-items:center;font-size:14px;font-weight:600}
+.md-panos summary::-webkit-details-marker{display:none}
+.md-panos summary::after{content:"";width:8px;height:8px;border-right:1.5px solid var(--ink-3);border-bottom:1.5px solid var(--ink-3);transform:rotate(45deg);margin:-4px 4px 0 auto;transition:transform .15s}
+.md-panos[open] summary::after{transform:rotate(-135deg);margin-top:4px}
+.md-panos summary:focus-visible{outline:2px solid var(--accent);outline-offset:-2px;border-radius:6px}
+.md-panos[open]{padding-bottom:12px}
+.md-panos > .hint:first-of-type{margin-top:0}
+.md-pano{margin-top:10px;padding:10px;border:1px solid var(--line);border-radius:9px;background:var(--surface)}
+.md-pano.md-hueco{border-color:color-mix(in srgb,var(--warn) 45%,transparent)}
+.md-pano-t{margin:0 0 8px;font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-2)}
+.md-pano.md-hueco .md-pano-t{color:var(--warn)}
+.md-pg{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.md-pg.cuatro{grid-template-columns:repeat(4,minmax(0,1fr))}
+@media (max-width:460px){.md-pg.cuatro{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.md-pg label{display:block;font-size:11.5px;color:var(--ink-2);margin-bottom:4px}
+.md-pg input{font-family:"IBM Plex Mono",monospace}
+.md-pf{display:flex;align-items:center;gap:10px;margin-top:8px}
+.md-pf .md-pv{margin-left:auto;font-family:"IBM Plex Mono",monospace;font-weight:600;font-variant-numeric:tabular-nums}
+.md-pano.md-hueco .md-pv{color:var(--warn)}
+.md-crit{margin:12px 0 0;padding:10px 12px;border-left:2px solid var(--accent);background:var(--accent-soft);border-radius:0 8px 8px 0;font-size:12.5px;line-height:1.5;color:var(--ink-2)}
+.md-crit b{color:var(--ink);font-weight:600}
+.md-fuente{display:block;margin-top:4px;font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--ink-3)}
+#mfHuecosLista .md-pano:first-child{margin-top:0}
+.md-huecos .btnrow{margin-top:10px}
+.md-neto{margin:12px 0 0;padding:12px;border:1px solid color-mix(in srgb,var(--accent) 35%,transparent);border-radius:10px;display:grid;grid-template-columns:1fr auto;gap:2px 10px;align-items:baseline;font-size:13px}
+.md-neto b{font-family:"IBM Plex Mono",monospace;font-size:20px;color:var(--accent);text-align:right}
+.md-neto small{grid-column:1/-1;color:var(--ink-2);font-size:12px}
+.md-ptot{margin:12px 0 0;display:flex;justify-content:space-between;gap:10px;font-weight:600}
+.md-ptot b{font-family:"IBM Plex Mono",monospace;color:var(--accent)}
+#mfOps .chk{border-bottom:1px solid var(--line)}
+#mfOps .chk:last-child{border-bottom:0}
+#mfOps .empty{padding:8px 0;text-align:left}
+.md-obra .md-h{display:flex;gap:12px;align-items:flex-start;padding:14px}
+.md-obra .md-h .cod{font-family:"IBM Plex Mono",monospace;font-size:12.5px;font-weight:600;color:var(--accent);background:var(--accent-soft);border:1px solid color-mix(in srgb,var(--accent) 30%,transparent);padding:4px 8px;border-radius:7px;flex:0 0 auto;max-width:40%;overflow-wrap:anywhere}
+.md-hn{flex:1 1 auto;min-width:0}
+.md-hn p{margin:0}
+.md-hn .et{font-weight:500;font-size:14px;line-height:1.35;overflow-wrap:anywhere}
+.md-hn .em{font-size:12px;color:var(--ink-2);font-weight:300;margin-top:2px;overflow-wrap:anywhere}
+.md-tot{flex:0 0 auto;text-align:right;line-height:1.2}
+.md-tot b{display:block;font-family:"IBM Plex Mono",monospace;font-size:19px;font-weight:600;color:var(--accent);font-variant-numeric:tabular-nums;white-space:nowrap}
+.md-tot small{font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3)}
+.md-sem{border-top:1px solid var(--line)}
+.md-sh{display:flex;align-items:baseline;gap:10px;padding:10px 14px;font-size:13px}
+.md-sh .n{font-weight:600}
+.md-sh .r{color:var(--ink-2);font-weight:300}
+.md-sh .v{margin-left:auto;font-family:"IBM Plex Mono",monospace;font-weight:600;font-variant-numeric:tabular-nums;white-space:nowrap}
+.md-sem.vacia .md-sh .v{color:var(--ink-3);font-weight:400}
+.md-sem.hoy .md-sh .n{color:var(--accent)}
+.md-sem.futura .md-sh .n,.md-sem.futura .md-sh .r{color:var(--ink-3);font-weight:400}
+.md-l{display:flex;align-items:flex-start;gap:10px;width:100%;min-height:48px;padding:9px 14px 9px 24px;background:none;border:0;border-top:1px dashed var(--line);color:inherit;font:inherit;text-align:left;cursor:pointer}
+.md-l:hover{background:var(--surface-2)}
+.md-l:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
+.md-l .f{flex:0 0 auto;font-family:"IBM Plex Mono",monospace;font-size:12px;color:var(--ink-2);padding-top:1px}
+.md-l .t{flex:1 1 auto;min-width:0;font-size:13.5px;line-height:1.35;overflow-wrap:anywhere}
+.md-l .t small{display:block;font-size:11.5px;color:var(--ink-2);font-weight:300}
+.md-l .q{flex:0 0 auto;font-family:"IBM Plex Mono",monospace;font-size:13px;font-weight:600;white-space:nowrap}
+.md-pie{padding:10px 14px 14px;border-top:1px solid var(--line)}
+#mdResp{margin-top:10px}
+.md-tiles{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.md-tile{appearance:none;font:inherit;color:inherit;text-align:left;cursor:pointer;min-height:104px;padding:12px 13px;border-radius:12px;
+  background:var(--surface);border:1px solid var(--line);display:flex;flex-direction:column;gap:2px;transition:border-color .15s,background .15s}
+.md-tile:hover{border-color:var(--line-strong)}
+.md-tile:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.md-tile[aria-pressed="true"]{border-color:color-mix(in srgb,var(--accent) 55%,transparent);background:linear-gradient(135deg,rgba(47,212,196,.12),transparent 75%)}
+.md-tile .c{font-family:"IBM Plex Mono",monospace;font-weight:600;font-size:14px;color:var(--accent);overflow-wrap:anywhere}
+.md-tile .p{font-size:12px;color:var(--ink-2);font-weight:300;line-height:1.3;overflow-wrap:anywhere}
+.md-tile .s{margin-top:auto;padding-top:6px;font-size:12px;color:var(--ink-2)}
+.md-tile .s b{display:block;font-family:"IBM Plex Mono",monospace;font-size:17px;color:var(--ink);font-weight:600;white-space:nowrap}
+.md-trabajos{margin-top:12px}
+.md-pt{margin:0 0 4px;font-size:16px;font-weight:600}
+.md-pt:focus{outline:none}
+.md-g{margin:14px 0 8px;font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3)}
+.md-chips{display:flex;flex-wrap:wrap;gap:8px}
+.md-chip{appearance:none;font:inherit;font-size:13.5px;color:var(--ink);cursor:pointer;min-height:44px;padding:8px 14px;border-radius:999px;
+  border:1px solid var(--line-strong);background:var(--ground);text-align:left;line-height:1.25;max-width:100%}
+.md-chip small{color:var(--ink-3);font-family:"IBM Plex Mono",monospace;font-size:11.5px;margin-left:4px}
+.md-chip:hover{border-color:var(--accent)}
+.md-chip:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.md-chip.ult{border-color:color-mix(in srgb,var(--accent) 55%,transparent);background:var(--accent-soft)}
+.md-wn{border:0;padding:0;background:none}
+.md-res{margin:12px 0 0;font-size:13px;line-height:1.55;color:var(--ink-2)}
+.md-res b{color:var(--ink);font-weight:600}
+@media print{
+  .inf-firmas{display:flex;gap:16mm;margin-top:12mm;break-inside:avoid}
+  .inf-firmas div{flex:1 1 0;border-top:1px solid #111;padding-top:3px;font-size:8pt;color:#333}
+  .inf-t .md-semana td{background:#F7F7F7;font-weight:600}
+}
 </style>
 </head>
 <body>
@@ -597,6 +695,7 @@ input[aria-invalid="true"]{border-color:var(--bad)}
       <span class="chip-demo" id="chipModo">Maqueta · datos de ejemplo</span>
     </div>
     <nav class="tabs" role="tablist" aria-label="Pantallas">
+      <button type="button" role="tab" id="t-medicion" aria-selected="false" aria-controls="s-medicion" tabindex="-1" data-go="medicion">Mediciones</button>
       <button type="button" role="tab" id="t-nuevo" aria-selected="true" aria-controls="s-nuevo" data-go="nuevo">Nuevo albarán</button>
       <button type="button" role="tab" id="t-presupuesto" aria-selected="false" aria-controls="s-presupuesto" tabindex="-1" data-go="presupuesto" data-solo="real">Presupuesto</button>
       <button type="button" role="tab" id="t-obras" aria-selected="false" aria-controls="s-obras" tabindex="-1" data-go="obras">Obras</button>
@@ -608,6 +707,142 @@ input[aria-invalid="true"]{border-color:var(--bad)}
       <button type="button" role="tab" id="t-ajustes" aria-selected="false" aria-controls="s-ajustes" tabindex="-1" data-go="ajustes">Ajustes</button>
     </nav>
   </header>
+
+  <!-- ===== MEDICIONES ===== -->
+  <section id="s-medicion" role="tabpanel" aria-labelledby="t-medicion" hidden>
+    <h2 class="screen-title">Mediciones</h2>
+    <p class="screen-sub">Toca la obra, toca el trabajo y pon lo medido. El viernes, el parte para tu jefe sale en PDF.</p>
+    <div class="stack">
+      <div class="weeknav">
+        <button type="button" class="navbtn" id="mdPrev" aria-label="Mes anterior">‹</button>
+        <div class="wk"><strong id="mdMes">Mes</strong><span id="mdRango"></span></div>
+        <button type="button" class="navbtn" id="mdNext" aria-label="Mes siguiente">›</button>
+      </div>
+      <div class="kpis tres">
+        <div class="kpi alert"><div class="v" id="mkM2">0</div><div class="k">m² del mes</div></div>
+        <div class="kpi"><div class="v" id="mkObras">0</div><div class="k">Obras</div></div>
+        <div class="kpi"><div class="v" id="mkN">0</div><div class="k">Mediciones</div></div>
+      </div>
+
+      <div id="mdPanel">
+        <span class="label">Tus obras · toca una para anotar</span>
+        <div class="md-tiles" id="mdTiles"></div>
+        <div class="card pad md-trabajos" id="mdTrabajos" hidden>
+          <h3 class="md-pt" id="mdTrabTit" tabindex="-1">¿Qué has medido?</h3>
+          <div id="mdTrabLista"></div>
+        </div>
+      </div>
+
+      <div class="vacio card pad" id="mdVacio" hidden>
+        <p><b>Empieza por tus obras.</b> Da de alta cada obra con su dirección; el código puede ser un nombre corto, como BLANES.</p>
+        <button class="btn primary wide" type="button" data-ir="obras">Ir a Obras</button>
+      </div>
+
+      <button class="btn primary wide" id="mdNueva" type="button">Anotar medición</button>
+      <p class="hint" id="mdOk" aria-live="polite"></p>
+
+      <form class="card pad md-form" id="mdForm" hidden novalidate>
+        <h3 class="md-ft" id="mfTit" tabindex="-1">Nueva medición</h3>
+        <label class="label" for="mfObra">Obra</label>
+        <select id="mfObra" class="field"></select>
+        <div class="duo md-gap">
+          <div><label class="label" for="mfFecha">Día de la medición</label><input type="date" id="mfFecha"></div>
+          <div><span class="label">Semana</span><p class="md-semtxt" id="mfSem" aria-live="polite">—</p></div>
+        </div>
+        <label class="label md-gap" for="mfTipo">Trabajo</label>
+        <select id="mfTipo" class="field"></select>
+        <div id="mfOtroBox" hidden>
+          <label class="label md-gap" for="mfTrab">Qué trabajo</label>
+          <input type="text" id="mfTrab" autocomplete="off" maxlength="80" placeholder="Como quieras que salga en la certificación">
+        </div>
+        <label class="label md-gap" for="mfQ">Cantidad hecha <span id="mfQlbl">en m²</span></label>
+        <div class="md-qrow"><input type="text" id="mfQ" inputmode="decimal" autocomplete="off" maxlength="12" placeholder="135"><span class="md-ud" id="mfQu">m²</span></div>
+        <p class="hint" id="mfQhint">Escribe el total o mídelo por paños.</p>
+
+        <p class="md-crit" id="mfCrit" hidden></p>
+
+        <details class="md-panos" id="mfPanos">
+          <summary>Medir por paños</summary>
+          <p class="hint" id="mfPanosHint">Largo × alto de cada paño, por las veces que se repite.</p>
+          <div id="mfPanosLista"></div>
+          <div class="btnrow md-gap">
+            <button class="btn small" id="mfPanoAdd" type="button">Añadir paño</button>
+          </div>
+        </details>
+
+        <div class="md-huecos md-gap">
+          <span class="label" id="mfHuecosLbl">Puertas, ventanas y huecos</span>
+          <div id="mfHuecosLista" role="group" aria-labelledby="mfHuecosLbl"></div>
+          <div class="btnrow">
+            <button class="btn small" id="mfPuerta" type="button">Restar puerta</button>
+            <button class="btn small" id="mfVentana" type="button">Restar ventana</button>
+            <button class="btn small ghost" id="mfHuecoAdd" type="button">Otro hueco</button>
+          </div>
+          <p class="md-neto" id="mfNeto" aria-live="polite" hidden></p>
+        </div>
+
+        <label class="label md-gap" for="mfZona">Zona o planta</label>
+        <input type="text" id="mfZona" autocomplete="off" maxlength="80" placeholder="Opcional · planta 2, vivienda 2-1…">
+
+        <div class="md-gap">
+          <span class="label" id="mfOpsLbl">Operarios</span>
+          <div id="mfOps" role="group" aria-labelledby="mfOpsLbl"></div>
+          <label class="label md-gap" for="mfOtros">Otros operarios</label>
+          <input type="text" id="mfOtros" autocomplete="off" maxlength="200" placeholder="Opcional · nombres separados por comas">
+        </div>
+
+        <label class="label md-gap" for="mfP">Precio por unidad (€)</label>
+        <input type="text" id="mfP" inputmode="decimal" autocomplete="off" maxlength="10" placeholder="Opcional">
+        <p class="hint">Si lo pones, la certificación saca también el importe.</p>
+
+        <label class="label md-gap" for="mfNota">Nota</label>
+        <textarea id="mfNota" rows="2" maxlength="300" placeholder="Opcional"></textarea>
+
+        <div class="btnrow md-gap">
+          <button class="btn primary" id="mfGuardar" type="submit">Guardar medición</button>
+          <button class="btn ghost" id="mfCancelar" type="button">Cancelar</button>
+        </div>
+        <button class="btn wide ghost danger md-gap" id="mfBorrar" type="button" hidden>Borrar esta medición</button>
+        <p class="hint" id="mfHint" aria-live="polite"></p>
+      </form>
+
+      <div class="stack" id="mdObras"></div>
+
+      <div id="mdParte">
+        <span class="label">Parte de la semana para tu jefe</span>
+        <div class="card pad">
+          <div class="weeknav md-wn">
+            <button type="button" class="navbtn" id="mpPrev" aria-label="Semana anterior">‹</button>
+            <div class="wk"><strong id="mpTit">Semana</strong><span id="mpRango"></span></div>
+            <button type="button" class="navbtn" id="mpNext" aria-label="Semana siguiente">›</button>
+          </div>
+          <p class="md-res" id="mpRes"></p>
+          <div class="btnrow md-gap">
+            <button class="btn primary" id="mpEnviar" type="button">Enviar PDF por WhatsApp</button>
+            <button class="btn" id="mpDescargar" type="button">Descargar PDF</button>
+          </div>
+          <p class="hint" id="mpHint" aria-live="polite"></p>
+        </div>
+        <p class="footnote left">Un PDF con lo hecho en cada obra de lunes a domingo: trabajos, m², zonas y operarios, y las obras sin medición. En el móvil se abre el menú de compartir para mandarlo por WhatsApp.</p>
+      </div>
+
+      <div id="mdExport">
+        <span class="label">Certificación del mes</span>
+        <div class="card pad">
+          <label class="label" for="mdExpObra">Obras</label>
+          <select id="mdExpObra" class="field"></select>
+          <div class="btnrow md-gap">
+            <button class="btn primary" id="mdEnviar" type="button">Enviar resumen</button>
+            <button class="btn" id="mdCsv" type="button">Descargar Excel</button>
+            <button class="btn" id="mdPdf" type="button">Guardar PDF</button>
+          </div>
+          <textarea id="mdResp" rows="6" readonly hidden aria-label="Resumen para copiar"></textarea>
+          <p class="hint" id="mdHint" aria-live="polite"></p>
+        </div>
+        <p class="footnote left">El PDF lleva el resumen por obra y semana, el detalle de cada medición y espacio para la firma de quien mide y del jefe de obra.</p>
+      </div>
+    </div>
+  </section>
 
   <!-- ===== NUEVO ===== -->
   <section id="s-nuevo" role="tabpanel" aria-labelledby="t-nuevo">
@@ -731,7 +966,7 @@ input[aria-invalid="true"]{border-color:var(--bad)}
       <details class="card pad fold" id="altaObra">
         <summary>Añadir obra</summary>
         <label class="label" for="noCod">Código de obra</label>
-        <input type="text" id="noCod" placeholder="Como viene en el albarán" autocomplete="off" maxlength="20">
+        <input type="text" id="noCod" placeholder="Como viene en el albarán, o un nombre corto: BLANES" autocomplete="off" maxlength="20">
         <label class="label" for="noCli" style="margin-top:12px">Cliente</label>
         <input type="text" id="noCli" placeholder="Empresa para la que se trabaja" autocomplete="off" maxlength="80">
         <label class="label" for="noDir" style="margin-top:12px">Dirección de la obra</label>
@@ -1224,12 +1459,20 @@ var state = {
   cierreMes:"",
   visObra:"",
   visPres:{},
-  pre:null              // real: presupuesto (preguntas de la reunión, coste por hora y m², ofertas)
+  pre:null,             // real: presupuesto (preguntas de la reunión, coste por hora y m², ofertas)
+  meds:[],              // mediciones {id, fecha, obra, trab, u, q, zona, ops, p, panos, nota, creado}
+  mdMes:"",             // "AAAA-MM" del mes que se ve en Mediciones
+  mdExp:"",             // obra elegida para la certificación ("" = todas)
+  mdEdit:null,          // id de la medición que se corrige
+  mdPanos:[],           // paños y huecos del formulario {l, a, e, n, h, t, f}
+  mpLun:"",             // lunes de la semana del parte para el jefe
+  mdSel:""              // obra elegida en el panel
 };
 
 function save(){
   var d = {v:2, emisor:state.emisor, tarifas:state.tarifas, obras:OBRAS, plantilla:PLANTILLA, series:state.series,
-           albaranes:state.albaranes, visitas:state.visitas, pedidos:state.pedidos, movs:state.movs, enviadas:state.enviadas};
+           albaranes:state.albaranes, visitas:state.visitas, pedidos:state.pedidos, movs:state.movs, enviadas:state.enviadas,
+           meds:state.meds};
   if(REAL){ d.yo = state.yo; d.admin = state.admin; d.serie = state.serie; d.inicio = state.inicio; d.pre = state.pre; }
   else{ d.jornadas = state.jornadas; d.mes = state.mes; d.generado = state.generado; }
   try{ localStorage.setItem(KEY, JSON.stringify(d)); return true; }catch(e){ return false; }
@@ -1273,6 +1516,28 @@ function limpiaPedido(x){
           hecho:typeof x.hecho === "string" && RE_FECHA.test(x.hecho) ? x.hecho : ""};
 }
 function movValido(m){ return !!m && typeof m.fecha === "string" && RE_FECHA.test(m.fecha) && typeof m.n === "string" && typeof m.de === "string" && typeof m.a === "string"; }
+var UDS_MED = ["m²","m³"];     // m³ solo para el vertido de hormigón; todo lo demás se mide en m²
+function medValida(m){
+  return !!m && typeof m.id === "string" && m.id !== "" && typeof m.fecha === "string" && RE_FECHA.test(m.fecha) &&
+    typeof m.obra === "string" && m.obra.trim() !== "" && typeof m.trab === "string" && m.trab.trim() !== "" &&
+    UDS_MED.indexOf(m.u) >= 0 && esNum(m.q) && m.q > 0 && m.q <= 1e6;
+}
+function medidaOk(v, max){ return v == null || (esNum(v) && v > 0 && v <= max); }
+function panoValido(x){
+  return !!x && esNum(x.l) && x.l > 0 && x.l <= 10000 && medidaOk(x.a, 1000) && medidaOk(x.e, 100) && medidaOk(x.f, 10) && esNum(x.n) && x.n > 0 && x.n <= 10000;
+}
+function limpiaPano(x){
+  var o = {l:x.l, a:esNum(x.a) ? x.a : null, e:esNum(x.e) ? x.e : null, n:x.n, h:x.h === true};
+  if(o.h){ o.t = x.t === "puerta" || x.t === "ventana" ? x.t : "hueco"; o.f = esNum(x.f) ? x.f : null; }
+  return o;
+}
+function limpiaMed(m){
+  return {id:txt(m.id,40), fecha:m.fecha, obra:txt(m.obra,20).trim(), trab:txt(m.trab).trim(), u:m.u, q:Math.round(m.q*100)/100,
+    zona:txt(m.zona), nota:txt(m.nota,300), creado:txt(m.creado,40),
+    p:esNum(m.p) && m.p >= 0 && m.p <= 100000 ? m.p : null,
+    ops:Array.isArray(m.ops) ? m.ops.filter(function(n){ return typeof n === "string" && n.trim(); }).slice(0,30).map(function(n){ return n.trim().slice(0,80); }) : [],
+    panos:Array.isArray(m.panos) ? m.panos.filter(panoValido).slice(0,80).map(limpiaPano) : []};
+}
 function sinRepetir(obras){
   var vistos = {};
   return obras.filter(function(o){ if(vistos[o.cod]) return false; vistos[o.cod] = true; return true; });
@@ -1306,6 +1571,7 @@ function load(){
     state.pre = preLimpia(d.pre);
   }
 
+  if(Array.isArray(d.meds)) state.meds = d.meds.filter(medValida).map(limpiaMed);
   if(Array.isArray(d.pedidos)) state.pedidos = d.pedidos.filter(pedidoValido).map(limpiaPedido);
   if(Array.isArray(d.movs)) state.movs = d.movs.filter(movValido).map(function(m){ return {fecha:m.fecha, n:m.n.slice(0,80), de:m.de.slice(0,20), a:m.a.slice(0,20)}; }).slice(-500);
   var albs = Array.isArray(d.albaranes) ? d.albaranes.filter(albaranValido) : [];
@@ -1487,7 +1753,10 @@ function completaHastaHoy(p){
   save();
 }
 function preparaDatos(){
-  if(REAL){ state.mes = hoyISO().slice(0,7); if(!state.inicio) state.inicio = hoyISO(); return; }
+  if(REAL){
+    state.mes = hoyISO().slice(0,7); if(!state.inicio) state.inicio = hoyISO();
+    return;
+  }
   var p = periodo();
   if(!state.albaranes.length || state.mes !== p.mes){ generaMes(p); return; }
   if(state.generado === hoyISO()) return;
@@ -1496,7 +1765,7 @@ function preparaDatos(){
 }
 
 /* ---------- navegación ---------- */
-var PANTALLAS = ["nuevo","presupuesto","obras","visitas","semana","control","lista","cierre","ajustes"].filter(function(p){ return !(REAL && p === "cierre") && !(DEMO && p === "presupuesto"); });
+var PANTALLAS = ["medicion","nuevo","presupuesto","obras","visitas","semana","control","lista","cierre","ajustes"].filter(function(p){ return !(REAL && p === "cierre") && !(DEMO && p === "presupuesto"); });
 function ir(to, conFoco){
   PANTALLAS.forEach(function(p){
     var tab = document.getElementById("t-"+p);
@@ -1507,6 +1776,7 @@ function ir(to, conFoco){
   var activa = document.getElementById("t-"+to);
   if(activa.scrollIntoView) activa.scrollIntoView({block:"nearest", inline:"nearest"});
   if(conFoco) activa.focus();
+  if(to === "medicion") pintaMediciones();
   if(to === "nuevo"){ pintaObras(); pintaCrew(); pintaTipo(); }
   if(to === "presupuesto") pintaPresupuesto();
   if(to === "obras") pintaObrasPantalla();
@@ -3059,7 +3329,7 @@ document.getElementById("restaurarIn").addEventListener("change", function(e){
   }).catch(function(){ h.className = "hint bad"; h.textContent = "Ese archivo no es una copia de esta app."; });
 });
 document.getElementById("borrarReal").addEventListener("click", function(){
-  if(!window.confirm("¿Borrar todas tus obras, personal, albaranes, visitas y presupuestos de este móvil? No se puede deshacer.")) return;
+  if(!window.confirm("¿Borrar todas tus obras, personal, mediciones, albaranes, visitas y presupuestos de este móvil? No se puede deshacer.")) return;
   try{ localStorage.removeItem(KEY); }catch(e){}
   borraFotos("real:").then(function(){ location.reload(); });
 });
@@ -3068,7 +3338,7 @@ document.getElementById("reset").addEventListener("click", function(){
   state.emisor = "Amra Building";
   state.tarifas = Object.assign({},TARIFAS_DEF);
   OBRAS = copia(OBRAS_DEMO); PLANTILLA = copia(PLANTILLA_DEMO);
-  state.horas = {}; borraFirma();
+  state.horas = {}; state.meds = []; borraFirma();
   generaMes(periodo());
   state.obra = obraDe(talDe(state.talon).obra);
   state.cierreMes = state.mes;
@@ -3795,6 +4065,892 @@ document.getElementById("ofCsv").addEventListener("click", function(){
 
 if(navigator.share){ document.getElementById("ofComp").hidden = false; document.getElementById("pqNotasComp").hidden = false; }
 
+/* ---------- mediciones: lo hecho en cada obra, semana a semana ----------
+   Cada medición lleva el día en que se mide; la semana (lunes a domingo) y el mes salen de ese día.
+   La primera y la última semana se cortan en el día 1 y en el último del mes: una medición cuenta en un solo mes. */
+/* trabajos que se eligen de la lista, con su unidad (m³ solo el vertido de hormigón) y el criterio con que se descuentan
+   los huecos. Criterios leídos ficha por ficha en el Generador de precios de CYPE el 08-10-2026 (código en «f»):
+     r:"exceso"  los huecos de hasta «lim» m² no se restan; de los mayores se resta solo lo que pasa de «lim»
+     r:"mayor"   se restan enteros los huecos de más de «lim» m²; los demás no se restan
+     r:"todo"    se resta todo lo que no se ha hecho
+   «pv»: se ofrecen puertas y ventanas; «jd»: se suma la cara interior del hueco (jambas y dintel) de los que se restan.
+   Lo que no está aquí no se ha podido comprobar: va en «Otro trabajo» y resta los huecos enteros. */
+var YESO = {r:"exceso", lim:4, pv:true, n:"Altura de suelo a techo, a cinta corrida. Los huecos de hasta 4 m² no se restan; en los mayores se resta solo lo que pasa de 4 m². Los armarios empotrados no se descuentan."};
+var PYL = {r:"todo", pv:true, n:"Sin duplicar esquinas ni encuentros. Los huecos se descuentan según la norma UNE 92305, que no se ha podido consultar (es de pago): aquí se restan enteros. Si el contrato dice otra cosa, manda el contrato."};
+var CERAMICA = {r:"mayor", lim:3, pv:true, n:"Se restan los huecos de más de 3 m²; los de 3 m² o menos no se restan. No se suma nada por roturas ni recortes."};
+var SOLADO = {r:"todo", pv:false, n:"Superficie útil realmente solada, en planta. No se suma nada por roturas ni recortes."};
+var FABRICA = {r:"mayor", lim:3, pv:true, n:"Sin duplicar esquinas ni encuentros. Se restan los huecos de más de 3 m²; en los que no se restan va incluido hacer la cara interior del hueco."};
+function cat(t, u, base, f){ return Object.assign({t:t, u:u, f:f}, base); }
+var CATALOGO = [
+  {g:"Yeso y pladur", t:[
+    cat("Guarnecido y enlucido de yeso", "m²", YESO, "RPG010"),
+    cat("Yeso proyectado", "m²", YESO, "RPG015"),
+    cat("Enlucido de yeso", "m²", YESO, "RPG011"),
+    cat("Tabique de pladur", "m²", PYL, "FBY010"),
+    cat("Trasdosado de pladur", "m²", PYL, "RRY001 · RRY005"),
+    cat("Techo de pladur", "m²", {r:"todo", pv:false, n:"Superficie entre paredes. No se descuentan los huecos para instalaciones (focos, rejillas)."}, "RTC015")]},
+  {g:"Cerámica (rajola)", t:[
+    cat("Alicatado de rajola", "m²", CERAMICA, "RAG011"),
+    cat("Alicatado de gres porcelánico", "m²", CERAMICA, "RAG011"),
+    cat("Solado de rajola", "m²", SOLADO, "RSG010"),
+    cat("Solado de gres porcelánico", "m²", SOLADO, "RSG010")]},
+  {g:"Hormigón (vertido)", t:[
+    cat("Vertido de hormigón en cimentación", "m³", {r:"todo", pv:false, n:"Volumen teórico según proyecto, sobre las secciones teóricas de la excavación. Los excesos de excavación no autorizados no se pagan."}, "CSL010 · CSZ010"),
+    cat("Vertido de hormigón en muros", "m³", {r:"mayor", lim:2, pv:false, n:"Volumen teórico. Se restan los huecos de más de 2 m² de superficie; los pequeños no se restan."}, "EHM010"),
+    cat("Vertido de hormigón en pilares", "m³", {r:"todo", pv:false, n:"Volumen realmente ejecutado."}, "EHS010"),
+    cat("Vertido de hormigón en forjado o losa", "m³", {r:"todo", pv:false, n:"Volumen vertido: largo × ancho × canto. CYPE no da criterio para el vertido solo (la losa completa la mide en m² y resta huecos de más de 6 m²): aquí se restan los huecos enteros."}, "EHL010, de referencia")]},
+  {g:"Albañilería", t:[
+    cat("Bloque de hormigón", "m²", FABRICA, "FFQ020"),
+    cat("Tabique de ladrillo", "m²", FABRICA, "FFQ010"),
+    cat("Fachada de ladrillo para revestir", "m²", {r:"mayor", lim:4, pv:true, n:"Sin duplicar esquinas ni encuentros. Se restan los huecos de más de 4 m²; en los que no se restan va incluido hacer la cara interior del hueco."}, "FFZ010"),
+    cat("Enfoscado de mortero", "m²", {r:"exceso", lim:4, pv:true, n:"Los huecos de hasta 4 m² no se restan; en los mayores se resta solo lo que pasa de 4 m²."}, "RPE010"),
+    cat("Mortero monocapa", "m²", {r:"mayor", lim:3, pv:true, n:"Se restan los huecos de más de 3 m² y se suma el desarrollo de las mochetas: añádelo como un paño más."}, "RQO010")]},
+  {g:"Acabados", t:[
+    cat("Pintura plástica sobre yeso", "m²", {r:"exceso", lim:4, pv:true, n:"Mismo criterio que el soporte, el yeso: los huecos de hasta 4 m² no se restan; en los mayores, solo lo que pasa de 4 m²."}, "RIP030 + RPG010"),
+    cat("SATE", "m²", {r:"mayor", lim:1, pv:true, jd:true, n:"Se restan los huecos de más de 1 m² y se suma la cara interior de esos huecos (jambas y dintel): pon el fondo del hueco."}, "FSM010")]}
+];
+var OTRO = "__otro";
+var CRIT_OTRO = {r:"todo", pv:true, n:"Trabajo fuera de la lista: los huecos se restan enteros."};
+function delCatalogo(t){
+  var k = clave(t);
+  for(var i = 0; i < CATALOGO.length; i++) for(var j = 0; j < CATALOGO[i].t.length; j++) if(clave(CATALOGO[i].t[j].t) === k) return CATALOGO[i].t[j];
+  return null;
+}
+function criterioDe(t){ return delCatalogo(t) || CRIT_OTRO; }
+
+function r2(n){ return Math.round(n * 100) / 100; }
+function nq(n){ var r = Math.round(n * 100); return nf(r / 100, r % 100 === 0 ? 0 : r % 10 === 0 ? 1 : 2); }
+function dec(n){ return String(r2(n)).replace(".", ","); }
+function mesMas(mes, n){ return iso(new Date(parseInt(mes.slice(0,4),10), parseInt(mes.slice(5,7),10) - 1 + n, 1)).slice(0,7); }
+function mesTitulo(mes){ return mesNombre(mes).replace(/^./, function(c){ return c.toUpperCase(); }); }
+function semanasDelMes(mes){
+  var y = parseInt(mes.slice(0,4),10), m = parseInt(mes.slice(5,7),10);
+  var primero = mes+"-01", ultimo = iso(new Date(y, m, 0)), out = [];
+  for(var lun = lunesDe(primero), i = 1; lun <= ultimo; lun = sumaDias(lun, 7), i++){
+    var dom = sumaDias(lun, 6);
+    out.push({i:i, lun:lun, desde:lun < primero ? primero : lun, hasta:dom > ultimo ? ultimo : dom, iso:semanaISO(lun).n});
+  }
+  return out;
+}
+function rangoSem(s){ var a = aFecha(s.desde).getDate(), b = aFecha(s.hasta).getDate(); return a === b ? String(a) : a+"–"+b; }
+function rangoSemLargo(s){ return rangoSem(s)+" "+MESES[aFecha(s.hasta).getMonth()].slice(0,3); }
+function semanaDeFecha(f){
+  var sems = semanasDelMes(f.slice(0,7));
+  for(var i = 0; i < sems.length; i++) if(f >= sems[i].desde && f <= sems[i].hasta) return sems[i];
+  return null;
+}
+function sumaUd(lista){ var t = {}; lista.forEach(function(m){ t[m.u] = r2((t[m.u] || 0) + m.q); }); return t; }
+function textoUds(t){ var k = UDS_MED.filter(function(u){ return t[u]; }); return k.length ? k.map(function(u){ return nq(t[u])+" "+u; }).join(" · ") : "0 m²"; }
+function importeMed(m){ return m.p == null ? 0 : r2(m.q * m.p); }
+function importeDe(lista){ return r2(lista.reduce(function(s, m){ return s + importeMed(m); }, 0)); }
+function ordenMeds(a, b){ return a.fecha < b.fecha ? -1 : a.fecha > b.fecha ? 1 : (a.creado < b.creado ? -1 : a.creado > b.creado ? 1 : 0); }
+function obraOCod(cod){ return obraDe(cod) || {cod:cod, cli:"", dir:"", enc:"", jefe:"", tel:"", mapa:""}; }
+function enSemana(m, s){ return m.fecha >= s.desde && m.fecha <= s.hasta; }
+function datosMes(mes, cod){
+  var sems = semanasDelMes(mes);
+  var meds = state.meds.filter(function(m){ return m.fecha.slice(0,7) === mes && (!cod || m.obra === cod); }).sort(ordenMeds);
+  var cods = OBRAS.map(function(o){ return o.cod; });
+  meds.forEach(function(m){ if(cods.indexOf(m.obra) < 0) cods.push(m.obra); });   // obra borrada: sus mediciones siguen contando
+  if(cod) cods = cods.filter(function(c){ return c === cod; });
+  var obras = cods.map(function(c){
+    var ms = meds.filter(function(m){ return m.obra === c; });
+    return {o:obraOCod(c), meds:ms, tot:sumaUd(ms), imp:importeDe(ms), conPrecio:ms.some(function(m){ return m.p != null; }),
+      sem:sems.map(function(s){ var l = ms.filter(function(m){ return enSemana(m, s); }); return {s:s, meds:l, tot:sumaUd(l)}; })};
+  });
+  return {mes:mes, cod:cod, sems:sems, meds:meds, obras:obras, conMeds:obras.filter(function(x){ return x.meds.length; }),
+    semTot:sems.map(function(s){ return sumaUd(meds.filter(function(m){ return enSemana(m, s); })); }),
+    tot:sumaUd(meds), imp:importeDe(meds), conPrecio:meds.some(function(m){ return m.p != null; })};
+}
+function opsTexto(m){ return m.ops.join(", "); }
+function hay(v){ return esNum(v) && v > 0; }
+function panoCompleto(x, u){ return hay(x.l) && hay(x.a) && hay(x.n) && (u !== "m³" || hay(x.e)); }
+function valorPano(x, u){ return r2(x.l * x.a * (u === "m³" ? x.e : 1) * x.n); }          // un paño, por sus veces
+/* lo que resta un hueco (por todas sus veces) según el criterio del trabajo, y lo que suma por jambas y dintel */
+function restaHueco(x, u, c){
+  var sup = x.l * x.a, prof = u === "m³" ? x.e : 1, se = 0;
+  if(c.r === "todo") se = sup * prof;
+  else if(c.r === "mayor") se = sup > c.lim ? sup * prof : 0;
+  else if(c.r === "exceso") se = sup > c.lim ? (sup - c.lim) * prof : 0;
+  var jd = c.jd && se > 0 && hay(x.f) ? (2 * x.a + x.l) * x.f : 0;
+  return {sup:r2(sup), resta:r2(se * x.n), suma:r2(jd * x.n)};
+}
+var HUECOS = {puerta:["puerta","puertas"], ventana:["ventana","ventanas"], hueco:["hueco","huecos"]};
+function nombreHueco(x){ var h = HUECOS[x.t] || HUECOS.hueco; return x.n === 1 ? "1 "+h[0] : nq(x.n)+" "+h[1]; }
+/* la medición completa: paños (o el total escrito), menos huecos según el criterio, más jambas y dintel */
+function calculaMed(panos, u, c, escrito){
+  var ps = panos.filter(function(x){ return !x.h; }), hs = panos.filter(function(x){ return x.h; });
+  var bruto = ps.length ? r2(ps.reduce(function(t, x){ return t + (panoCompleto(x, u) ? valorPano(x, u) : 0); }, 0)) : escrito;
+  var resta = 0, suma = 0;
+  hs.forEach(function(x){ if(panoCompleto(x, u)){ var h = restaHueco(x, u, c); resta += h.resta; suma += h.suma; } });
+  return {bruto:bruto, resta:r2(resta), suma:r2(suma), neto:bruto == null ? null : r2(bruto - resta + suma), conPanos:ps.length > 0, conHuecos:hs.length > 0};
+}
+function panosTexto(m){
+  var c = criterioDe(m.trab), ps = m.panos.filter(function(x){ return !x.h; }), hs = m.panos.filter(function(x){ return x.h; });
+  if(!ps.length && !hs.length) return "";
+  var k = calculaMed(m.panos, m.u, c, null);
+  var base = ps.length ? ps.map(function(x){ return nq(x.l)+" × "+nq(x.a)+(m.u === "m³" ? " × "+nq(x.e) : "")+(x.n !== 1 ? " × "+nq(x.n) : ""); }).join(" + ")
+    : nq(r2(m.q + k.resta - k.suma))+" "+m.u;
+  return base + hs.map(function(x){
+    var h = restaHueco(x, m.u, c);
+    return " − "+nombreHueco(x)+" "+nq(x.l)+" × "+nq(x.a)+(m.u === "m³" ? " × "+nq(x.e) : "")+
+      (h.resta ? (c.r === "exceso" ? " (resta lo que pasa de "+c.lim+" m²: "+nq(h.resta)+")" : "") : " (no se resta: hasta "+c.lim+" m²)")+
+      (h.suma ? " + jambas y dintel "+nq(h.suma) : "");
+  }).join("");
+}
+/* lo mismo de una semana, agrupado por trabajo: "Colocación de yeso 135 m²" */
+function porTrabajo(lista){
+  var out = [];
+  lista.forEach(function(m){
+    var k = clave(m.trab)+"|"+m.u, f = null;
+    for(var i = 0; i < out.length; i++) if(out[i].k === k) f = out[i];
+    if(f) f.q = r2(f.q + m.q); else out.push({k:k, trab:m.trab, u:m.u, q:m.q});
+  });
+  return out.map(function(f){ return f.trab+" "+nq(f.q)+" "+f.u; }).join("; ");
+}
+
+/* ---- pantalla ---- */
+function tarjetaMed(x, hoy){
+  var o = x.o, uds = UDS_MED.filter(function(u){ return x.tot[u]; });
+  var principal = uds.length ? nq(x.tot[uds[0]])+" "+uds[0] : "0 m²";
+  var resto = uds.slice(1).map(function(u){ return nq(x.tot[u])+" "+u; }).join(" · ");
+  var semanas = x.sem.map(function(w){
+    var s = w.s, futura = s.desde > hoy;
+    var clase = "md-sem"+(w.meds.length ? "" : " vacia")+(hoy >= s.desde && hoy <= s.hasta ? " hoy" : futura ? " futura" : "");
+    return '<div class="'+clase+'"><div class="md-sh"><span class="n">Semana '+s.i+'</span><span class="r">'+esc(rangoSemLargo(s))+'</span>'+
+      '<span class="v">'+(w.meds.length ? esc(textoUds(w.tot)) : futura ? "" : "—")+'</span></div>'+
+      w.meds.map(function(m){
+        var sub = [m.zona, opsTexto(m), m.p != null ? eur(m.p)+"/"+m.u : "", m.nota].filter(Boolean).join(" · ");
+        return '<button type="button" class="md-l" data-med="'+esc(m.id)+'"><span class="f">'+esc(diaMes(m.fecha))+'</span>'+
+          '<span class="t"><span class="sr">Corregir: </span>'+esc(m.trab)+(sub ? '<small>'+esc(sub)+'</small>' : '')+'</span>'+
+          '<span class="q">'+esc(nq(m.q)+" "+m.u)+'</span></button>';
+      }).join("")+'</div>';
+  }).join("");
+  return '<article class="card md-obra" data-obra="'+esc(o.cod)+'"><div class="md-h"><span class="cod">'+esc(o.cod)+'</span>'+
+    '<div class="md-hn"><p class="et">'+esc(o.dir || "Sin dirección")+'</p>'+(o.cli ? '<p class="em">'+esc(o.cli)+'</p>' : '')+
+    (resto ? '<p class="em">Además: '+esc(resto)+'</p>' : '')+(x.conPrecio ? '<p class="em">Importe: '+esc(eur(x.imp))+'</p>' : '')+'</div>'+
+    '<div class="md-tot"><b>'+esc(principal)+'</b><small>en el mes</small></div></div>'+semanas+
+    '<div class="md-pie"><button type="button" class="btn small wide" data-anota="'+esc(o.cod)+'">Anotar en '+esc(o.cod)+'</button></div></article>';
+}
+function pintaMediciones(){
+  var hoy = hoyISO(), mesHoy = hoy.slice(0,7);
+  if(!state.mdMes) state.mdMes = mesHoy;
+  var D = datosMes(state.mdMes, "");
+  document.getElementById("mdMes").textContent = mesTitulo(D.mes);
+  document.getElementById("mdRango").textContent = D.sems.length+" semanas · del "+diaMes(D.sems[0].desde)+" al "+diaMes(D.sems[D.sems.length-1].hasta);
+  document.getElementById("mdNext").disabled = state.mdMes >= mesHoy;
+  document.getElementById("mkM2").textContent = nq(D.tot["m²"] || 0);
+  document.getElementById("mkObras").textContent = D.conMeds.length;
+  document.getElementById("mkN").textContent = D.meds.length;
+  var vacio = !OBRAS.length && !state.meds.length, abierto = !document.getElementById("mdForm").hidden;
+  document.getElementById("mdVacio").hidden = !vacio;
+  document.getElementById("mdNueva").hidden = vacio || abierto;
+  document.getElementById("mdExport").hidden = vacio;
+  document.getElementById("mdParte").hidden = vacio;
+  document.getElementById("mdPanel").hidden = !OBRAS.length;
+  pintaPanel();
+  pintaParte();
+  document.getElementById("mdObras").innerHTML = D.obras.length ? D.obras.map(function(x){ return tarjetaMed(x, hoy); }).join("")
+    : (vacio ? "" : '<p class="empty">Sin mediciones este mes.</p>');
+  var sel = document.getElementById("mdExpObra");
+  if(state.mdExp && !D.conMeds.some(function(x){ return x.o.cod === state.mdExp; })) state.mdExp = "";
+  sel.innerHTML = '<option value="">Todas las obras</option>' + D.conMeds.map(function(x){
+    return '<option value="'+esc(x.o.cod)+'">'+esc(x.o.cod)+' · '+esc(textoUds(x.tot))+'</option>';
+  }).join("");
+  sel.value = state.mdExp;
+  var hay = D.meds.length > 0;
+  ["mdEnviar","mdCsv","mdPdf","mdExpObra"].forEach(function(id){ document.getElementById(id).disabled = !hay; });
+}
+function avisoMd(id, t, bien){ var h = document.getElementById(id); h.className = "hint"+(bien === true ? " ok" : bien === false ? " bad" : ""); h.textContent = t; }
+document.getElementById("mdPrev").addEventListener("click", function(){ state.mdMes = mesMas(state.mdMes, -1); pintaMediciones(); });
+document.getElementById("mdNext").addEventListener("click", function(){ state.mdMes = mesMas(state.mdMes, 1); pintaMediciones(); });
+document.getElementById("mdExpObra").addEventListener("change", function(e){ state.mdExp = e.target.value; });
+document.getElementById("mdObras").addEventListener("click", function(e){
+  var b = e.target.closest && e.target.closest("[data-med],[data-anota]");
+  if(!b) return;
+  if(b.dataset.anota){ abreFormMed(null, b.dataset.anota); return; }
+  var m = state.meds.filter(function(x){ return x.id === b.dataset.med; })[0];
+  if(m) abreFormMed(m);
+});
+document.getElementById("mdNueva").addEventListener("click", function(){
+  var ult = state.meds.slice().sort(function(a, b){ return a.creado < b.creado ? 1 : a.creado > b.creado ? -1 : 0; })[0];
+  abreFormMed(null, ult && obraDe(ult.obra) ? ult.obra : "");
+});
+
+/* ---- panel de obras: toca la obra, toca el trabajo y solo queda poner la cantidad ---- */
+function poblacion(o){ var p = String(o.dir || "").split("·"); return (p.length > 1 ? p[p.length - 1] : p[0]).replace(/^\s*\d{5}\s*/, "").trim(); }
+function pintaPanel(){
+  var hoy = hoyISO(), lun = lunesDe(hoy), dom = sumaDias(lun, 6), mes = hoy.slice(0,7);
+  if(state.mdSel && !obraDe(state.mdSel)) state.mdSel = "";
+  document.getElementById("mdTiles").innerHTML = OBRAS.map(function(o){
+    var sem = sumaUd(state.meds.filter(function(m){ return m.obra === o.cod && m.fecha >= lun && m.fecha <= dom; }));
+    var delMes = sumaUd(state.meds.filter(function(m){ return m.obra === o.cod && m.fecha.slice(0,7) === mes; }));
+    return '<button type="button" class="md-tile" data-tile="'+esc(o.cod)+'" aria-pressed="'+(state.mdSel === o.cod)+'">'+
+      '<span class="c">'+esc(o.cod)+'</span><span class="p">'+esc(poblacion(o) || "Sin dirección")+'</span>'+
+      '<span class="s">Esta semana<b>'+esc(textoUds(sem))+'</b></span><span class="p">Mes: '+esc(textoUds(delMes))+'</span></button>';
+  }).join("");
+  var box = document.getElementById("mdTrabajos");
+  box.hidden = !state.mdSel;
+  if(!state.mdSel) return;
+  var ult = ultimaMed(state.mdSel), usados = usadosFuera();
+  document.getElementById("mdTrabTit").textContent = "¿Qué has medido en "+state.mdSel+"?";
+  function chip(t, u, cls){ return '<button type="button" class="md-chip'+(cls ? ' '+cls : '')+'" data-trab="'+esc(t)+'">'+esc(t)+(u ? '<small>'+u+'</small>' : '')+'</button>'; }
+  document.getElementById("mdTrabLista").innerHTML =
+    (ult ? '<p class="md-g">Lo último en esta obra</p><div class="md-chips">'+chip(ult.trab, ult.u, "ult")+'</div>' : '')+
+    CATALOGO.map(function(g){ return '<p class="md-g">'+esc(g.g)+'</p><div class="md-chips">'+g.t.map(function(x){ return chip(x.t, x.u); }).join("")+'</div>'; }).join("")+
+    '<p class="md-g">Otros</p><div class="md-chips">'+usados.map(function(t){ return chip(t, "m²"); }).join("")+chip(OTRO_TXT, "")+'</div>';
+}
+var OTRO_TXT = "Otro trabajo (escribirlo)";
+document.getElementById("mdTiles").addEventListener("click", function(e){
+  var b = e.target.closest && e.target.closest("[data-tile]");
+  if(!b) return;
+  state.mdSel = state.mdSel === b.dataset.tile ? "" : b.dataset.tile;
+  pintaPanel();
+  if(!state.mdSel) return;
+  var box = document.getElementById("mdTrabajos"), tope = document.querySelector(".topbar").getBoundingClientRect().height;
+  window.scrollTo(0, Math.max(0, box.getBoundingClientRect().top + window.scrollY - tope - 10));   // la lista queda a la vista
+  document.getElementById("mdTrabTit").focus({preventScroll:true});
+});
+document.getElementById("mdTrabLista").addEventListener("click", function(e){
+  var b = e.target.closest && e.target.closest("[data-trab]");
+  if(!b) return;
+  var t = b.dataset.trab, cod = state.mdSel;
+  abreFormMed(null, cod);
+  if(t === OTRO_TXT){
+    document.getElementById("mfTipo").value = OTRO;
+    document.getElementById("mfTrab").value = "";
+    document.getElementById("mfOtroBox").hidden = false;
+  }else ponTrabajo(t);
+  var antes = ultimaMed(cod, t === OTRO_TXT ? "" : t);
+  document.getElementById("mfP").value = t !== OTRO_TXT && antes && antes.p != null ? nq(antes.p) : "";
+  pintaPanos();
+  document.getElementById(t === OTRO_TXT ? "mfTrab" : "mfQ").focus();
+});
+
+/* ---- formulario ---- */
+function uMed(){ var c = delCatalogo(document.getElementById("mfTipo").value); return c ? c.u : "m²"; }   // la unidad la pone el trabajo
+function ultimaMed(cod, trab){
+  var l = state.meds.filter(function(m){ return m.obra === cod && (!trab || clave(m.trab) === clave(trab)); }).sort(ordenMeds);
+  return l.length ? l[l.length-1] : null;
+}
+/* la lista: el catálogo por grupos y, aparte, los trabajos escritos a mano en otras mediciones */
+function usadosFuera(){
+  var vistos = {}, out = [];
+  state.meds.slice().sort(ordenMeds).reverse().forEach(function(m){
+    var k = clave(m.trab);
+    if(!delCatalogo(m.trab) && !vistos[k]){ vistos[k] = true; out.push(m.trab); }
+  });
+  return out.slice(0, 30);
+}
+function ponTrabajo(t){
+  var sel = document.getElementById("mfTipo"), cat = t ? delCatalogo(t) : null, usados = usadosFuera();
+  sel.innerHTML = '<option value="">Elige el trabajo…</option>'+CATALOGO.map(function(g){
+    return '<optgroup label="'+esc(g.g)+'">'+g.t.map(function(x){ return '<option value="'+esc(x.t)+'">'+esc(x.t)+' · '+x.u+'</option>'; }).join("")+'</optgroup>';
+  }).join("")+(usados.length ? '<optgroup label="Escritos antes">'+usados.map(function(x){ return '<option value="'+esc(x)+'">'+esc(x)+'</option>'; }).join("")+'</optgroup>' : '')+
+    '<option value="'+OTRO+'">Otro trabajo (escribirlo)</option>';
+  var enUsados = t && usados.some(function(x){ return clave(x) === clave(t); });
+  sel.value = cat ? cat.t : enUsados ? usados.filter(function(x){ return clave(x) === clave(t); })[0] : t ? OTRO : "";
+  document.getElementById("mfTrab").value = sel.value === OTRO ? t : "";
+  document.getElementById("mfOtroBox").hidden = sel.value !== OTRO;
+}
+function trabajoElegido(){
+  var v = document.getElementById("mfTipo").value;
+  return v === OTRO ? document.getElementById("mfTrab").value.trim() : v;
+}
+function pintaOpsMed(elegidos){
+  var cod = document.getElementById("mfObra").value;
+  var gente = PLANTILLA.filter(function(w){ return w.obra === cod; }).map(function(w){ return w.n; });
+  var claves = elegidos.map(clave);
+  document.getElementById("mfOps").innerHTML = gente.length ? gente.map(function(n){
+    return '<label class="chk"><input type="checkbox" value="'+esc(n)+'"'+(claves.indexOf(clave(n)) >= 0 ? ' checked' : '')+'><span>'+esc(n)+'</span></label>';
+  }).join("") : '<p class="empty">Nadie dado de alta en esta obra. Si quieres, escribe los nombres debajo.</p>';
+  document.getElementById("mfOtros").value = elegidos.filter(function(n){
+    return !gente.some(function(g){ return clave(g) === clave(n); });
+  }).join(", ");
+}
+function opsElegidos(){
+  var l = Array.prototype.map.call(document.querySelectorAll("#mfOps input:checked"), function(i){ return i.value; });
+  document.getElementById("mfOtros").value.split(/[,;\n]/).forEach(function(n){
+    n = n.trim(); if(n && !l.some(function(x){ return clave(x) === clave(n); })) l.push(n.slice(0,80));
+  });
+  return l.slice(0,30);
+}
+function pintaSemMed(){
+  var f = document.getElementById("mfFecha").value, s = RE_FECHA.test(f) ? semanaDeFecha(f) : null;
+  document.getElementById("mfSem").textContent = s ? "Semana "+s.i+" de "+MESES[aFecha(f).getMonth()]+" · "+rangoSemLargo(s) : "—";
+}
+function campoPano(i, k, et, v, titulo){
+  var id = "mp"+k+i;
+  return '<div><label for="'+id+'">'+et+'<span class="sr"> · '+esc(titulo)+'</span></label><input type="text" inputmode="decimal" id="'+id+
+    '" data-i="'+i+'" data-k="'+k+'" value="'+(v == null ? "" : esc(nq(v)))+'" autocomplete="off" maxlength="9"></div>';
+}
+function critActual(){ return criterioDe(trabajoElegido()); }
+function pintaPanos(){
+  var u = uMed(), c = critActual(), np = 0, nh2 = {}, panos = [], huecos = [];
+  document.getElementById("mfPanosHint").textContent = u === "m³" ? "Largo × ancho × canto de cada pieza, por las veces que se repite."
+    : "Largo × alto de cada paño, por las veces que se repite.";
+  state.mdPanos.forEach(function(x, i){
+    if(!x.h){
+      var titulo = (u === "m³" ? "Pieza " : "Paño ")+(++np);
+      panos.push('<div class="md-pano"><p class="md-pano-t">'+titulo+'</p>'+
+        '<div class="md-pg'+(u === "m³" ? ' cuatro' : '')+'">'+campoPano(i, "l", "Largo (m)", x.l, titulo)+
+        campoPano(i, "a", u === "m³" ? "Ancho (m)" : "Alto (m)", x.a, titulo)+(u === "m³" ? campoPano(i, "e", "Canto (m)", x.e, titulo) : '')+
+        campoPano(i, "n", "Veces", x.n, titulo)+'</div>'+
+        '<div class="md-pf"><button type="button" class="btn small ghost" data-quita="'+i+'">Quitar<span class="sr"> '+esc(titulo)+'</span></button>'+
+        '<span class="md-pv" id="mpv'+i+'"></span></div></div>');
+      return;
+    }
+    var nom = (HUECOS[x.t] || HUECOS.hueco)[0], titulo = nom.charAt(0).toUpperCase()+nom.slice(1)+" "+(nh2[x.t] = (nh2[x.t] || 0) + 1);
+    var cuatro = u === "m³" || c.jd;
+    huecos.push('<div class="md-pano md-hueco"><p class="md-pano-t">'+titulo+'</p>'+
+      '<div class="md-pg'+(cuatro ? ' cuatro' : '')+'">'+campoPano(i, "n", "Cuántas", x.n, titulo)+campoPano(i, "l", "Ancho (m)", x.l, titulo)+
+      campoPano(i, "a", "Alto (m)", x.a, titulo)+(u === "m³" ? campoPano(i, "e", "Espesor (m)", x.e, titulo) : '')+
+      (c.jd && u !== "m³" ? campoPano(i, "f", "Fondo (m)", x.f, titulo) : '')+'</div>'+
+      '<div class="md-pf"><button type="button" class="btn small ghost" data-quita="'+i+'">Quitar<span class="sr"> '+esc(titulo)+'</span></button>'+
+      '<span class="md-pv" id="mpv'+i+'"></span></div></div>');
+  });
+  document.getElementById("mfPanosLista").innerHTML = panos.join("") + (np ? '<p class="md-ptot"><span>Total de los paños</span><b id="mfPtot"></b></p>' : '');
+  document.getElementById("mfHuecosLista").innerHTML = huecos.join("");
+  document.getElementById("mfPuerta").hidden = !c.pv;
+  document.getElementById("mfVentana").hidden = !c.pv;
+  document.getElementById("mfHuecoAdd").textContent = c.pv ? "Otro hueco" : "Restar hueco";
+  var t = trabajoElegido(), ca = delCatalogo(t), crit = document.getElementById("mfCrit");
+  crit.innerHTML = t ? '<b>Cómo se mide:</b> '+esc(c.n)+(ca ? '<span class="md-fuente">Criterio CYPE '+esc(ca.f)+'</span>' : '') : '';
+  crit.hidden = !t;
+  refrescaPanos();
+}
+function refrescaPanos(){
+  var u = uMed(), c = critActual(), qEl = document.getElementById("mfQ");
+  state.mdPanos.forEach(function(x, i){
+    var el = document.getElementById("mpv"+i);
+    if(!el) return;
+    if(!panoCompleto(x, u)){ el.textContent = "Falta medida"; return; }
+    if(!x.h){ el.textContent = nq(valorPano(x, u))+" "+u; return; }
+    var h = restaHueco(x, u, c);
+    el.textContent = h.resta ? "− "+nq(h.resta)+" "+u+(h.suma ? " · + "+nq(h.suma)+" jambas" : "") : "No se resta ("+nq(h.sup)+" m² c/u)";
+  });
+  var k = calculaMed(state.mdPanos, u, c, numEs(qEl.value.replace(/m[2²3³]/gi, "")));
+  qEl.readOnly = k.conPanos;
+  qEl.placeholder = k.conPanos ? "Sale de los paños" : "135";
+  if(k.conPanos) qEl.value = k.bruto ? nq(k.bruto) : "";
+  document.getElementById("mfQlbl").textContent = (k.conHuecos ? "antes de huecos, " : "")+"en "+u;
+  document.getElementById("mfQhint").textContent = k.conPanos ? "Sale de los paños. Para escribirla a mano, quita los paños." : "Escribe el total o mídelo por paños.";
+  document.getElementById("mfQu").textContent = u;
+  var pt = document.getElementById("mfPtot"); if(pt) pt.textContent = nq(k.bruto || 0)+" "+u;
+  var neto = document.getElementById("mfNeto");
+  neto.hidden = !k.conHuecos;
+  if(k.conHuecos) neto.innerHTML = k.bruto == null ? '<small>Escribe la cantidad o mide por paños para restar los huecos.</small>'
+    : '<span>A certificar</span><b id="mfNetoV">'+nq(Math.max(k.neto, 0))+' '+u+'</b><small>'+nq(k.bruto)+' − '+nq(k.resta)+' de huecos'+(k.suma ? ' + '+nq(k.suma)+' de jambas y dintel' : '')+'</small>';
+}
+function ultimoHueco(tipo){
+  var cod = document.getElementById("mfObra").value, l = state.meds.filter(function(m){ return m.obra === cod; }).sort(ordenMeds);
+  for(var i = l.length - 1; i >= 0; i--) for(var j = l[i].panos.length - 1; j >= 0; j--){ var x = l[i].panos[j]; if(x.h && x.t === tipo) return x; }
+  return null;
+}
+function nuevoPano(h, tipo){
+  var prev = h && tipo !== "hueco" ? ultimoHueco(tipo) : null;     // la medida de la última puerta o ventana de esta obra
+  var x = {l:prev ? prev.l : null, a:prev ? prev.a : null, e:prev ? prev.e : null, n:1, h:h};
+  if(h){ x.t = tipo; x.f = prev ? prev.f : null; }
+  state.mdPanos.push(x);
+  pintaPanos();
+  var el = document.getElementById((h ? "mpn" : "mpl")+(state.mdPanos.length-1)); if(el){ el.focus(); if(el.select) el.select(); }
+}
+document.getElementById("mfPanoAdd").addEventListener("click", function(){ nuevoPano(false); });
+document.getElementById("mfPuerta").addEventListener("click", function(){ nuevoPano(true, "puerta"); });
+document.getElementById("mfVentana").addEventListener("click", function(){ nuevoPano(true, "ventana"); });
+document.getElementById("mfHuecoAdd").addEventListener("click", function(){ nuevoPano(true, "hueco"); });
+document.getElementById("mfQ").addEventListener("input", refrescaPanos);
+["mfPanosLista","mfHuecosLista"].forEach(function(id){
+  var host = document.getElementById(id);
+  host.addEventListener("input", function(e){
+    var el = e.target, x = state.mdPanos[+el.dataset.i];
+    if(!x || !el.dataset.k) return;
+    var v = numEs(el.value);
+    x[el.dataset.k] = v != null && v > 0 ? v : null;
+    el.setAttribute("aria-invalid", el.value.trim() && x[el.dataset.k] == null ? "true" : "false");
+    refrescaPanos();
+  });
+  host.addEventListener("click", function(e){
+    var b = e.target.closest && e.target.closest("[data-quita]");
+    if(!b) return;
+    var eraHueco = state.mdPanos[+b.dataset.quita].h;
+    state.mdPanos.splice(+b.dataset.quita, 1);
+    pintaPanos();
+    document.getElementById(eraHueco ? "mfHuecoAdd" : state.mdPanos.some(function(x){ return !x.h; }) ? "mfPanoAdd" : "mfQ").focus();
+  });
+});
+document.getElementById("mfFecha").addEventListener("change", pintaSemMed);
+document.getElementById("mfObra").addEventListener("change", function(){
+  if(state.mdEdit){ pintaOpsMed(opsElegidos()); return; }
+  var ult = ultimaMed(document.getElementById("mfObra").value);
+  if(ult){ ponTrabajo(ult.trab); document.getElementById("mfP").value = ult.p != null ? nq(ult.p) : ""; pintaPanos(); }
+  pintaOpsMed(ult ? ult.ops : []);
+});
+function precioDeAntes(){
+  var p = document.getElementById("mfP"), t = trabajoElegido();
+  if(p.value.trim() || !t) return;
+  var ult = ultimaMed(document.getElementById("mfObra").value, t);
+  if(ult && ult.p != null) p.value = nq(ult.p);
+}
+document.getElementById("mfTrab").addEventListener("change", precioDeAntes);
+document.getElementById("mfTrab").addEventListener("input", function(){ pintaPanos(); });
+document.getElementById("mfTipo").addEventListener("change", function(){
+  var v = document.getElementById("mfTipo").value, otro = v === OTRO;
+  document.getElementById("mfOtroBox").hidden = !otro;
+  document.getElementById("mfTipo").removeAttribute("aria-invalid");
+  pintaPanos();          // cambia la unidad (m³ el vertido de hormigón, m² lo demás) y el criterio de los huecos
+  if(otro){ document.getElementById("mfTrab").focus(); return; }
+  precioDeAntes();
+});
+function abreFormMed(m, cod){
+  var hoy = hoyISO(), f = document.getElementById("mdForm"), fe = document.getElementById("mfFecha");
+  state.mdEdit = m ? m.id : null;
+  var obra = m ? m.obra : (cod || (OBRAS[0] ? OBRAS[0].cod : ""));
+  var sel = document.getElementById("mfObra"), cods = OBRAS.map(function(o){ return o.cod; });
+  if(obra && cods.indexOf(obra) < 0) cods.push(obra);
+  sel.innerHTML = cods.map(function(c){ var o = obraOCod(c); return '<option value="'+esc(c)+'">'+esc(c)+(o.dir ? ' · '+esc(o.dir) : '')+'</option>'; }).join("");
+  sel.value = obra;
+  fe.min = sumaDias(hoy, -400); fe.max = hoy;
+  var ultimoMes = iso(new Date(parseInt(state.mdMes.slice(0,4),10), parseInt(state.mdMes.slice(5,7),10), 0));
+  fe.value = m ? m.fecha : (state.mdMes < hoy.slice(0,7) ? ultimoMes : hoy);
+  var ult = m ? null : ultimaMed(obra);
+  ponTrabajo(m ? m.trab : (ult ? ult.trab : ""));
+  var pr = m ? m.p : (ult ? ult.p : null);
+  document.getElementById("mfP").value = pr != null ? nq(pr) : "";
+  document.getElementById("mfZona").value = m ? m.zona : "";
+  document.getElementById("mfNota").value = m ? m.nota : "";
+  state.mdPanos = m ? copia(m.panos) : [];
+  var k0 = m ? calculaMed(m.panos, m.u, criterioDe(m.trab), null) : null;
+  document.getElementById("mfQ").value = m ? nq(k0.conPanos ? k0.bruto : r2(m.q + k0.resta - k0.suma)) : "";
+  pintaOpsMed(m ? m.ops : (ult ? ult.ops : [])); pintaSemMed();
+  document.getElementById("mfPanos").open = state.mdPanos.some(function(x){ return !x.h; });
+  pintaPanos();
+  document.getElementById("mfTit").textContent = m ? "Corregir medición" : "Nueva medición";
+  document.getElementById("mfGuardar").textContent = m ? "Guardar cambios" : "Guardar medición";
+  document.getElementById("mfBorrar").hidden = !m;
+  Array.prototype.forEach.call(f.querySelectorAll("[aria-invalid]"), function(el){ el.removeAttribute("aria-invalid"); });
+  avisoMd("mfHint", "", null); avisoMd("mdOk", "", null);
+  f.hidden = false; document.getElementById("mdNueva").hidden = true;
+  var tope = document.querySelector(".topbar").getBoundingClientRect().height;
+  window.scrollTo(0, Math.max(0, f.getBoundingClientRect().top + window.scrollY - tope - 10));
+  document.getElementById("mfTit").focus({preventScroll:true});
+}
+function cierraFormMed(){
+  document.getElementById("mdForm").hidden = true;
+  state.mdEdit = null; state.mdPanos = [];
+  pintaMediciones();
+}
+document.getElementById("mfCancelar").addEventListener("click", function(){
+  cierraFormMed(); avisoMd("mdOk", "", null); document.getElementById("mdNueva").focus();
+});
+function errorMf(id, texto){
+  var el = document.getElementById(id);
+  if(el){ el.setAttribute("aria-invalid", "true"); el.focus(); }
+  avisoMd("mfHint", texto, false);
+}
+document.getElementById("mdForm").addEventListener("submit", function(e){
+  e.preventDefault();
+  var f = document.getElementById("mdForm");
+  Array.prototype.forEach.call(f.querySelectorAll("#mfObra,#mfFecha,#mfTipo,#mfTrab,#mfQ,#mfP"), function(el){ el.removeAttribute("aria-invalid"); });
+  var fe = document.getElementById("mfFecha"), obra = document.getElementById("mfObra").value, fecha = fe.value;
+  var trab = trabajoElegido(), u = uMed();
+  var escrito = numEs(document.getElementById("mfQ").value.replace(/m[2²3³]/gi, ""));
+  var pTxt = document.getElementById("mfP").value.trim(), p = pTxt ? numEs(pTxt) : null;
+  var panos = state.mdPanos;
+  if(!obra) return errorMf("mfObra", "Elige la obra.");
+  if(!RE_FECHA.test(fecha) || fecha < fe.min || fecha > fe.max) return errorMf("mfFecha", "Ese día no vale: no puede ser en el futuro.");
+  if(!document.getElementById("mfTipo").value) return errorMf("mfTipo", "Elige el trabajo de la lista.");
+  if(!trab) return errorMf("mfTrab", "Escribe qué trabajo se ha hecho.");
+  if(panos.some(function(x){ return !panoCompleto(x, u); })) return errorMf(null, "A un paño o a un hueco le falta una medida. Rellénala o quítalo.");
+  var k = calculaMed(panos, u, criterioDe(trab), escrito), q = k.neto;
+  if(k.bruto == null || k.bruto <= 0 || k.bruto > 1e6) return errorMf("mfQ", "Pon la cantidad hecha, por ejemplo 135.");
+  if(q <= 0) return errorMf(null, "Los huecos restan más que lo medido: revisa las medidas.");
+  if(pTxt && (p == null || p > 100000)) return errorMf("mfP", "El precio no se entiende. Escríbelo así: 12,50.");
+  var antes = state.meds.filter(function(x){ return x.id === state.mdEdit; })[0];
+  var med = limpiaMed({id:antes ? antes.id : nuevoId("m-"), fecha:fecha, obra:obra, trab:trab, u:u, q:q,
+    zona:document.getElementById("mfZona").value.trim(), ops:opsElegidos(), p:p, panos:copia(panos),
+    nota:document.getElementById("mfNota").value.trim(), creado:antes ? antes.creado : new Date().toISOString()});
+  var copiaAntes = state.meds.slice();
+  if(antes) state.meds[state.meds.indexOf(antes)] = med; else state.meds.push(med);
+  if(!save()){ state.meds = copiaAntes; avisoMd("mfHint", "No se ha podido guardar: el móvil no deja escribir más datos. Descarga una copia y libera espacio.", false); return; }
+  var s = semanaDeFecha(fecha);
+  state.mdMes = fecha.slice(0,7);
+  cierraFormMed();
+  avisoMd("mdOk", (antes ? "Corregido: " : "Guardado: ")+nq(med.q)+" "+med.u+" de "+med.trab+" en "+obra+" · semana "+s.i+" ("+rangoSemLargo(s)+").", true);
+  window.scrollTo(0, 0);
+  document.getElementById("mdNueva").focus({preventScroll:true});
+});
+document.getElementById("mfBorrar").addEventListener("click", function(){
+  var m = state.meds.filter(function(x){ return x.id === state.mdEdit; })[0];
+  if(!m || !window.confirm("¿Borrar "+nq(m.q)+" "+m.u+" de "+m.trab+" en "+m.obra+" del "+fechaCorta(m.fecha)+"?")) return;
+  state.meds.splice(state.meds.indexOf(m), 1);
+  save();
+  cierraFormMed();
+  avisoMd("mdOk", "Medición borrada.", true);
+  window.scrollTo(0, 0);
+  document.getElementById("mdNueva").focus({preventScroll:true});
+});
+
+/* ---- certificación: Excel, PDF y resumen para WhatsApp ---- */
+function datosExport(){ return datosMes(state.mdMes, state.mdExp); }
+function nombreMed(D, ext){ return "mediciones-"+D.mes+(D.cod ? "-obra-"+D.cod.replace(/[^\w-]/g, "") : "")+"."+ext; }
+function csvMediciones(D){
+  var filas = [["Certificación de mediciones", state.emisor, mesNombre(D.mes)+(D.cod ? " · obra "+D.cod : "")], [],
+    ["Semana del mes","Del","Al","Fecha","Código de obra","Dirección","Cliente","Trabajo","Zona","Operarios","Medición por paños","Cantidad","Unidad","Precio (€)","Importe (€)","Nota"]];
+  D.conMeds.forEach(function(x){
+    x.sem.forEach(function(w){
+      w.meds.forEach(function(m){
+        filas.push(["S"+w.s.i, fechaCorta(w.s.desde), fechaCorta(w.s.hasta), fechaCorta(m.fecha), x.o.cod, x.o.dir || "", x.o.cli || "",
+          m.trab, m.zona, opsTexto(m), panosTexto(m), dec(m.q), m.u, m.p == null ? "" : dinCsv(m.p), m.p == null ? "" : dinCsv(importeMed(m)), m.nota]);
+      });
+    });
+  });
+  filas.push([], ["Resumen por obra y semana"],
+    ["Código de obra","Dirección","Unidad"].concat(D.sems.map(function(s){ return "S"+s.i+" ("+rangoSemLargo(s)+")"; })).concat(["Total del mes","Importe (€)"]));
+  D.conMeds.forEach(function(x){
+    UDS_MED.filter(function(u){ return x.tot[u]; }).forEach(function(u, k){
+      filas.push([x.o.cod, x.o.dir || "", u].concat(x.sem.map(function(w){ return w.tot[u] ? dec(w.tot[u]) : ""; }))
+        .concat([dec(x.tot[u]), k === 0 && x.conPrecio ? dinCsv(x.imp) : ""]));
+    });
+  });
+  UDS_MED.filter(function(u){ return D.tot[u]; }).forEach(function(u, k){
+    filas.push(["TOTAL", "", u].concat(D.semTot.map(function(t){ return t[u] ? dec(t[u]) : ""; }))
+      .concat([dec(D.tot[u]), k === 0 && D.conPrecio ? dinCsv(D.imp) : ""]));
+  });
+  return filas.map(function(r){ return r.map(celda).join(";"); }).join("\r\n");
+}
+function textoMediciones(D){
+  var l = ["Mediciones "+mesNombre(D.mes)+" · "+state.emisor+(D.cod ? " · obra "+D.cod : "")];
+  D.conMeds.forEach(function(x){
+    l.push("", x.o.cod+(x.o.dir ? " ("+x.o.dir+")" : "")+": "+textoUds(x.tot)+(x.conPrecio ? " · "+eur(x.imp) : ""));
+    x.sem.forEach(function(w){
+      if(w.meds.length) l.push("  Semana "+w.s.i+" ("+rangoSemLargo(w.s)+"): "+porTrabajo(w.meds));
+    });
+  });
+  l.push("", "Total del mes: "+textoUds(D.tot)+(D.conPrecio ? " · "+eur(D.imp) : ""));
+  if(state.yo) l.push(state.yo);
+  return l.join("\n");
+}
+function certHTML(D){
+  var conP = D.conPrecio, ahora = new Date(), unaObra = D.cod ? obraOCod(D.cod) : null;
+  var cab = '<tr><th>Obra</th><th>Dirección</th><th>Cliente</th><th>Ud</th>'+D.sems.map(function(s){ return '<th class="n">S'+s.i+'<br>'+esc(rangoSemLargo(s))+'</th>'; }).join("")+
+    '<th class="n">Total</th>'+(conP ? '<th class="n">Importe</th>' : '')+'</tr>';
+  var filas = D.conMeds.map(function(x){
+    return UDS_MED.filter(function(u){ return x.tot[u]; }).map(function(u, k){
+      return '<tr><td><b>'+esc(x.o.cod)+'</b></td><td>'+esc(x.o.dir || "")+'</td><td>'+esc(x.o.cli || "")+'</td><td>'+u+'</td>'+
+        x.sem.map(function(w){ return '<td class="n">'+(w.tot[u] ? nq(w.tot[u]) : '')+'</td>'; }).join("")+'<td class="n"><b>'+nq(x.tot[u])+'</b></td>'+
+        (conP ? '<td class="n">'+(k === 0 && x.conPrecio ? eur(x.imp) : '')+'</td>' : '')+'</tr>';
+    }).join("");
+  }).join("");
+  var pie = UDS_MED.filter(function(u){ return D.tot[u]; }).map(function(u, k){
+    return '<tr><td colspan="3">Total del mes</td><td>'+u+'</td>'+D.semTot.map(function(t){ return '<td class="n">'+(t[u] ? nq(t[u]) : '')+'</td>'; }).join("")+
+      '<td class="n">'+nq(D.tot[u])+'</td>'+(conP ? '<td class="n">'+(k === 0 ? eur(D.imp) : '')+'</td>' : '')+'</tr>';
+  }).join("");
+  var detalle = D.conMeds.map(function(x){
+    return '<h2>'+esc(x.o.cod)+(x.o.dir ? ' · '+esc(x.o.dir) : '')+(x.o.cli ? ' · '+esc(x.o.cli) : '')+' · '+esc(textoUds(x.tot))+'</h2>'+
+      '<table class="inf-t"><thead><tr><th>Fecha</th><th>Trabajo</th><th>Zona</th><th>Operarios</th><th>Medición</th><th class="n">Cantidad</th>'+
+      (conP ? '<th class="n">Precio</th><th class="n">Importe</th>' : '')+'<th>Nota</th></tr></thead><tbody>'+
+      x.sem.filter(function(w){ return w.meds.length; }).map(function(w){
+        return '<tr class="md-semana"><td colspan="'+(conP ? 9 : 7)+'">Semana '+w.s.i+' · '+esc(rangoSemLargo(w.s))+' · '+esc(textoUds(w.tot))+'</td></tr>'+
+          w.meds.map(function(m){
+            return '<tr><td>'+fechaCorta(m.fecha)+'</td><td>'+esc(m.trab)+'</td><td>'+esc(m.zona)+'</td><td>'+esc(opsTexto(m))+'</td><td>'+esc(panosTexto(m))+'</td>'+
+              '<td class="n">'+nq(m.q)+' '+m.u+'</td>'+(conP ? '<td class="n">'+(m.p == null ? '' : eur(m.p))+'</td><td class="n">'+(m.p == null ? '' : eur(importeMed(m)))+'</td>' : '')+
+              '<td>'+esc(m.nota)+'</td></tr>';
+          }).join("");
+      }).join("")+'</tbody></table>';
+  }).join("");
+  return '<div class="informe">'+
+    '<header class="inf-h"><img src="'+LOGO_PAPEL+'" alt="" width="40" height="40"><div><h1>'+esc(state.emisor)+' · Certificación de mediciones</h1>'+
+    '<p>'+esc(mesTitulo(D.mes))+(D.cod ? ' · obra '+esc(D.cod)+(unaObra.dir ? ' · '+esc(unaObra.dir) : '') : ' · todas las obras')+'</p></div>'+
+    '<p class="inf-q">'+(state.yo ? 'Medido por '+esc(state.yo)+'<br>' : '')+fechaCorta(hoyISO())+' '+ahora.toLocaleTimeString("es-ES",{hour:"2-digit",minute:"2-digit"})+'</p></header>'+
+    '<p class="inf-k"><b>'+esc(textoUds(D.tot))+'</b> · <b>'+D.conMeds.length+'</b> '+(D.conMeds.length === 1 ? 'obra' : 'obras')+' · <b>'+D.meds.length+'</b> '+(D.meds.length === 1 ? 'medición' : 'mediciones')+
+      (conP ? ' · importe <b>'+esc(eur(D.imp))+'</b>' : '')+'</p>'+
+    '<h2>Resumen por obra y semana</h2><table class="inf-t"><thead>'+cab+'</thead><tbody>'+filas+'</tbody><tfoot>'+pie+'</tfoot></table>'+
+    detalle+
+    '<div class="inf-firmas"><div>Medido por'+(state.yo ? ': '+esc(state.yo) : '')+'<br>Firma y fecha</div>'+
+    '<div>Conforme · jefe de obra'+(unaObra && unaObra.jefe ? ': '+esc(unaObra.jefe) : '')+'<br>Firma y fecha</div></div>'+
+  '</div>';
+}
+document.getElementById("mdCsv").addEventListener("click", function(){
+  var D = datosExport();
+  descarga("﻿"+csvMediciones(D), nombreMed(D, "csv"), "text/csv;charset=utf-8");
+  avisoMd("mdHint", "Excel descargado: "+nombreMed(D, "csv")+".", true);
+});
+document.getElementById("mdPdf").addEventListener("click", function(){
+  document.getElementById("printHost").innerHTML = certHTML(datosExport());
+  document.body.classList.add("imprime-informe");
+  window.print();
+});
+document.getElementById("mdEnviar").addEventListener("click", function(){
+  var D = datosExport(), texto = textoMediciones(D), r = document.getElementById("mdResp"), archivo = null;
+  r.hidden = true;
+  try{ archivo = new File(["﻿"+csvMediciones(D)], nombreMed(D, "csv"), {type:"text/csv"}); }catch(e){}
+  if(navigator.share){
+    var datos = archivo && navigator.canShare && navigator.canShare({files:[archivo]}) ? {files:[archivo], title:"Mediciones "+mesNombre(D.mes), text:texto} : {title:"Mediciones "+mesNombre(D.mes), text:texto};
+    navigator.share(datos).then(function(){ avisoMd("mdHint", "Resumen enviado.", true); })
+      .catch(function(e){ if(!e || e.name !== "AbortError") avisoMd("mdHint", "No se ha podido compartir. Prueba con Descargar Excel.", false); });
+    return;
+  }
+  copiaTexto(texto).then(function(){
+    avisoMd("mdHint", "Resumen copiado. Pégalo en WhatsApp o en el correo.", true);
+  }).catch(function(){
+    r.value = texto; r.hidden = false; r.focus(); r.select();
+    avisoMd("mdHint", "No se ha podido copiar solo. Está el texto debajo: selecciónalo y cópialo.", false);
+  });
+});
+
+/* ---- parte semanal para el jefe: PDF propio, A4, sin librerías (se genera en el móvil, sin conexión) ---- */
+var CP1252 = {"€":128,"‚":130,"„":132,"…":133,"‘":145,"’":146,"“":147,"”":148,"•":149,"–":150,"—":151,"−":45};
+function pdfTxt(s){
+  var out = "";
+  Array.from(String(s).replace(/[\r\n\t]+/g, " ")).forEach(function(ch){
+    var c = ch.charCodeAt(0), x = String.fromCharCode(CP1252[ch] || (c < 256 && c >= 32 ? c : 63));
+    out += x === "(" || x === ")" || x === "\\" ? "\\"+x : x;
+  });
+  return out;
+}
+var pdfCtx = null;
+function anchoPt(s, size, bold){
+  if(!pdfCtx) pdfCtx = document.createElement("canvas").getContext("2d");
+  pdfCtx.font = (bold ? "bold " : "")+"100px Helvetica, Arial, sans-serif";
+  return pdfCtx.measureText(String(s)).width * size / 100;
+}
+function partirTexto(s, ancho, size, bold){
+  var lineas = [], actual = "";
+  String(s || "").replace(/ (m²|m³|€)/g, "\u00a0$1").split(/[ \t\r\n]+/).filter(Boolean).forEach(function(p){
+    var prueba = actual ? actual+" "+p : p;
+    if(anchoPt(prueba, size, bold) <= ancho || !actual) actual = prueba; else { lineas.push(actual); actual = p; }
+  });
+  if(actual) lineas.push(actual);
+  return lineas.length ? lineas : [""];
+}
+function nuevoPDF(){
+  var W = 595.28, H = 841.89, d = {W:W, H:H, pages:[], img:null};
+  function col(rgb, trazo){ return rgb.map(function(v){ return (v / 255).toFixed(3); }).join(" ")+(trazo ? " RG" : " rg"); }
+  d.pagina = function(){ d.p = []; d.pages.push(d.p); };
+  d.texto = function(x, y, s, o){
+    o = o || {}; var size = o.size || 9, w = anchoPt(s, size, o.bold);
+    if(o.align === "right") x -= w; else if(o.align === "center") x -= w / 2;
+    d.p.push("BT /"+(o.bold ? "F2" : "F1")+" "+size+" Tf "+col(o.color || [20,23,26])+" "+x.toFixed(2)+" "+(H - y).toFixed(2)+" Td ("+pdfTxt(s)+") Tj ET");
+    return w;
+  };
+  d.caja = function(x, y, w, h, rgb){ d.p.push(col(rgb)+" "+x.toFixed(2)+" "+(H - y - h).toFixed(2)+" "+w.toFixed(2)+" "+h.toFixed(2)+" re f"); };
+  d.linea = function(x1, y1, x2, y2, rgb, gros){ d.p.push(col(rgb, true)+" "+(gros || 0.5)+" w "+x1.toFixed(2)+" "+(H - y1).toFixed(2)+" m "+x2.toFixed(2)+" "+(H - y2).toFixed(2)+" l S"); };
+  d.imagen = function(x, y, w, h){ if(d.img) d.p.push("q "+w.toFixed(2)+" 0 0 "+h.toFixed(2)+" "+x.toFixed(2)+" "+(H - y - h).toFixed(2)+" cm /Im1 Do Q"); };
+  return d;
+}
+function bytesPDF(d, titulo){
+  var o = [], n = d.pages.length, base = d.img ? 6 : 5, kids = [];
+  for(var i = 0; i < n; i++) kids.push((base + 2*i)+" 0 R");
+  o[1] = "<< /Type /Catalog /Pages 2 0 R >>";
+  o[2] = "<< /Type /Pages /Kids ["+kids.join(" ")+"] /Count "+n+" >>";
+  o[3] = "<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica /Encoding /WinAnsiEncoding >>";
+  o[4] = "<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold /Encoding /WinAnsiEncoding >>";
+  if(d.img) o[5] = "<< /Type /XObject /Subtype /Image /Width "+d.img.w+" /Height "+d.img.h+" /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /DCTDecode /Length "+d.img.bin.length+" >>\nstream\n"+d.img.bin+"\nendstream";
+  var rec = "<< /Font << /F1 3 0 R /F2 4 0 R >>"+(d.img ? " /XObject << /Im1 5 0 R >>" : "")+" >>";
+  d.pages.forEach(function(p, i){
+    var c = p.join("\n");
+    o[base + 2*i] = "<< /Type /Page /Parent 2 0 R /MediaBox [0 0 "+d.W+" "+d.H+"] /Resources "+rec+" /Contents "+(base + 2*i + 1)+" 0 R >>";
+    o[base + 2*i + 1] = "<< /Length "+c.length+" >>\nstream\n"+c+"\nendstream";
+  });
+  var info = o.length;
+  o[info] = "<< /Title ("+pdfTxt(titulo)+") /Producer (ROVIK.IA) >>";
+  var out = "%PDF-1.4\n%\xE2\xE3\xCF\xD3\n", offs = [];
+  for(var k = 1; k < o.length; k++){ offs[k] = out.length; out += k+" 0 obj\n"+o[k]+"\nendobj\n"; }
+  var xref = out.length;
+  out += "xref\n0 "+o.length+"\n0000000000 65535 f \n";
+  for(k = 1; k < o.length; k++) out += String(offs[k]).padStart(10, "0")+" 00000 n \n";
+  out += "trailer\n<< /Size "+o.length+" /Root 1 0 R /Info "+info+" 0 R >>\nstartxref\n"+xref+"\n%%EOF\n";
+  var b = new Uint8Array(out.length);
+  for(k = 0; k < out.length; k++) b[k] = out.charCodeAt(k) & 255;
+  return b;
+}
+/* el logo va en JPEG (el PDF lo incrusta tal cual); se prepara al abrir la pantalla para que compartir no espere */
+var LOGO_JPG = null;
+function preparaLogo(){
+  if(LOGO_JPG) return;
+  var im = new Image();
+  im.onload = function(){
+    try{
+      var c = document.createElement("canvas"); c.width = im.naturalWidth; c.height = im.naturalHeight;
+      var x = c.getContext("2d"); x.fillStyle = "#fff"; x.fillRect(0, 0, c.width, c.height); x.drawImage(im, 0, 0);
+      LOGO_JPG = {bin:atob(c.toDataURL("image/jpeg", 0.92).split(",")[1]), w:c.width, h:c.height};
+    }catch(e){}
+  };
+  im.src = LOGO_PAPEL;
+}
+
+function datosSemanaMed(lun){
+  var dom = sumaDias(lun, 6), si = semanaISO(lun);
+  var meds = state.meds.filter(function(m){ return m.fecha >= lun && m.fecha <= dom; }).sort(ordenMeds);
+  var cods = OBRAS.map(function(o){ return o.cod; });
+  meds.forEach(function(m){ if(cods.indexOf(m.obra) < 0) cods.push(m.obra); });
+  var obras = cods.map(function(c){ var ms = meds.filter(function(m){ return m.obra === c; }); return {o:obraOCod(c), meds:ms, tot:sumaUd(ms), imp:importeDe(ms)}; });
+  return {lun:lun, dom:dom, num:si.n, anio:si.a, meds:meds, con:obras.filter(function(x){ return x.meds.length; }),
+    sin:obras.filter(function(x){ return !x.meds.length; }), tot:sumaUd(meds), imp:importeDe(meds), conPrecio:meds.some(function(m){ return m.p != null; })};
+}
+function nombreParte(S){ return "parte-mediciones-"+S.anio+"-S"+String(S.num).padStart(2, "0")+".pdf"; }
+function partePDF(S){
+  var d = nuevoPDF(), M = 40, W = d.W, H = d.H, y;
+  var TINTA = [20,23,26], GRIS = [90,97,101], LINEA = [213,214,207], ACENTO = [30,143,134], SUAVE = [236,246,245], FILA = [244,244,240];
+  var conP = S.conPrecio, rango = rangoTexto(S.lun, S.dom), ahora = new Date();
+  d.img = LOGO_JPG;
+  function cabecera(primera){
+    d.pagina();
+    if(d.img) d.imagen(M, 34, 34, 34);
+    var x0 = d.img ? M + 44 : M;
+    d.texto(x0, 50, state.emisor, {size:primera ? 15 : 12, bold:true});
+    d.texto(x0, 64, "Parte semanal de mediciones", {size:9.5, color:GRIS});
+    d.texto(W - M, 50, "Semana "+S.num, {size:primera ? 15 : 12, bold:true, align:"right"});
+    d.texto(W - M, 64, rango, {size:9.5, color:GRIS, align:"right"});
+    d.linea(M, 78, W - M, 78, ACENTO, 1.6);
+    y = 96;
+  }
+  function salto(alto){ if(y + alto > H - 56){ cabecera(false); return true; } return false; }
+  cabecera(true);
+  d.texto(M, y, (state.yo ? "Preparado por "+state.yo+" · " : "")+fechaCorta(hoyISO())+" "+ahora.toLocaleTimeString("es-ES", {hour:"2-digit", minute:"2-digit"}), {size:8.5, color:GRIS});
+  d.texto(W - M, y, S.con.length+" de "+(S.con.length + S.sin.length)+" obras con trabajo medido", {size:8.5, color:GRIS, align:"right"});
+  y += 14;
+  // cifras de la semana
+  var cifras = [[nq(S.tot["m²"] || 0)+" m²", "medidos esta semana"]];
+  if(S.tot["m³"]) cifras.push([nq(S.tot["m³"])+" m³", "de hormigón vertido"]);
+  cifras.push([String(S.meds.length), S.meds.length === 1 ? "medición" : "mediciones"]);
+  if(conP) cifras.push([eur(S.imp), "importe"]);
+  var cw = (W - 2*M - 8*(cifras.length - 1)) / cifras.length;
+  cifras.forEach(function(c, i){
+    var x = M + i*(cw + 8);
+    d.caja(x, y, cw, 50, SUAVE);
+    d.texto(x + 12, y + 24, c[0], {size:17, bold:true, color:ACENTO});
+    d.texto(x + 12, y + 39, c[1], {size:8.5, color:GRIS});
+  });
+  y += 70;
+  // resumen por obra
+  d.texto(M, y, "Resumen por obra", {size:11, bold:true}); y += 8;
+  var cx = [M, M + 90, M + 290], cT = W - M;
+  d.caja(M, y, W - 2*M, 18, FILA);
+  d.texto(cx[0] + 6, y + 12, "Obra", {size:8, bold:true}); d.texto(cx[1], y + 12, "Dirección", {size:8, bold:true});
+  d.texto(cx[2], y + 12, "Trabajos", {size:8, bold:true}); d.texto(cT - 6, y + 12, "Total", {size:8, bold:true, align:"right"});
+  y += 18;
+  S.con.concat(S.sin).forEach(function(x){
+    var dir = partirTexto(x.o.dir || "—", cx[2] - cx[1] - 10, 8.5), trab = x.meds.length ? partirTexto(porTrabajo(x.meds), cT - cx[2] - 80, 8.5) : ["Sin medición esta semana"];
+    var alto = Math.max(dir.length, trab.length) * 11 + 9;
+    salto(alto);
+    d.texto(cx[0] + 6, y + 13, x.o.cod, {size:8.5, bold:true, color:x.meds.length ? TINTA : GRIS});
+    dir.forEach(function(l, i){ d.texto(cx[1], y + 13 + i*11, l, {size:8.5, color:GRIS}); });
+    trab.forEach(function(l, i){ d.texto(cx[2], y + 13 + i*11, l, {size:8.5, color:x.meds.length ? TINTA : GRIS}); });
+    d.texto(cT - 6, y + 13, x.meds.length ? textoUds(x.tot) : "—", {size:8.5, bold:true, align:"right", color:x.meds.length ? TINTA : GRIS});
+    y += alto;
+    d.linea(M, y, W - M, y, LINEA, 0.5);
+  });
+  // detalle de cada obra
+  var cols = conP ? [M + 6, M + 58, M + 200, M + 300, M + 410] : [M + 6, M + 62, M + 230, M + 345];
+  S.con.forEach(function(x){
+    y += 18;
+    salto(70);
+    d.caja(M, y, W - 2*M, 24, SUAVE);
+    d.texto(M + 8, y + 16, x.o.cod, {size:10.5, bold:true, color:ACENTO});
+    var tituloAncho = anchoPt(x.o.cod, 10.5, true);
+    d.texto(M + 16 + tituloAncho, y + 16, partirTexto(x.o.dir || "", 300, 8.5)[0], {size:8.5, color:GRIS});
+    d.texto(W - M - 8, y + 16, textoUds(x.tot)+(conP && x.imp ? " · "+eur(x.imp) : ""), {size:10, bold:true, align:"right"});
+    y += 24;
+    function cabTabla(){
+      d.texto(cols[0], y + 12, "Día", {size:7.5, bold:true, color:GRIS}); d.texto(cols[1], y + 12, "Trabajo", {size:7.5, bold:true, color:GRIS});
+      d.texto(cols[2], y + 12, "Zona", {size:7.5, bold:true, color:GRIS}); d.texto(cols[3], y + 12, "Operarios", {size:7.5, bold:true, color:GRIS});
+      if(conP) d.texto(cols[4], y + 12, "Precio", {size:7.5, bold:true, color:GRIS});
+      d.texto(W - M - 6, y + 12, "Cantidad", {size:7.5, bold:true, color:GRIS, align:"right"});
+      y += 17; d.linea(M, y, W - M, y, LINEA, 0.5);
+    }
+    cabTabla();
+    x.meds.forEach(function(m){
+      var anchoT = cols[2] - cols[1] - 8, anchoZ = cols[3] - cols[2] - 8, anchoO = (conP ? cols[4] : W - M - 70) - cols[3] - 8;
+      var tr = partirTexto(m.trab, anchoT, 8.5), zo = partirTexto(m.zona || "—", anchoZ, 8.5), op = partirTexto(opsTexto(m) || "—", anchoO, 8.5);
+      var extra = [];
+      var pt = panosTexto(m); if(pt) extra = extra.concat(partirTexto("Medición: "+pt, W - 2*M - 70, 7.5));
+      if(m.nota) extra = extra.concat(partirTexto("Nota: "+m.nota, W - 2*M - 70, 7.5));
+      var alto = Math.max(tr.length, zo.length, op.length) * 11 + extra.length * 9.5 + 9;
+      if(salto(alto)) cabTabla();
+      d.texto(cols[0], y + 13, DIAS_CORTOS[diaSemana(m.fecha)]+" "+diaMes(m.fecha), {size:8.5});
+      tr.forEach(function(l, i){ d.texto(cols[1], y + 13 + i*11, l, {size:8.5, bold:i === 0}); });
+      zo.forEach(function(l, i){ d.texto(cols[2], y + 13 + i*11, l, {size:8.5, color:GRIS}); });
+      op.forEach(function(l, i){ d.texto(cols[3], y + 13 + i*11, l, {size:8.5, color:GRIS}); });
+      if(conP) d.texto(cols[4], y + 13, m.p == null ? "—" : eur(m.p)+"/"+m.u, {size:8.5, color:GRIS});
+      d.texto(W - M - 6, y + 13, nq(m.q)+" "+m.u, {size:9, bold:true, align:"right"});
+      var yl = y + 13 + Math.max(tr.length, zo.length, op.length) * 11;
+      extra.forEach(function(l, i){ d.texto(cols[1], yl - 1 + i*9.5, l, {size:7.5, color:GRIS}); });
+      y += alto;
+      d.linea(M, y, W - M, y, LINEA, 0.4);
+    });
+  });
+  if(!S.con.length){ y += 20; d.texto(M, y, "No hay mediciones apuntadas esta semana.", {size:10, color:GRIS}); }
+  // firma
+  y += 34; salto(50);
+  d.linea(M, y + 26, M + 200, y + 26, TINTA, 0.6);
+  d.texto(M, y + 38, "Medido por"+(state.yo ? ": "+state.yo : ""), {size:8, color:GRIS});
+  d.linea(W - M - 200, y + 26, W - M, y + 26, TINTA, 0.6);
+  d.texto(W - M - 200, y + 38, "Visto bueno", {size:8, color:GRIS});
+  // pie en todas las páginas
+  var total = d.pages.length;
+  d.pages.forEach(function(p, i){
+    d.p = p;
+    d.linea(M, H - 34, W - M, H - 34, LINEA, 0.5);
+    d.texto(M, H - 22, state.emisor+" · Parte semanal de mediciones · Semana "+S.num+" ("+rango+")", {size:7.5, color:GRIS});
+    d.texto(W - M, H - 22, "Página "+(i + 1)+" de "+total, {size:7.5, color:GRIS, align:"right"});
+  });
+  return bytesPDF(d, state.emisor+" · Parte semanal de mediciones · Semana "+S.num);
+}
+function pintaParte(){
+  preparaLogo();
+  var hoyLun = lunesDe(hoyISO());
+  if(!state.mpLun) state.mpLun = hoyLun;
+  var S = datosSemanaMed(state.mpLun);
+  document.getElementById("mpTit").textContent = "Semana "+S.num;
+  document.getElementById("mpRango").textContent = rangoTexto(S.lun, S.dom);
+  document.getElementById("mpNext").disabled = state.mpLun >= hoyLun;
+  document.getElementById("mpRes").innerHTML = S.meds.length
+    ? S.con.map(function(x){ return '<b>'+esc(x.o.cod)+'</b> '+esc(textoUds(x.tot)); }).join(" · ")+
+      (S.sin.length ? '<br>Sin medición: '+esc(S.sin.map(function(x){ return x.o.cod; }).join(", ")) : '')
+    : 'Sin mediciones esta semana.';
+  document.getElementById("mpEnviar").disabled = document.getElementById("mpDescargar").disabled = !S.meds.length;
+}
+document.getElementById("mpPrev").addEventListener("click", function(){ state.mpLun = sumaDias(state.mpLun, -7); avisoMd("mpHint", "", null); pintaParte(); });
+document.getElementById("mpNext").addEventListener("click", function(){ state.mpLun = sumaDias(state.mpLun, 7); avisoMd("mpHint", "", null); pintaParte(); });
+document.getElementById("mpDescargar").addEventListener("click", function(){
+  var S = datosSemanaMed(state.mpLun);
+  descarga(partePDF(S), nombreParte(S), "application/pdf");
+  avisoMd("mpHint", "PDF descargado: "+nombreParte(S)+".", true);
+});
+document.getElementById("mpEnviar").addEventListener("click", function(){
+  var S = datosSemanaMed(state.mpLun), bytes = partePDF(S), archivo = null;   // sin esperas: el móvil exige compartir justo tras el toque
+  try{ archivo = new File([bytes], nombreParte(S), {type:"application/pdf"}); }catch(e){}
+  var texto = "Parte semanal de mediciones · Semana "+S.num+" ("+rangoTexto(S.lun, S.dom)+"): "+textoUds(S.tot)+".";
+  if(archivo && navigator.canShare && navigator.share && navigator.canShare({files:[archivo]})){
+    navigator.share({files:[archivo], title:"Parte semanal · semana "+S.num, text:texto})
+      .then(function(){ avisoMd("mpHint", "Parte enviado.", true); })
+      .catch(function(e){ if(!e || e.name !== "AbortError") avisoMd("mpHint", "No se ha podido compartir. Usa Descargar PDF y adjúntalo en WhatsApp.", false); });
+    return;
+  }
+  descarga(bytes, nombreParte(S), "application/pdf");
+  avisoMd("mpHint", "Este navegador no deja compartir archivos: el PDF se ha descargado. Adjúntalo en WhatsApp.", true);
+});
+
+/* obras que llegan por un enlace privado: ./#obras=[{cod, dir, mapa, cli}]. El fragmento (#) no llega nunca al servidor, así
+   que las direcciones de las obras no quedan en la web pública ni en el repositorio. Solo añade las que falten: nunca pisa una obra. */
+function obrasDelEnlace(){
+  var m = /^#obras=(.+)$/.exec(location.hash || "");
+  if(!m) return null;
+  var r = {n:0, cods:[]};
+  try{
+    var l = JSON.parse(decodeURIComponent(m[1]));
+    if(!Array.isArray(l)) throw new Error("obras");
+    l.slice(0, 50).forEach(function(o){
+      if(!obraValida(o) || obraDe(String(o.cod).trim())) return;
+      var nueva = limpiaObra(o); OBRAS.push(nueva); r.n++; r.cods.push(nueva.cod);
+    });
+  }catch(e){ r.n = -1; }
+  try{ history.replaceState(null, "", location.pathname + location.search); }catch(e){}   // que no se quede en el historial
+  if(r.n > 0) save();
+  return r;
+}
+
 /* ---------- arranque ---------- */
 Array.prototype.forEach.call(document.querySelectorAll("[data-solo]"), function(el){
   if(el.dataset.solo !== (REAL ? "real" : "demo")) el.hidden = true;
@@ -3813,7 +4969,11 @@ state.obra = REAL ? (OBRAS[0] || null) : (obraDe(talDe(state.talon).obra) || OBR
 pintaTalon(); pintaObras(); pintaCrew(); pintaFotoNueva(); pintaTipo();
 pintaLista(); pintaCierre(); pintaControl();
 medirPad(); refrescaEmitir(); marcaScrollTabs();
-if(REAL && !OBRAS.length) ir("obras");
+var obrasEnlace = REAL ? obrasDelEnlace() : null;
+if(REAL) ir(OBRAS.length ? "medicion" : "obras");
+if(obrasEnlace) avisoMd("mdOk", obrasEnlace.n < 0 ? "El enlace de obras no se ha podido leer. Pide que te lo manden otra vez."
+  : obrasEnlace.n ? "Cargadas "+obrasEnlace.n+(obrasEnlace.n === 1 ? " obra" : " obras")+" del enlace: "+obrasEnlace.cods.join(", ")+"."
+  : "Las obras del enlace ya estaban en este móvil.", obrasEnlace.n >= 0);
 if(REAL && navigator.storage && navigator.storage.persist) navigator.storage.persist().catch(function(){});
 
 if("serviceWorker" in navigator){

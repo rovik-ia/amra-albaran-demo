@@ -4,7 +4,7 @@ import AxeBuilder from "@axe-core/playwright";
 import { readFileSync } from "node:fs";
 import { HOY, KEY_REAL, KEY_DEMO, vigilar, irA, sinDesbordes, datosReales, sembrarReales } from "./comun.mjs";
 
-const PANTALLAS = ["Nuevo albarán", "Obras", "Visitas", "Semana", "Control", "Albaranes", "Ajustes"];
+const PANTALLAS = ["Mediciones", "Nuevo albarán", "Obras", "Visitas", "Semana", "Control", "Albaranes", "Ajustes"];
 const FOTO = new URL("../icon-512.png", import.meta.url).pathname;
 
 async function abrir(page, fecha = HOY) {

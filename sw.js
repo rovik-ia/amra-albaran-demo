@@ -1,7 +1,7 @@
 // Red primero para la página: una versión nueva llega en cuanto hay cobertura.
 // Caché primero para fuentes, iconos y manifiesto (cambian con CACHE).
 // Sin cobertura, en obra, todo sale de la caché.
-const CACHE = "albaran-amra-v6";
+const CACHE = "albaran-amra-v7";
 const BASE = self.registration.scope;
 const ESPERA_RED_MS = 3500;
 const PRECARGA = [
